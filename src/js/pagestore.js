@@ -595,6 +595,11 @@ PageStore.prototype.journalProcess = function(fromTimer) {
 /******************************************************************************/
 
 PageStore.prototype.filterRequest = function(context) {
+
+    if (µb.getNetFilteringSwitch(context.requestURL) === false) {
+        return 0;
+    }
+
     this.logData = undefined;
 
     if ( this.getNetFilteringSwitch() === false ) {
@@ -623,6 +628,8 @@ PageStore.prototype.filterRequest = function(context) {
 
     // Dynamic URL filtering.
     var result = µb.sessionURLFiltering.evaluateZ(context.rootHostname, context.requestURL, requestType);
+
+
     if ( result !== 0 && µb.logger.isEnabled() ) {
         this.logData = µb.sessionURLFiltering.toLogData();
     }
@@ -638,6 +645,7 @@ PageStore.prototype.filterRequest = function(context) {
     // Static filtering has lowest precedence.
     if ( result === 0 || result === 3 ) {
         result = µb.staticNetFilteringEngine.matchString(context);
+
         if ( result !== 0 && µb.logger.isEnabled() ) {
             this.logData = µb.staticNetFilteringEngine.toLogData();
         }

@@ -27,6 +27,8 @@
 
 (function() {
 
+
+
 /******************************************************************************/
 
 var popupFontSize = vAPI.localStorage.getItem('popupFontSize');
@@ -1006,12 +1008,24 @@ var pollForContentChange = (function() {
 
 var getPopupData = function(tabId) {
     var onDataReceived = function(response) {
-        cachePopupData(response);
-        renderOnce();
-        renderPopup();
-        renderPopupLazy(); // low priority rendering
-        hashFromPopupData(true);
-        pollForContentChange();
+        // Disable popup rendering and toggle addon state
+        messaging.send(
+            'popupPanel',
+            {
+                what: 'toggleNetFiltering',
+                url: response.pageURL,
+                scope: 'page',
+                state: !response.netFilteringSwitch,
+                tabId: response.tabId
+            }
+        );
+        window.close();
+        // cachePopupData(response);
+        // renderOnce();
+        // renderPopup();
+        // renderPopupLazy(); // low priority rendering
+        // hashFromPopupData(true);
+        // pollForContentChange();
     };
     messaging.send(
         'popupPanel',
@@ -1068,6 +1082,7 @@ var onHideTooltip = function() {
 // is loaded after everything else..
 
 (function() {
+
     // If there's no tab id specified in the query string,
     // it will default to current tab.
     var tabId = null;
@@ -1093,6 +1108,7 @@ var onHideTooltip = function() {
                 .on('mouseleave', '[data-tip]', onHideTooltip);
 
     uDom('a[href]').on('click', gotoURL);
+
 })();
 
 /******************************************************************************/

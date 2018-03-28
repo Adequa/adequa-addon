@@ -3,18 +3,6 @@
 
     "name": "__MSG_extName__",
     "version": "0.1",
-
-    "commands": {
-        "launch-element-zapper": {
-            "description": "__MSG_popupTipZapper__"
-        },
-        "launch-element-picker": {
-            "description": "__MSG_popupTipPicker__"
-        },
-        "launch-logger": {
-            "description": "__MSG_popupTipLog__"
-        }
-    },
     "default_locale": "en",
     "description": "__MSG_extShortDesc__",
     "icons": {

@@ -1,6 +1,10 @@
 {
+  "authorName": {
+    "message": "AdEqua",
+    "description": "extension author's name"
+  },
   "extName": {
-    "message": "uBlock₀",
+    "message": "AdEqua",
     "description": "extension name."
   },
   "extShortDesc": {

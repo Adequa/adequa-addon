@@ -1,8 +1,8 @@
 {
     "manifest_version": 2,
 
-    "name": "uBlock Origin",
-    "version": "1.15.11.0",
+    "name": "__MSG_extName__",
+    "version": "0.1",
 
     "commands": {
         "launch-element-zapper": {
@@ -27,11 +27,11 @@
             "19": "img/browsericons/icon19.png",
             "38": "img/browsericons/icon38.png"
         },
-        "default_title": "uBlock Origin",
+        "default_title": "__MSG_extName__",
         "default_popup": "popup.html"
     },
 
-    "author": "All uBlock Origin contributors",
+    "author": "__MSG_authorName__",
     "background": {
         "page": "background.html"
     },
@@ -67,7 +67,7 @@
         "webRequestBlocking",
         "<all_urls>"
     ],
-    "short_name": "uBlock₀",
+    "short_name": "__MSG_extName__",
     "storage": {
         "managed_schema": "managed_storage.json"
     },

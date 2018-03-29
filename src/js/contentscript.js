@@ -1015,7 +1015,6 @@ vAPI.domSurveyor = (function() {
     var surveyPhase3 = function(response) {
         var result = response && response.result,
             mustCommit = false;
-
         if ( result ) {
             var selectors = result.simple;
             if ( Array.isArray(selectors) && selectors.length !== 0 ) {
@@ -1271,6 +1270,11 @@ vAPI.domSurveyor = (function() {
         // https://github.com/gorhill/uBlock/issues/1893
         if ( window.location === null ) { return; }
 
+        // notify the page Adequa ext is installed
+        var adequaTag = document.createElement("script");
+        adequaTag.innerHTML = "window.adequaExt = true;";
+        document.head.appendChild(adequaTag);
+
         if ( ev ) {
             document.removeEventListener('DOMContentLoaded', bootstrapPhase2);
         }
@@ -1325,6 +1329,7 @@ vAPI.domSurveyor = (function() {
     var bootstrapPhase1 = function(response) {
         // cosmetic filtering engine aka 'cfe'
         var cfeDetails = response && response.specificCosmeticFilters;
+
         if ( !cfeDetails || !cfeDetails.ready ) {
             vAPI.domWatcher = vAPI.domCollapser = vAPI.domFilterer =
             vAPI.domSurveyor = vAPI.domIsLoaded = null;
@@ -1396,6 +1401,14 @@ vAPI.domSurveyor = (function() {
             document.addEventListener('DOMContentLoaded', bootstrapPhase2);
         }
     };
+
+    var appendExtVariable = function() {
+        var adequaTag = document.createElement("script");
+        adequaTag.innerHTML = "window.adequaExt = true;";
+        document.head.appendChild(adequaTag);
+        document.removeEventListener('DOMContentLoaded', appendExtVariable);
+    };
+    document.addEventListener('DOMContentLoaded', appendExtVariable);
 
     // This starts bootstrap process.
     vAPI.messaging.send(

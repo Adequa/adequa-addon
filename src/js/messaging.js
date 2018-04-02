@@ -850,7 +850,8 @@ var getLists = function(callback) {
         cosmeticFilterCount: µb.cosmeticFilteringEngine.getFilterCount(),
         current: µb.availableFilterLists,
         externalLists: µb.userSettings.externalLists,
-        ignoreGenericCosmeticFilters: µb.userSettings.ignoreGenericCosmeticFilters,
+        // Always disable cosmetic filtering to still show ads containers
+        ignoreGenericCosmeticFilters: false, //µb.userSettings.ignoreGenericCosmeticFilters,
         netFilterCount: µb.staticNetFilteringEngine.getFilterCount(),
         parseCosmeticFilters: µb.userSettings.parseAllABPHideFilters,
         userFiltersPath: µb.userFiltersPath

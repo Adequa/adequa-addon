@@ -1,19 +1,19 @@
 {
   "authorName": {
-    "message": "AdEqua",
-    "description": "extension author's name"
+    "message": "Adequa",
+    "description": "Adequa"
   },
   "extName": {
-    "message": "AdEqua",
+    "message": "Adequa",
     "description": "extension name."
   },
   "extShortDesc": {
-    "message": "Un bloqueur de nuisances efficace, qui ménagera votre processeur et votre mémoire vive.",
+    "message": "Adequa limite les publicités intrusives et protége votre vie privée.",
     "description": "this will be in the chrome web store: must be 132 characters or less"
   },
   "dashboardName": {
-    "message": "AdEqua — Tableau de bord",
-    "description": "English: AdEqua — Dashboard"
+    "message": "Adequa — Tableau de bord",
+    "description": "English: Adequa — Dashboard"
   },
   "settingsPageName": {
     "message": "Paramètres",
@@ -36,7 +36,7 @@
     "description": "appears as tab name in dashboard"
   },
   "statsPageName": {
-    "message": "AdEqua — Journal des requêtes réseau",
+    "message": "Adequa — Journal des requêtes réseau",
     "description": "Title for the logger window"
   },
   "aboutPageName": {
@@ -48,15 +48,15 @@
     "description": "Title for the advanced settings page"
   },
   "popupPowerSwitchInfo": {
-    "message": "Clic : Désactiver\/Activer AdEqua pour ce site.\n\nCtrl+clic : Désactiver AdEqua uniquement sur cette page.",
-    "description": "English: Click: disable\/enable AdEqua for this site.\n\nCtrl+click: disable AdEqua only on this page."
+    "message": "Clic : Désactiver\/Activer Adequa pour ce site.\n\nCtrl+clic : Désactiver Adequa uniquement sur cette page.",
+    "description": "English: Click: disable\/enable Adequa for this site.\n\nCtrl+click: disable Adequa only on this page."
   },
   "popupPowerSwitchInfo1": {
-    "message": "Cliquez pour désactiver AdEqua  pour ce site\n\nCtrl+Clic pour désactiver AdEqua uniquement pour cette page",
+    "message": "Cliquez pour désactiver Adequa  pour ce site\n\nCtrl+Clic pour désactiver Adequa uniquement pour cette page",
     "description": "Message to be read by screen readers"
   },
   "popupPowerSwitchInfo2": {
-    "message": "Cliquez pour activer AdEqua pour ce site",
+    "message": "Cliquez pour activer Adequa pour ce site",
     "description": "Message to be read by screen readers"
   },
   "popupBlockedRequestPrompt": {
@@ -336,7 +336,7 @@
     "description": "English: Parse and enforce Adblock+ element hiding filters."
   },
   "3pParseAllABPHideFiltersInfo": {
-    "message": "<p>Cette option permet de prendre en charge les filtres Adblock Plus de type <a href=\"https:\/\/adblockplus.org\/en\/faq_internal#elemhide\">&ldquo;element hiding&rdquo;<\/a>. Ces filtres ont principalement un impact visuel, servant à dissimuler des éléments nuisibles d'une page Web et qui ne sont pas blocables par le filtrage standard.<\/p><p>L'activation de cette fonctionnalité augmente l'empreinte mémoire de AdEqua.<\/p>",
+    "message": "<p>Cette option permet de prendre en charge les filtres Adblock Plus de type <a href=\"https:\/\/adblockplus.org\/en\/faq_internal#elemhide\">&ldquo;element hiding&rdquo;<\/a>. Ces filtres ont principalement un impact visuel, servant à dissimuler des éléments nuisibles d'une page Web et qui ne sont pas blocables par le filtrage standard.<\/p><p>L'activation de cette fonctionnalité augmente l'empreinte mémoire de Adequa.<\/p>",
     "description": "Describes the purpose of the 'Parse and enforce cosmetic filters' feature."
   },
   "3pIgnoreGenericCosmeticFilters": {
@@ -344,7 +344,7 @@
     "description": "This will cause uBO to ignore all generic cosmetic filters."
   },
   "3pIgnoreGenericCosmeticFiltersInfo": {
-    "message": "<p>Les filtres esthétiques génériques sont des filtres esthétiques conçus pour être appliqués sur tous les sites Web.<p>Bien qu'ils soient pris en charge efficacement par AdEqua, les filtres esthétiques génériques restent susceptibles de consommer des ressources supplémentaires en mémoire vive & en processeur central sur certaines pages Web, tout particulièrement ceux de grandes taille & longévité.<p>Ignorer ce type de filtrage esthétique réduira l'utilisation supplémentaire en RAM & en CPU sur les pages Web, diminuant également l'empreinte mémoire d'AdEqua.<p>Il est recommandé d'activer ce paramètre sur des appareils modestes.",
+    "message": "<p>Les filtres esthétiques génériques sont des filtres esthétiques conçus pour être appliqués sur tous les sites Web.<p>Bien qu'ils soient pris en charge efficacement par Adequa, les filtres esthétiques génériques restent susceptibles de consommer des ressources supplémentaires en mémoire vive & en processeur central sur certaines pages Web, tout particulièrement ceux de grandes taille & longévité.<p>Ignorer ce type de filtrage esthétique réduira l'utilisation supplémentaire en RAM & en CPU sur les pages Web, diminuant également l'empreinte mémoire d'Adequa.<p>Il est recommandé d'activer ce paramètre sur des appareils modestes.",
     "description": "Describes the purpose of the 'Ignore generic cosmetic filters' feature."
   },
   "3pListsOfBlockedHostsHeader": {
@@ -620,7 +620,7 @@
     "description": "English: Reset to default settings..."
   },
   "aboutRestoreDataConfirm": {
-    "message": "Vos paramètres seront remplacés par les données sauvegardées le {{time}}, puis AdEqua redémarrera.\n\nProcéder à l'importation ?",
+    "message": "Vos paramètres seront remplacés par les données sauvegardées le {{time}}, puis Adequa redémarrera.\n\nProcéder à l'importation ?",
     "description": "Message asking user to confirm restore"
   },
   "aboutRestoreDataError": {
@@ -628,7 +628,7 @@
     "description": "Message to display when an error occurred during restore"
   },
   "aboutResetDataConfirm": {
-    "message": "Vos paramètres seront effacés, puis AdEqua redémarrera.\n\nProcéder à la réinitialisation des paramètres ?",
+    "message": "Vos paramètres seront effacés, puis Adequa redémarrera.\n\nProcéder à la réinitialisation des paramètres ?",
     "description": "Message asking user to confirm reset"
   },
   "errorCantConnectTo": {
@@ -636,7 +636,7 @@
     "description": "English: Network error: {{msg}}"
   },
   "subscriberConfirm": {
-    "message": "AdEqua : Ajouter la ressource Web suivante à votre sélection de listes de filtrage ?\n\nTitre : \"{{title}}\"\nURL : {{url}}",
+    "message": "Adequa : Ajouter la ressource Web suivante à votre sélection de listes de filtrage ?\n\nTitre : \"{{title}}\"\nURL : {{url}}",
     "description": "English: The message seen by the user to confirm subscription to a ABP filter list"
   },
   "elapsedOneMinuteAgo": {
@@ -673,11 +673,11 @@
   },
   "fennecMenuItemBlockingOff": {
     "message": "Arrêt",
-    "description": "Firefox-specific: appears as 'AdEqua (off)'"
+    "description": "Firefox-specific: appears as 'Adequa (off)'"
   },
   "docblockedPrompt1": {
-    "message": "AdEqua a empêché le chargement de la page suivante :",
-    "description": "English: AdEqua has prevented the following page from loading:"
+    "message": "Adequa a empêché le chargement de la page suivante :",
+    "description": "English: Adequa has prevented the following page from loading:"
   },
   "docblockedPrompt2": {
     "message": "À cause du filtre suivant :",

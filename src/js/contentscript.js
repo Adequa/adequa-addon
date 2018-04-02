@@ -1330,6 +1330,11 @@ vAPI.domSurveyor = (function() {
         // cosmetic filtering engine aka 'cfe'
         var cfeDetails = response && response.specificCosmeticFilters;
 
+        if (cfeDetails && cfeDetails.declarativeFilters && cfeDetails.declarativeFilters.indexOf('.AD-Rotate') !== -1) {
+            var index = cfeDetails.declarativeFilters.indexOf('.AD-Rotate');
+            cfeDetails.declarativeFilters.splice(index, 1);
+        }
+
         if ( !cfeDetails || !cfeDetails.ready ) {
             vAPI.domWatcher = vAPI.domCollapser = vAPI.domFilterer =
             vAPI.domSurveyor = vAPI.domIsLoaded = null;
@@ -1407,7 +1412,15 @@ vAPI.domSurveyor = (function() {
         adequaTag.innerHTML = "window.adequaExt = true;";
         document.head.appendChild(adequaTag);
         document.removeEventListener('DOMContentLoaded', appendExtVariable);
+
+        vAPI.messaging.send(
+            'contentscript',
+            {
+                what: 'injectAdequa',
+            }
+        );
     };
+
     document.addEventListener('DOMContentLoaded', appendExtVariable);
 
     // This starts bootstrap process.

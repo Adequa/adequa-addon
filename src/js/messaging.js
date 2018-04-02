@@ -495,7 +495,14 @@ var onMessage = function(request, sender, callback) {
             pageStore.getBlockedResources(request, response);
         }
         break;
-
+    case 'injectAdequa':
+        if (pageStore.getNetFilteringSwitch() === false) {
+            break;
+        }
+        vAPI.tabs.injectScript(null, {
+            file: '/web_accessible_resources/adequa.js'
+        });
+    break;
     case 'retrieveContentScriptParameters':
         if (
             pageStore === null ||

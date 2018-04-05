@@ -16,7 +16,7 @@
             "38": "img/browsericons/icon38.png"
         },
         "default_title": "__MSG_extName__",
-        "default_popup": "popup.html"
+        "default_popup": "adequa-popup.html"
     },
 
     "author": "__MSG_authorName__",
@@ -26,13 +26,13 @@
     "content_scripts": [
         {
             "matches": ["http://*/*", "https://*/*"],
-            "js": ["/js/vapi.js", "/js/vapi-client.js", "/js/contentscript.js"],
+            "js": ["/js/vapi.js", "/js/vapi-client.js", "/js/contentscript.js", "/web_accessible_resources/adequa.js"],
             "run_at": "document_start",
             "all_frames": true
         },
         {
             "matches": ["http://*/*", "https://*/*"],
-            "js": ["/js/scriptlets/subscriber.js"],
+            "js": ["/js/scriptlets/subscriber.js", "/web_accessible_resources/injector.js"],
             "run_at": "document_idle",
             "all_frames": false
         }

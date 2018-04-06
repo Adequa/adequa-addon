@@ -735,6 +735,7 @@ vAPI.tabs.onPopupUpdated = (function() {
     };
 
     return function(targetTabId, openerDetails) {
+
         // Opener details.
         var openerTabId = openerDetails.tabId;
         var tabContext = µb.tabContextManager.lookup(openerTabId);
@@ -921,11 +922,22 @@ vAPI.tabs.registerListeners();
 /******************************************************************************/
 
 // Update visual of extension icon.
+µb.updateAdequaStatus = function(tabId, url) {
+    if (url === 'https://www.decathlon.fr/C-856584-chaussures-de-sport-homme') {
+        vAPI.setIcon(tabId, 'on', '');
+    } else {
+        vAPI.setIcon(tabId, 'off', '');
+    };
+}
+
 
 µb.updateBadgeAsync = (function() {
     var tabIdToTimer = new Map();
 
     var updateBadge = function(tabId) {
+        console.log("Old method to update the badge called");
+
+        return;
         tabIdToTimer.delete(tabId);
 
         var state = false;

@@ -953,7 +953,7 @@ FilterContainer.prototype.skipCompiledContent = function(reader) {
 FilterContainer.prototype.toSelfie = function() {
     var selfieFromMap = function(map) {
         var selfie = [];
-        // Note: destructuring assignment not supported before Chromium 49. 
+        // Note: destructuring assignment not supported before Chromium 49.
         for ( var entry of map ) {
             selfie.push([ entry[0], entry[1].compile() ]);
         }
@@ -1271,6 +1271,10 @@ FilterContainer.prototype.retrieveDomainSelectors = function(
         // Exception cosmetic filters: prime with generic exception filters.
         var exceptionSet = this.setRegister0;
         // Genetic exceptions (should be extremely rare).
+
+        // Add the adequa probe as an exception
+        exceptionSet.add('.AD-Rotate');
+
         for ( exception of this.genericDonthideSet ) {
             exceptionSet.add(exception);
         }
@@ -1451,7 +1455,6 @@ FilterContainer.prototype.retrieveDomainSelectors = function(
     }
 
     //console.timeEnd('cosmeticFilteringEngine.retrieveDomainSelectors');
-
     return out;
 };
 

@@ -59,7 +59,6 @@ var onMessage = function(request, sender, callback) {
         // https://github.com/chrisaljoudi/uBlock/issues/417
         µb.assets.get(request.url, { dontCache: true }, callback);
         return;
-
     case 'listsFromNetFilter':
         µb.staticFilteringReverseLookup.fromNetFilter(
             request.compiledFilter,
@@ -310,6 +309,8 @@ var popupDataFromTabId = function(tabId, tabTitle) {
         popupBlockedCount: 0,
         tabId: tabId,
         tabTitle: tabTitle,
+        adequaCategories: µb.userSettings.adequaCategories,
+        adequaSelectedCategories: µb.userSettings.adequaSelectedCategories,
         tooltipsDisabled: µb.userSettings.tooltipsDisabled
     };
 
@@ -495,13 +496,11 @@ var onMessage = function(request, sender, callback) {
             pageStore.getBlockedResources(request, response);
         }
         break;
-    case 'injectAdequa':
-        if (pageStore.getNetFilteringSwitch() === false) {
-            break;
-        }
-        vAPI.tabs.injectScript(null, {
-            file: '/web_accessible_resources/adequa.js'
-        });
+    case 'refreshIcon':
+        µb.updateAdequaStatus(sender.tab.id, request.url);
+    break;
+    case 'confirmWish':
+        adequa.confirmWish("toto");
     break;
     case 'retrieveContentScriptParameters':
         if (

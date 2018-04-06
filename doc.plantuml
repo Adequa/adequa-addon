@@ -1,0 +1,27 @@
+@startuml
+
+
+box "Content scripts" #White
+	entity "contentscript.js" as contentScript
+end box
+
+box "Background scripts" #White
+    entity "messaging.js" as messaging
+    entity "needs-engine.js" as needsEngine
+end box
+
+box "Popup" #White
+	entity "adequa-popup.html" as popup
+end box
+
+contentScript -> messaging: Send body, head,\nurl and tab id\non DOM change
+messaging -> needsEngine: forward message\nto the needs engine
+needsEngine -> needsEngine: detect the tab's\nneeds and store\nthem in memory
+
+== Popup is opened ==
+popup -> messaging: request needs for current tab
+messaging -> needsEngine: fetch needs for current tab
+activate needsEngine
+needsEngine -> popup: return needs
+deactivate needsEngine
+@enduml

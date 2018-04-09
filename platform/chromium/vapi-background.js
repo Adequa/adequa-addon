@@ -55,7 +55,7 @@ if (
 
 // https://issues.adblockplus.org/ticket/5695
 // - Good idea, adopted: cleaner way to detect user-stylesheet support.
-vAPI.supportsUserStylesheets = 
+vAPI.supportsUserStylesheets =
     chrome.extensionTypes instanceof Object &&
     chrome.extensionTypes.CSSOrigin instanceof Object &&
     'USER' in chrome.extensionTypes.CSSOrigin;
@@ -703,15 +703,22 @@ vAPI.setIcon = (function() {
     };
 
     return function(tabId, iconStatus, badge) {
-        tabId = toChromiumTabId(tabId);
-        if ( tabId === 0 ) { return; }
-
-        chrome.tabs.get(tabId, function(tab) {
+        if (tabId === null) {
+            var tab = {
+                id:null
+            };
             onTabReady(tab, iconStatus, badge);
-        });
+        } else {
+            tabId = toChromiumTabId(tabId);
+            if ( tabId === 0 ) { return; }
 
-        if ( vAPI.contextMenu instanceof Object ) {
-            vAPI.contextMenu.onMustUpdate(tabId);
+            chrome.tabs.get(tabId, function(tab) {
+                onTabReady(tab, iconStatus, badge);
+            });
+
+            if ( vAPI.contextMenu instanceof Object ) {
+                vAPI.contextMenu.onMustUpdate(tabId);
+            }
         }
     };
 })();

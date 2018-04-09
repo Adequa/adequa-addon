@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport" content="width=470"><!-- When showing as a tab in fennec, scale to full size (150px + 320px) -->
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="css/adequa-popup.css" type="text/css">
+    <link rel="stylesheet" href="css/common.css" type="text/css">
+    <title>Adequa</title>
+
+</head>
+
+<body class="adequa-popup">
+    <div class="container">
+        <pre id="debug-tender"></pre>
+        <h1>
+            Il semblerait que tu recherches :<br />
+        </h1>
+        <ul id="needs">
+        </ul>
+        <div class='row search'>
+            <span>Tu recevras une centaine d'offres pour t'aider dans ton choix.</span>
+        </div>
+        <hr />
+        <div class='row favourites'>
+            <span>Tu soutiendras les sites que tu visites.</span>
+        </div>
+        <hr />
+        <div class='row locked'>
+            <span>Tu resteras entièrement anonyme.</span>
+        </div>
+    </div>
+    <div style="width:10px; height: 10px;background-color:red" id="debug"></div>
+
+    <script src="js/vapi.js"></script>
+    <script src="js/vapi-common.js"></script>
+    <script src="js/vapi-client.js"></script>
+    <script src="js/udom.js"></script>
+    <script src="js/i18n.js"></script>
+    <script src="js/adequa-popup.js"></script>
+
+</body>
+
+</html>

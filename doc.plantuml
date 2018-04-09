@@ -14,14 +14,29 @@ box "Popup" #White
 	entity "adequa-popup.html" as popup
 end box
 
-contentScript -> messaging: Send body, head,\nurl and tab id\non DOM change
+== On addon installed ==
+contentScript -> contentScript : Injected in\nall tabs by Chrome
+== On DOM change ==
+contentScript -> messaging: Send body, head,\nurl and tab id
+note left
+    see the call to ""messaging.send""
+    with values 'adequa' and 'evaluatePage'.
+end note
 messaging -> needsEngine: forward message\nto the needs engine
 needsEngine -> needsEngine: detect the tab's\nneeds and store\nthem in memory
 
 == Popup is opened ==
+
 popup -> messaging: request needs for current tab
+
+activate messaging
 messaging -> needsEngine: fetch needs for current tab
+
 activate needsEngine
-needsEngine -> popup: return needs
+needsEngine -> messaging: return needs
 deactivate needsEngine
+
+messaging -> popup: return needs
+deactivate messaging
+
 @enduml

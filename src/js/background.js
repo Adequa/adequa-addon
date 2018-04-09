@@ -69,7 +69,8 @@ var µBlock = (function() { // jshint ignore:line
             requestLogMaxEntries: 1000,
             showIconBadge: true,
             tooltipsDisabled: false,
-            webrtcIPAddressHidden: false
+            webrtcIPAddressHidden: false,
+            adequaNeedsRulesUrl: 'https://gist.githubusercontent.com/vjuju/f0276adb37a9f179500d096ce456bf0a/raw/c1bbe8c82399cc0ade986343e1160b98da8e8205/rules.txt'
         },
 
         hiddenSettingsDefault: hiddenSettingsDefault,
@@ -175,7 +176,6 @@ var µBlock = (function() { // jshint ignore:line
         // so that I don't have to care for last comma
         dummy: 0
     };
-
 })();
 
 /******************************************************************************/

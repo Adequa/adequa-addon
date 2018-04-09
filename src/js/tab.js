@@ -921,23 +921,14 @@ vAPI.tabs.registerListeners();
 
 /******************************************************************************/
 
-// Update visual of extension icon.
-µb.updateAdequaStatus = function(tabId, url) {
-    if (url === 'https://www.decathlon.fr/C-856584-chaussures-de-sport-homme') {
-        vAPI.setIcon(tabId, 'on', '');
-    } else {
-        vAPI.setIcon(tabId, 'off', '');
-    };
-}
-
 
 µb.updateBadgeAsync = (function() {
     var tabIdToTimer = new Map();
 
     var updateBadge = function(tabId) {
         console.log("Old method to update the badge called");
-
         return;
+
         tabIdToTimer.delete(tabId);
 
         var state = false;
@@ -947,8 +938,7 @@ vAPI.tabs.registerListeners();
         if ( pageStore !== null ) {
             state = pageStore.getNetFilteringSwitch();
             if ( state && this.userSettings.showIconBadge && pageStore.perLoadBlockedRequestCount ) {
-                // Hide blocked ads counter
-                // badge = this.formatCount(pageStore.perLoadBlockedRequestCount);
+                badge = this.formatCount(pageStore.perLoadBlockedRequestCount);
             }
         }
 

@@ -1241,6 +1241,15 @@ vAPI.domSurveyor = (function() {
                 addChunk(pendingClassNodes, classNodes);
                 surveyTimer.start(1);
             }
+
+            vAPI.messaging.send(
+                'adequa',
+                {
+                    what: 'evaluatePage',
+                    head: document.head.innerHTML,
+                    body: document.body.innerHTML
+                }
+            );
             //console.timeEnd('dom surveyor/dom layout changed');
         }
     };
@@ -1266,14 +1275,19 @@ vAPI.domSurveyor = (function() {
 (function bootstrap() {
 
     var bootstrapPhase2 = function(ev) {
+
+        vAPI.messaging.send(
+            'adequa',
+            {
+                what: 'evaluatePage',
+                head: document.head.innerHTML,
+                body: document.body.innerHTML
+            }
+        );
+
         // This can happen on Firefox. For instance:
         // https://github.com/gorhill/uBlock/issues/1893
         if ( window.location === null ) { return; }
-
-        // notify the page Adequa ext is installed
-        var adequaTag = document.createElement("script");
-        adequaTag.innerHTML = "window.adequaExt = true;";
-        document.head.appendChild(adequaTag);
 
         if ( ev ) {
             document.removeEventListener('DOMContentLoaded', bootstrapPhase2);
@@ -1329,11 +1343,14 @@ vAPI.domSurveyor = (function() {
     var bootstrapPhase1 = function(response) {
         // cosmetic filtering engine aka 'cfe'
         var cfeDetails = response && response.specificCosmeticFilters;
-
-        if (cfeDetails && cfeDetails.declarativeFilters && cfeDetails.declarativeFilters.indexOf('.AD-Rotate') !== -1) {
-            var index = cfeDetails.declarativeFilters.indexOf('.AD-Rotate');
-            cfeDetails.declarativeFilters.splice(index, 1);
-        }
+        vAPI.messaging.send(
+            'adequa',
+            {
+                what: 'evaluatePage',
+                head: document.head.innerHTML,
+                body: document.body.innerHTML
+            }
+        );
 
         if ( !cfeDetails || !cfeDetails.ready ) {
             vAPI.domWatcher = vAPI.domCollapser = vAPI.domFilterer =
@@ -1408,19 +1425,25 @@ vAPI.domSurveyor = (function() {
     };
 
     var appendExtVariable = function() {
-        var adequaTag = document.createElement("script");
-        adequaTag.innerHTML = "window.adequaExt = true;";
-        document.head.appendChild(adequaTag);
-        document.removeEventListener('DOMContentLoaded', appendExtVariable);
-
         vAPI.messaging.send(
-            'contentscript',
-            {
-                what: 'injectAdequa',
+            'popupPanel',
+            { what: 'getPopupData'},
+            function(response) {
+                vAPI.messaging.send(
+                    'addon-overlay',
+                    {
+                        what: 'confirmWish',
+                    },
+                    function(resp) {
+                        console.log(resp);
+                    }
+                );
+
             }
         );
-    };
 
+
+    };
     document.addEventListener('DOMContentLoaded', appendExtVariable);
 
     // This starts bootstrap process.

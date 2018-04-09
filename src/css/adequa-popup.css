@@ -1,0 +1,86 @@
+body {
+  box-sizing: border-box;
+}
+
+.container {
+  width:500px;
+  min-height: 200;
+  border: solid 3px rgb(0, 153, 153);
+  padding-bottom: 10px;
+}
+
+h1 {
+  color: rgb(100, 100, 100);
+  text-align: center;
+  font-size: 18px;
+}
+
+ul {
+  padding: 0 10px;
+}
+
+li {
+  background-color: rgb(0,153,153);
+  border-radius: 3px;
+  border-style: none;
+  color: white;
+  cursor: pointer;
+  display: inline-block;
+  font-weight: bold;
+  margin: auto;
+  padding: 10px;
+  margin-right: 8px;
+}
+
+li:hover {
+  background-color: rgb(100, 100, 100);
+}
+
+li.active:before {
+  content: '';
+  font-family: "FontAwesome";
+  margin-right: 2px;
+}
+
+li.active:hover:before {
+  content: '';
+  font-family: "FontAwesome";
+  margin-right: 5px;
+}
+
+li:focus {
+  outline: none;
+}
+
+.row {
+  display:table;
+  padding-left: 80px;
+  background-size: 64px 64px;
+  background-position:left;
+  background-repeat: no-repeat;
+  min-height: 70px;
+  margin: 0px 18px;
+}
+
+.row span {
+  display:table-cell;
+  vertical-align: middle;
+}
+
+.row.search {
+  background-image:url('../img/search.png')
+}
+
+.row.favourites {
+  background-image:url('../img/favourites.png')
+}
+
+.row.locked {
+  background-image:url('../img/locked.png')
+}
+
+hr {
+  border-style: none;
+  border-top: solid 1px rgb(0, 153, 153);
+  margin: 0px 14px;
+}

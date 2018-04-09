@@ -2,3 +2,7 @@
 *.pem
 /dist/build/
 /tmp/
+adequa-js/.sass-cache
+adequa-js/node_modules
+adequa-js/yarn-error.log
+src/web_accessible_resources/adequa.js

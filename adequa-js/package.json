@@ -1,0 +1,9 @@
+{
+  "dependencies": {
+    "almond": "^0.3.3",
+    "jquery": "^3.3.1",
+    "ractive": "^0.9.13",
+    "requirejs-text": "^2.0.15",
+    "rv": "^0.1.8"
+  }
+}

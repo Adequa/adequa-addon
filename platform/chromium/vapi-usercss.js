@@ -225,6 +225,10 @@ vAPI.DOMFilterer.prototype = {
     },
 
     addCSSRule: function(selectors, declarations, details) {
+
+        if (selectors.length == 1 && selectors[0] == '.dfp_slot') {
+            return;
+        }
         if ( selectors === undefined ) { return; }
 
         if ( details === undefined ) { details = {}; }
@@ -275,6 +279,7 @@ vAPI.DOMFilterer.prototype = {
 
         if ( isGeneric ) {
             for ( selector of selectorsArr ) {
+                console.log(selector);
                 if ( this.reCSSCombinators.test(selector) ) {
                     this.genericComplexHide.add(selector);
                 } else {
@@ -417,6 +422,10 @@ vAPI.DOMFilterer.prototype = {
     },
 
     hideNode: function(node) {
+        // debugger;
+        // if (node.className.indexOf('AD-Rotate') !== -1) {
+        //     return;
+        // }
         if ( this.excludedNodeSet.has(node) ) { return; }
         if ( this.hideNodeAttr === undefined ) { return; }
         if ( this.hiddenNodeset.has(node) ) { return; }

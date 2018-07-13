@@ -4,6 +4,17 @@
     vAPI.adequa = vAPI.adequa || {};
     vAPI.adequa.storage = vAPI.adequa.storage || {};
 
+    if(!vAPI.adequa.storageDB)
+        vAPI.adequa.storageDB = new localStorageDB("adequa", localStorage);
+
+    if( vAPI.adequa.storageDB.isNew() ) {
+        vAPI.adequa.storageDB.createTable("page_views", ["url", "consulted_at", "nb_trackers_blocked", "nb_ads_blocked", "is_partner", "load_time"]);
+        vAPI.adequa.storageDB.createTable("ad_prints", ["passion", "page_view_id", "viewed_at", "ad_id"]);
+        vAPI.adequa.storageDB.createTable("user_choices", ["made_at", "choice", "choice_feature"]);
+
+        vAPI.adequa.storageDB.commit()
+    }
+
     var filterOutOutdatedNeeds = function(needs) {
         var threshold = 7 * 24 * 60 * 60 * 1000;
         var now = (new Date()).getTime();

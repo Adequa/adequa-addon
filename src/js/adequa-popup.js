@@ -48,6 +48,31 @@
     });
 
     var render = function() {
+        messaging.send(
+            'adequa',
+            {
+                what: 'fetchStats',
+            },
+            function(stats){
+                uDom('#trackers_blocked').nodes[0].innerHTML = stats.trackersBlocked
+                uDom('#ads_blocked').nodes[0].innerHTML = stats.adsBlocked
+                uDom('#time_won').nodes[0].innerHTML = Math.round(stats.timeWon/60) + ' mins'
+
+                var adPrints = uDom('#ad-prints');
+                var content = '';
+
+                console.log(stats)
+
+                for(var item in stats.passions){
+                    item = stats.passions[item]
+                    content = content + '<div class="stat"><p>' + item.passion.toUpperCase() + '</p><p>' + item.count + '</p></div>'
+                }
+                if(content === '')
+                    adPrints.nodes[0].innerHTML = '<p align="center">Aucune pub visionnée</p>';
+                else
+                    adPrints.nodes[0].innerHTML = content;
+
+            })
         // registerAsyncCall(true);
         // messaging.send(
         //     'adequa',

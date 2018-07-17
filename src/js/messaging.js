@@ -1343,6 +1343,19 @@ var onMessage = function(request, sender, callback) {
                 callback();
             });
             return;
+        case 'fetchStats':
+            var trackersBlocked = vAPI.adequa.storageDB.queryColumnSum('page_views', 'nb_trackers_blocked') || 0;
+            var adsBlocked = vAPI.adequa.storageDB.queryColumnSum('page_views', 'nb_ads_blocked') || 0;
+            var timeWon = vAPI.adequa.storageDB.queryColumnSum('page_views', 'load_time') || 0;
+            var passions = vAPI.adequa.storageDB.queryGroupBy('ad_prints', 'passion');
+
+            callback({
+                trackersBlocked,
+                adsBlocked,
+                timeWon,
+                passions
+            });
+            return;
         default:
             break;
     }

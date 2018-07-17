@@ -118,6 +118,13 @@
             return exists;
         }
 
+        // check whether a column exists, and if not, throw an error
+        function columnExistsWarn(table_name, column_name) {
+            if(!columnExists(table_name, column_name)) {
+                error("The column '" + column_name + "' does not exist in the table " + table_name);
+            }
+        }
+
         // create a table
         function createTable(table_name, fields) {
             db.tables[table_name] = {fields: fields, auto_increment: 1};
@@ -316,6 +323,49 @@
             return result_ids;
         }
 
+        // select sum of a column in a table
+        function queryColumnSum(table_name, column_name) {
+            columnExistsWarn(table_name, column_name)
+            var result = 0,
+				row = null;
+
+            // loop through all the records in the table, looking for matches
+            for(var ID in db.data[table_name]) {
+                if( !db.data[table_name].hasOwnProperty(ID) ) {
+                    continue;
+                }
+
+                row = db.data[table_name][ID];
+
+                result += row[column_name];
+            }
+
+            return result;
+        }
+        // select count of records grouped by column
+        function queryGroupBy(table_name, column_name) {
+            columnExistsWarn(table_name, column_name);
+
+            var result = {},
+				row = null;
+
+            // loop through all the records in the table, looking for matches
+            for(var ID in db.data[table_name]) {
+                if( !db.data[table_name].hasOwnProperty(ID) ) {
+                    continue;
+                }
+
+                row = db.data[table_name][ID];
+
+                result[row[column_name]] = {
+                    [column_name]: row[column_name],
+                    count: ((result[row[column_name]] || {}).count || 0) + 1
+                }
+            }
+
+            return result;
+        }
+
         // return all the IDs in a table
         function getIDs(table_name) {
             var result_ids = [];
@@ -431,6 +481,16 @@
             // commit the database to localStorage
             commit: function() {
                 return commit();
+            },
+
+            // query the sum of a table's column
+            queryColumnSum: function(table_name, column_name) {
+                return queryColumnSum(table_name, column_name);
+            },
+
+            // select sum of a column in a table grouped by coluln name
+            queryGroupBy: function(table_name, column_name) {
+                return queryGroupBy(table_name, column_name);
             },
 
             // is this instance a newly created database?

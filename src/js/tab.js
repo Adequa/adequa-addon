@@ -819,6 +819,8 @@ vAPI.tabs.onPopupUpdated = (function() {
             µb.updateBadgeAsync(openerTabId);
         }
 
+        µb.updatePageViewed(openerTabId);
+
         // It is a popup, block and remove the tab.
         if ( popupType === 'popup' ) {
             µb.unbindTabFromPageStats(targetTabId);
@@ -841,6 +843,7 @@ vAPI.tabs.registerListeners();
 
 µb.bindTabToPageStats = function(tabId, context) {
     this.updateBadgeAsync(tabId);
+    this.updatePageViewed(tabId);
 
     // Do not create a page store for URLs which are of no interests
     if ( µb.tabContextManager.exists(tabId) === false ) {
@@ -951,6 +954,43 @@ vAPI.tabs.registerListeners();
         tabIdToTimer.set(
             tabId,
             vAPI.setTimeout(updateBadge.bind(this, tabId), 701)
+        );
+    };
+})();
+
+µb.updatePageViewed = (function() {
+    var tabIdToTimer = new Map();
+
+    var updatePageViewed = function(tabId) {
+
+        tabIdToTimer.delete(tabId);
+
+        var state = false;
+        var badge = '';
+
+        var pageStore = this.pageStoreFromTabId(tabId);
+        if ( pageStore !== null ) {
+            var url = pageStore.rawURL;
+            if(url.startsWith('http://') !== -1 || url.startsWith('https://') !==-1) {
+                vAPI.adequa.storageDB.insert('page_views', {
+                    url: pageStore.rawURL,
+                    consulted_at: Date.now(),
+                    nb_trackers_blocked: 0,
+                    nb_ads_blocked: pageStore.perLoadAllowedRequestCount,
+                    is_partner: false,
+                    load_time: 0
+                });
+                vAPI.adequa.storageDB.commit()
+            }
+        }
+    };
+
+    return function(tabId) {
+        if ( tabIdToTimer.has(tabId) ) { return; }
+        if ( vAPI.isBehindTheSceneTabId(tabId) ) { return; }
+        tabIdToTimer.set(
+            tabId,
+            vAPI.setTimeout(updatePageViewed.bind(this, tabId), 701)
         );
     };
 })();

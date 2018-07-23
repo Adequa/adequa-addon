@@ -1241,16 +1241,6 @@ vAPI.domSurveyor = (function() {
                 addChunk(pendingClassNodes, classNodes);
                 surveyTimer.start(1);
             }
-
-            vAPI.messaging.send(
-                'adequa',
-                {
-                    what: 'evaluatePage',
-                    head: document.head.innerHTML,
-                    body: document.body.innerHTML
-                }
-            );
-            //console.timeEnd('dom surveyor/dom layout changed');
         }
     };
 
@@ -1275,15 +1265,6 @@ vAPI.domSurveyor = (function() {
 (function bootstrap() {
 
     var bootstrapPhase2 = function(ev) {
-
-        vAPI.messaging.send(
-            'adequa',
-            {
-                what: 'evaluatePage',
-                head: document.head.innerHTML,
-                body: document.body.innerHTML
-            }
-        );
 
         // This can happen on Firefox. For instance:
         // https://github.com/gorhill/uBlock/issues/1893
@@ -1343,14 +1324,6 @@ vAPI.domSurveyor = (function() {
     var bootstrapPhase1 = function(response) {
         // cosmetic filtering engine aka 'cfe'
         var cfeDetails = response && response.specificCosmeticFilters;
-        vAPI.messaging.send(
-            'adequa',
-            {
-                what: 'evaluatePage',
-                head: document.head.innerHTML,
-                body: document.body.innerHTML
-            }
-        );
 
         if ( !cfeDetails || !cfeDetails.ready ) {
             vAPI.domWatcher = vAPI.domCollapser = vAPI.domFilterer =
@@ -1427,19 +1400,7 @@ vAPI.domSurveyor = (function() {
     var appendExtVariable = function() {
         vAPI.messaging.send(
             'popupPanel',
-            { what: 'getPopupData'},
-            function(response) {
-                vAPI.messaging.send(
-                    'addon-overlay',
-                    {
-                        what: 'confirmWish',
-                    },
-                    function(resp) {
-                        console.log(resp);
-                    }
-                );
-
-            }
+            { what: 'getPopupData'}
         );
 
 

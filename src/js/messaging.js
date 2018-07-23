@@ -1292,57 +1292,6 @@ var onMessage = function(request, sender, callback) {
 
     // Async
     switch ( request.what ) {
-        case 'evaluatePage':
-
-            vAPI.adequa.needsEngine.evaluatePage(
-                sender.tab.id,
-                sender.url,
-                request.head,
-                request.body,
-                function(needs) {
-                    var badge = '';
-                    if (needs.length > 0) {
-                        badge = needs.length + '';
-                    }
-                    vAPI.setIcon(null, needs.length !== 0 ? 'on' : 'off', badge);
-                    callback();
-                }
-            );
-            return;
-        case 'fetchNeeds':
-            var tabReceived = function(tab) {
-                var tabId = '';
-                var tabTitle = '';
-                if ( tab ) {
-                    tabId = tab.id;
-                    tabTitle = tab.title || '';
-                }
-
-                vAPI.adequa.needsEngine.needsForTabId(tabId, function(needs) {
-                    callback(needs);
-                });
-
-            };
-            vAPI.tabs.get(null, tabReceived);
-            return;
-        case 'debugTenders':
-            callback(vAPI.adequa.tenderStorage.debugTenders());
-            return;
-        case 'fetchTenderForNeed':
-            vAPI.adequa.storage.tenderForNeed(request.need, callback);
-            return;
-        case 'createTender':
-            vAPI.adequa.tenderStorage.createTender(request.need, callback);
-            return;
-        case 'destroyTender':
-            vAPI.adequa.tenderStorage.destroyTender(request.needId, callback);
-            return;
-        case 'resetForDebug':
-            vAPI.adequa.storage.resetForDebug(function() {
-                vAPI.setIcon(null, 'off', '');
-                callback();
-            });
-            return;
         case 'fetchStats':
             var trackersBlocked = vAPI.adequa.storageDB.queryColumnSum('page_views', 'nb_trackers_blocked') || 0;
             var adsBlocked = vAPI.adequa.storageDB.queryColumnSum('page_views', 'nb_ads_blocked') || 0;

@@ -61,8 +61,6 @@
                 var adPrints = uDom('#ad-prints');
                 var content = '';
 
-                console.log(stats)
-
                 for(var item in stats.passions){
                     item = stats.passions[item]
                     content = content + '<div class="stat"><p>' + item.passion.toUpperCase() + '</p><p>' + item.count + '</p></div>'
@@ -73,113 +71,21 @@
                     adPrints.nodes[0].innerHTML = content;
 
             })
-        // registerAsyncCall(true);
-        // messaging.send(
-        //     'adequa',
-        //     {
-        //         what: 'fetchNeeds',
-        //     },
-        //     function(needs) {
-        //         // if (needs.length === 0) {
-        //         //     window.close();
-        //         //     return;
-        //         // }
-        //         var needsParent = uDom.nodeFromId('needs');
-        //
-        //         pendingChanges.push(function() {
-        //             while (needsParent.firstChild) {
-        //                 needsParent.removeChild(needsParent.firstChild);
-        //             }
-        //         });
-        //
-        //         needs.sort(function(need1, need2) {
-        //             if (need1.time > need2.time) {
-        //                 return -1;
-        //             }
-        //
-        //             if (need1.time < need2.time) {
-        //                 return 1;
-        //             }
-        //
-        //             return 0;
-        //         });
-        //
-        //         var createTender = function(need) {
-        //             return function() {
-        //                 registerAsyncCall(true);
-        //                 messaging.send(
-        //                     'adequa',
-        //                     {
-        //                         what: 'createTender',
-        //                         need: need
-        //                     },
-        //                     function() {
-        //                         registerAsyncCall(false);
-        //                         render();
-        //                     }
-        //                 );
-        //             };
-        //         };
-        //
-        //         var destroyTender = function(tender) {
-        //             return function() {
-        //                 registerAsyncCall(true);
-        //
-        //                 messaging.send(
-        //                     'adequa',
-        //                     {
-        //                         what: 'destroyTender',
-        //                         needId: tender.need.id
-        //                     },
-        //                     function() {
-        //                         registerAsyncCall(false);
-        //                         render();
-        //                     }
-        //                 );
-        //             };
-        //         };
-        //
-        //         var displayNeed = function(need) {
-        //
-        //             return function() {
-        //                 registerAsyncCall(true);
-        //
-        //                 var newNeedEl = document.createElement('li');
-        //                 newNeedEl.textContent = need.title;
-        //                 messaging.send(
-        //                     'adequa',
-        //                     {
-        //                         what: 'fetchTenderForNeed',
-        //                         need: need
-        //                     },
-        //                     function(tender) {
-        //                         if (tender) {
-        //                             newNeedEl.className = "active";
-        //                             uDom(newNeedEl).on('click', destroyTender(tender));
-        //                         } else {
-        //                             uDom(newNeedEl).on('click', createTender(need));
-        //                         }
-        //                         pendingChanges.push(function() {
-        //                             console.log("loop");
-        //                             needsParent.appendChild(newNeedEl);
-        //                         });
-        //                         registerAsyncCall(false);
-        //                     }
-        //                 );
-        //             };
-        //
-        //
-        //         };
-        //
-        //         for (var need of needs) {
-        //             displayNeed(need)();
-        //         }
-        //
-        //         registerAsyncCall(false);
-        //     }
-        // );
+
+        var toggleNetFilteringSwitch = function(ev) {
+            if ( !popupData || !popupData.pageURL ) { return; }
+            messaging.send(
+                'popupPanel',
+                {
+                    what: 'toggleNetFiltering',
+                    url: popupData.pageURL,
+                    scope: ev.ctrlKey || ev.metaKey ? 'page' : '',
+                    state: !uDom('body').toggleClass('off').hasClass('off'),
+                    tabId: popupData.tabId
+                }
+            );
+        };
+
     };
-
     render();
-
 })();

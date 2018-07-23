@@ -1290,6 +1290,29 @@ vAPI.domSurveyor = (function() {
             return;
         }
 
+        vAPI.messaging.send('adequa', {what: 'loaded'})
+
+        var onMessage = function(event) {
+            if (event.source == window &&
+                event.data &&
+                event.data.direction == "contentScript") {
+                window.postMessage({
+                    direction: "hasAdequa",
+                    message: true
+                }, "*");
+            }
+            else if (event.source == window &&
+                event.data &&
+                event.data.direction == "insert") {
+                vAPI.messaging.send('adequa', {
+                    what: 'insertPageViewed',
+                    data: event.data.message
+                })
+            }
+        };
+
+        window.addEventListener("message", onMessage);
+
         // To send mouse coordinates to main process, as the chrome API fails
         // to provide the mouse position to context menu listeners.
         // https://github.com/chrisaljoudi/uBlock/issues/1143

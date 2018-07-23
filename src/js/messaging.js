@@ -1305,6 +1305,39 @@ var onMessage = function(request, sender, callback) {
                 passions
             });
             return;
+        case 'insertPageViewed':
+            let pageStore = µb.pageStoreFromTabId(sender.tab.id);
+            if ( pageStore !== null ) {
+                var url = pageStore.rawURL;
+                if(url.startsWith('http://') !== -1 || url.startsWith('https://') !==-1) {
+                    let toInsert = {
+                        url: pageStore.rawURL,
+                        consulted_at: Date.now() - 1000,
+                        nb_trackers_blocked: 0,
+                        nb_ads_blocked: pageStore.perLoadBlockedRequestCount,
+                        is_partner: false,
+                        load_time: request.data.loadTime
+                    };
+                    vAPI.adequa.storageDB.insert('page_views', toInsert);
+                    vAPI.adequa.storageDB.commit()
+                }
+            }
+            return;
+
+        case 'loaded':
+            setTimeout(() => {
+                let code = `
+                const interval = setInterval(() => {
+                    if(window.performance.getEntriesByType('navigation')[0].duration != 0) {
+                        const loadTime = Math.round(window.performance.getEntriesByType('navigation')[0].duration);
+                        window.postMessage({direction: "insert", message: {loadTime}}, "*")
+                        clearInterval(interval);
+                    }
+                }, 100);`;
+
+                vAPI.tabs.injectScript(sender.tab.id, {code})
+            }, 1000);
+            return;
         default:
             break;
     }

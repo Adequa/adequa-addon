@@ -926,8 +926,8 @@ vAPI.tabs.registerListeners();
     var tabIdToTimer = new Map();
 
     var updateBadge = function(tabId) {
-        console.log("Old method to update the badge called");
-        return;
+        // console.log("Old method to update the badge called");
+        // return;
 
         tabIdToTimer.delete(tabId);
 
@@ -937,9 +937,9 @@ vAPI.tabs.registerListeners();
         var pageStore = this.pageStoreFromTabId(tabId);
         if ( pageStore !== null ) {
             state = pageStore.getNetFilteringSwitch();
-            if ( state && this.userSettings.showIconBadge && pageStore.perLoadBlockedRequestCount ) {
-                badge = this.formatCount(pageStore.perLoadBlockedRequestCount);
-            }
+            // if ( state && this.userSettings.showIconBadge && pageStore.perLoadBlockedRequestCount ) {
+            //     badge = this.formatCount(pageStore.perLoadBlockedRequestCount);
+            // }
         }
 
         vAPI.setIcon(tabId, state ? 'on' : 'off', badge);

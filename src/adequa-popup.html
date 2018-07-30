@@ -2,7 +2,8 @@
 <html>
 
 <head>
-    <meta name="viewport" content="width=470"><!-- When showing as a tab in fennec, scale to full size (150px + 320px) -->
+    <meta name="viewport" content="width=470">
+    <!-- When showing as a tab in fennec, scale to full size (150px + 320px) -->
     <meta charset="utf-8">
     <link rel="stylesheet" href="css/adequa-popup.css" type="text/css">
     <link rel="stylesheet" href="css/common.css" type="text/css">
@@ -11,47 +12,56 @@
 </head>
 
 <body class="adequa-popup">
-    <header>
-        <button id="toggleNetFilteringSwitch">
-            <img src="img/icon_pause.png" height="30"/>
-            Désactiver l'AdFilter sur ce site
-        </button>
-    </header>
-    <div class="stats" id="avoided">
-        <p>ÉVITÉ</p>
-        <div>
-            <div class="stat">
-                <p>Traceurs</p>
-                <p id="trackers_blocked">0</p>
-            </div>
-            <div class="stat">
-                <p>Publicités</p>
-                <p id="ads_blocked">0</p>
-            </div>
-            <div class="stat">
-                <p>Temps de chargement</p>
-                <p id="time_won">0 mins</p>
-            </div>
+<header>
+    <button id="toggleNetFilteringSwitch">
+        <img src="img/icon_pause.png" height="30"/>
+        Désactiver l'AdFilter sur ce site
+    </button>
+</header>
+<div class="stats" id="avoided">
+    <p>ÉVITÉ</p>
+    <div>
+        <div class="stat">
+            <p>Traceurs</p>
+            <p id="trackers_blocked">0</p>
+        </div>
+        <div class="stat">
+            <p>Publicités</p>
+            <p id="ads_blocked">0</p>
+        </div>
+        <div class="stat">
+            <p>Temps de chargement</p>
+            <p id="time_won">0 mins</p>
+        </div>
+        <div class="switch">
+            <label class="slider">
+                <input type="checkbox">
+                <span class="redbox"></span>
+                <p>TOTAL</p>
+                <p>Sur cette page</p>
+            </label>
         </div>
     </div>
-    <div class="stats" id="saw">
-        <p>VU</p>
-        <div id="ad-prints">
-            <p align="center">Aucune pub visionnée</p>
+</div>
+</div>
+<div class="stats" id="saw">
+    <p>VU</p>
+    <div id="ad-prints">
+        <p align="center">Aucune pub visionnée</p>
+    </div>
+</div>
+<footer>
+    <button>
+        <img src="img/icon_adequa.png"/>
+        Modifier mes<br>paramètres
+    </button>
+    <div>
+        <p>GÉNÉRÉ</p>
+        <div id="generated">
+            <p>1€</p>
         </div>
     </div>
-    <footer>
-        <button>
-            <img src="img/icon_adequa.png"/>
-            Modifier mes<br>paramètres
-        </button>
-        <div>
-            <p>GÉNÉRÉ</p>
-            <div id="generated">
-                <p>1€</p>
-            </div>
-        </div>
-    </footer>
+</footer>
 
     <script src="js/vapi.js"></script>
     <script src="js/vapi-common.js"></script>

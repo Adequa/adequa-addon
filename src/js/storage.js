@@ -684,13 +684,27 @@
         rawContent;
 
     var onCompiledListLoaded2 = function(details) {
-        if ( details.content === '' ) {
-            details.content = µb.compileFilters(rawContent);
-            µb.assets.put(compiledPath, details.content);
-        }
-        rawContent = undefined;
-        details.assetKey = assetKey;
-        callback(details);
+        vAPI.cacheStorage.get('availableFilterLists', (list) => {
+            let key = details.assetKey;
+
+            const index = key.indexOf('/');
+            if(index !== -1)
+                key = key.split('/')[1]
+
+            let blockType = 2;
+
+            if(list.availableFilterLists)
+                blockType = list.availableFilterLists[key].group === "ads" ? 0 : 1;
+            if(blockType === 2)
+                debugger
+            if ( details.content === '' ) {
+                details.content = µb.compileFilters(rawContent, blockType);
+                µb.assets.put(compiledPath, details.content);
+            }
+            rawContent = undefined;
+            details.assetKey = assetKey;
+            callback(details);
+        });
     };
 
     var onRawListLoaded = function(details) {
@@ -765,7 +779,7 @@
 
 /******************************************************************************/
 
-µBlock.compileFilters = function(rawText) {
+µBlock.compileFilters = function(rawText, blockType) {
     var writer = new this.CompiledLineWriter();
 
     // Useful references:
@@ -827,7 +841,7 @@
 
         if ( line.length === 0 ) { continue; }
 
-        staticNetFilteringEngine.compile(line, writer);
+        staticNetFilteringEngine.compile(line, writer, blockType);
     }
 
     return writer.toString();
@@ -1153,10 +1167,24 @@
                         details.assetKey,
                         details.content
                     );
-                    this.assets.put(
-                        'compiled/' + details.assetKey,
-                        this.compileFilters(details.content)
-                    );
+                    vAPI.cacheStorage.get('availableFilterLists', (list) => {
+                        let key = details.assetKey;
+
+                        const index = key.indexOf('/');
+                        if(index !== -1)
+                            key = key.split('/')[1]
+
+                        let blockType = 2;
+
+                        if(list.availableFilterLists)
+                            blockType = list.availableFilterLists[key].group === "ads" ? 0 : 1;
+                        if(blockType === 2)
+                            debugger
+                        this.assets.put(
+                            'compiled/' + details.assetKey,
+                            this.compileFilters(details.content, blockType)
+                        );
+                    });
                 }
             } else {
                 this.removeCompiledFilterList(details.assetKey);

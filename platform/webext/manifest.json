@@ -5,7 +5,7 @@
          "strict_min_version":"52.0"
       }
    },
-   "author":"All uBlock Origin contributors",
+   "author":"__MSG_authorName__",
    "background":{
       "page":"background.html"
    },
@@ -16,7 +16,7 @@
          "38":"img/browsericons/icon38.png"
       },
       "default_title":"uBlock Origin",
-      "default_popup":"popup.html"
+      "default_popup":"adequa-popup.html"
    },
    "commands":{
       "launch-element-zapper":{
@@ -29,42 +29,28 @@
          "description":"__MSG_popupTipLog__"
       }
    },
-   "content_scripts":[
+   "content_scripts": [
       {
-         "matches":[
-            "http://*/*",
-            "https://*/*",
-            "file://*/*"
-         ],
-         "js":[
-            "/js/vapi.js",
-            "/js/vapi-client.js",
-            "/js/contentscript.js"
-         ],
-         "run_at":"document_start",
-         "all_frames":true
+         "matches": ["http://*/*", "https://*/*"],
+         "js": ["/js/vapi.js", "/js/vapi-client.js", "/js/contentscript.js", "/web_accessible_resources/adequa.js"],
+         "run_at": "document_start",
+         "all_frames": true
       },
       {
-         "matches":[
-            "http://*/*",
-            "https://*/*"
-         ],
-         "js":[
-            "/js/scriptlets/subscriber.js"
-         ],
-         "run_at":"document_idle",
-         "all_frames":false
+         "matches": ["http://*/*", "https://*/*"],
+         "js": ["/js/scriptlets/subscriber.js"],
+         "run_at": "document_idle",
+         "all_frames": false
       }
    ],
-   "default_locale":"en",
+   "default_locale":"fr",
    "description":"__MSG_extShortDesc__",
-   "icons":{
-      "16":"img/ublock.svg",
-      "48":"img/ublock.svg",
-      "96":"img/ublock.svg"
+   "icons": {
+      "16": "img/icon_16.png",
+      "128": "img/icon_128.png"
    },
    "manifest_version":2,
-   "name":"uBlock Origin",
+   "name":"__MSG_extName__",
    "options_ui":{
       "page":"dashboard.html",
       "open_in_tab": true
@@ -79,7 +65,7 @@
       "webRequestBlocking",
       "<all_urls>"
    ],
-   "short_name":"uBlock₀",
+   "short_name":"__MSG_extName__",
    "sidebar_action":{
       "default_title":"__MSG_statsPageName__",
       "default_panel":"logger-ui.html",

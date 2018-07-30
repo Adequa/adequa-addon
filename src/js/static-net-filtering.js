@@ -300,7 +300,6 @@ var registerFilterClass = function(ctor) {
     var fid = filterClassIdGenerator++;
     ctor.fid = ctor.prototype.fid = fid;
     filterClasses[fid] = ctor;
-    //console.log(ctor.name, fid);
 };
 
 var filterFromCompiledData = function(args) {
@@ -343,12 +342,17 @@ registerFilterClass(FilterTrue);
 
 /******************************************************************************/
 
-var FilterPlain = function(s, tokenBeg) {
+var FilterPlain = function(s, tokenBeg, g) {
     this.s = s;
+    this.g = g;
     this.tokenBeg = tokenBeg;
 };
 
 FilterPlain.prototype.match = function(url, tokenBeg) {
+    if(url.startsWith(this.s, tokenBeg - this.tokenBeg)) {
+        if (this.g !== undefined)
+            return this.g + 5;
+    }
     return url.startsWith(this.s, tokenBeg - this.tokenBeg);
 };
 
@@ -361,26 +365,31 @@ FilterPlain.prototype.logData = function() {
 };
 
 FilterPlain.prototype.compile = function() {
-    return [ this.fid, this.s, this.tokenBeg ];
+    return [ this.fid, this.s, this.tokenBeg, this.g ];
 };
 
 FilterPlain.compile = function(details) {
-    return [ FilterPlain.fid, details.f, details.tokenBeg ];
+    return [ FilterPlain.fid, details.f, details.tokenBeg, details.g ];
 };
 
 FilterPlain.load = function(args) {
-    return new FilterPlain(args[1], args[2]);
+    return new FilterPlain(args[1], args[2], args[3]);
 };
 
 registerFilterClass(FilterPlain);
 
 /******************************************************************************/
 
-var FilterPlainPrefix0 = function(s) {
+var FilterPlainPrefix0 = function(s, g) {
     this.s = s;
+    this.g = g;
 };
 
 FilterPlainPrefix0.prototype.match = function(url, tokenBeg) {
+    if(url.startsWith(this.s, tokenBeg)){
+        if (this.g !== undefined)
+            return this.g + 5;
+    }
     return url.startsWith(this.s, tokenBeg);
 };
 
@@ -393,26 +402,31 @@ FilterPlainPrefix0.prototype.logData = function() {
 };
 
 FilterPlainPrefix0.prototype.compile = function() {
-    return [ this.fid, this.s ];
+    return [ this.fid, this.s, this.g ];
 };
 
 FilterPlainPrefix0.compile = function(details) {
-    return [ FilterPlainPrefix0.fid, details.f ];
+    return [ FilterPlainPrefix0.fid, details.f, details.g ];
 };
 
 FilterPlainPrefix0.load = function(args) {
-    return new FilterPlainPrefix0(args[1]);
+    return new FilterPlainPrefix0(args[1], args[2]);
 };
 
 registerFilterClass(FilterPlainPrefix0);
 
 /******************************************************************************/
 
-var FilterPlainPrefix1 = function(s) {
+var FilterPlainPrefix1 = function(s, g) {
     this.s = s;
+    this.g = g;
 };
 
 FilterPlainPrefix1.prototype.match = function(url, tokenBeg) {
+    if(url.startsWith(this.s, tokenBeg - 1)){
+        if (this.g !== undefined)
+            return this.g + 5;
+    }
     return url.startsWith(this.s, tokenBeg - 1);
 };
 
@@ -425,29 +439,35 @@ FilterPlainPrefix1.prototype.logData = function() {
 };
 
 FilterPlainPrefix1.prototype.compile = function() {
-    return [ this.fid, this.s ];
+    return [ this.fid, this.s, this.g ];
 };
 
 FilterPlainPrefix1.compile = function(details) {
-    return [ FilterPlainPrefix1.fid, details.f ];
+    return [ FilterPlainPrefix1.fid, details.f, details.g ];
 };
 
 FilterPlainPrefix1.load = function(args) {
-    return new FilterPlainPrefix1(args[1]);
+    return new FilterPlainPrefix1(args[1], args[2]);
 };
 
 registerFilterClass(FilterPlainPrefix1);
 
 /******************************************************************************/
 
-var FilterPlainHostname = function(s) {
+var FilterPlainHostname = function(s, g) {
     this.s = s;
+    this.g = g;
 };
 
 FilterPlainHostname.prototype.match = function() {
     var haystack = requestHostnameRegister, needle = this.s;
     if ( haystack.endsWith(needle) === false ) { return false; }
     var offset = haystack.length - needle.length;
+
+    if(offset === 0 || haystack.charCodeAt(offset - 1) === 0x2E){
+        if (this.g !== undefined)
+            return this.g + 5;
+    }
     return offset === 0 || haystack.charCodeAt(offset - 1) === 0x2E /* '.' */;
 };
 
@@ -460,26 +480,31 @@ FilterPlainHostname.prototype.logData = function() {
 };
 
 FilterPlainHostname.prototype.compile = function() {
-    return [ this.fid, this.s ];
+    return [ this.fid, this.s, this.g ];
 };
 
 FilterPlainHostname.compile = function(details) {
-    return [ FilterPlainHostname.fid, details.f ];
+    return [ FilterPlainHostname.fid, details.f, details.g ];
 };
 
 FilterPlainHostname.load = function(args) {
-    return new FilterPlainHostname(args[1]);
+    return new FilterPlainHostname(args[1], args[2]);
 };
 
 registerFilterClass(FilterPlainHostname);
 
 /******************************************************************************/
 
-var FilterPlainLeftAnchored = function(s) {
+var FilterPlainLeftAnchored = function(s, g) {
     this.s = s;
+    this.g = g;
 };
 
 FilterPlainLeftAnchored.prototype.match = function(url) {
+    if(url.startsWith(this.s)){
+        if (this.g !== undefined)
+            return this.g + 5;
+    }
     return url.startsWith(this.s);
 };
 
@@ -492,26 +517,31 @@ FilterPlainLeftAnchored.prototype.logData = function() {
 };
 
 FilterPlainLeftAnchored.prototype.compile = function() {
-    return [ this.fid, this.s ];
+    return [ this.fid, this.s, this.g ];
 };
 
 FilterPlainLeftAnchored.compile = function(details) {
-    return [ FilterPlainLeftAnchored.fid, details.f ];
+    return [ FilterPlainLeftAnchored.fid, details.f, details.g ];
 };
 
 FilterPlainLeftAnchored.load = function(args) {
-    return new FilterPlainLeftAnchored(args[1]);
+    return new FilterPlainLeftAnchored(args[1], args[2]);
 };
 
 registerFilterClass(FilterPlainLeftAnchored);
 
 /******************************************************************************/
 
-var FilterPlainRightAnchored = function(s) {
+var FilterPlainRightAnchored = function(s, g) {
     this.s = s;
+    this.g = g;
 };
 
 FilterPlainRightAnchored.prototype.match = function(url) {
+    if(url.endsWith(this.s)){
+        if (this.g !== undefined)
+            return this.g + 5;
+    }
     return url.endsWith(this.s);
 };
 
@@ -524,26 +554,31 @@ FilterPlainRightAnchored.prototype.logData = function() {
 };
 
 FilterPlainRightAnchored.prototype.compile = function() {
-    return [ this.fid, this.s ];
+    return [ this.fid, this.s, this.g ];
 };
 
 FilterPlainRightAnchored.compile = function(details) {
-    return [ FilterPlainRightAnchored.fid, details.f ];
+    return [ FilterPlainRightAnchored.fid, details.f, details.g ];
 };
 
 FilterPlainRightAnchored.load = function(args) {
-    return new FilterPlainRightAnchored(args[1]);
+    return new FilterPlainRightAnchored(args[1], args[2]);
 };
 
 registerFilterClass(FilterPlainRightAnchored);
 
 /******************************************************************************/
 
-var FilterExactMatch = function(s) {
+var FilterExactMatch = function(s, g) {
     this.s = s;
+    this.g = g;
 };
 
 FilterExactMatch.prototype.match = function(url) {
+    if(url === this.s){
+        if (this.g !== undefined)
+            return this.g + 5;
+    }
     return url === this.s;
 };
 
@@ -556,26 +591,32 @@ FilterExactMatch.prototype.logData = function() {
 };
 
 FilterExactMatch.prototype.compile = function() {
-    return [ this.fid, this.s ];
+    return [ this.fid, this.s, this.g ];
 };
 
 FilterExactMatch.compile = function(details) {
-    return [ FilterExactMatch.fid, details.f ];
+    return [ FilterExactMatch.fid, details.f, details.g ];
 };
 
 FilterExactMatch.load = function(args) {
-    return new FilterExactMatch(args[1]);
+    return new FilterExactMatch(args[1], args[2]);
 };
 
 registerFilterClass(FilterExactMatch);
 
 /******************************************************************************/
 
-var FilterPlainHnAnchored = function(s) {
+var FilterPlainHnAnchored = function(s, g) {
     this.s = s;
+    this.g = g;
 };
 
 FilterPlainHnAnchored.prototype.match = function(url, tokenBeg) {
+    if(url.startsWith(this.s, tokenBeg) &&
+        isHnAnchored(url, tokenBeg)){
+        if (this.g !== undefined)
+            return this.g + 5;
+    }
     return url.startsWith(this.s, tokenBeg) &&
            isHnAnchored(url, tokenBeg);
 };
@@ -589,24 +630,25 @@ FilterPlainHnAnchored.prototype.logData = function() {
 };
 
 FilterPlainHnAnchored.prototype.compile = function() {
-    return [ this.fid, this.s ];
+    return [ this.fid, this.s, this.g ];
 };
 
 FilterPlainHnAnchored.compile = function(details) {
-    return [ FilterPlainHnAnchored.fid, details.f ];
+    return [ FilterPlainHnAnchored.fid, details.f, details.g ];
 };
 
 FilterPlainHnAnchored.load = function(args) {
-    return new FilterPlainHnAnchored(args[1]);
+    return new FilterPlainHnAnchored(args[1], args[args.length - 1]);
 };
 
 registerFilterClass(FilterPlainHnAnchored);
 
 /******************************************************************************/
 
-var FilterGeneric = function(s, anchor) {
+var FilterGeneric = function(s, anchor, g) {
     this.s = s;
     this.anchor = anchor;
+    this.g = g;
 };
 
 FilterGeneric.prototype.re = null;
@@ -614,6 +656,10 @@ FilterGeneric.prototype.re = null;
 FilterGeneric.prototype.match = function(url) {
     if ( this.re === null ) {
         this.re = new RegExp(rawToRegexStr(this.s, this.anchor));
+    }
+    if(this.re.test(url)){
+        if (this.g !== undefined)
+            return this.g + 5;
     }
     return this.re.test(url);
 };
@@ -634,23 +680,24 @@ FilterGeneric.prototype.logData = function() {
 };
 
 FilterGeneric.prototype.compile = function() {
-    return [ this.fid, this.s, this.anchor ];
+    return [ this.fid, this.s, this.anchor, this.g ];
 };
 
 FilterGeneric.compile = function(details) {
-    return [ FilterGeneric.fid, details.f, details.anchor ];
+    return [ FilterGeneric.fid, details.f, details.anchor, details.g ];
 };
 
 FilterGeneric.load = function(args) {
-    return new FilterGeneric(args[1], args[2]);
+    return new FilterGeneric(args[1], args[2], args[3]);
 };
 
 registerFilterClass(FilterGeneric);
 
 /******************************************************************************/
 
-var FilterGenericHnAnchored = function(s) {
+var FilterGenericHnAnchored = function(s, g) {
     this.s = s;
+    this.g = g;
 };
 
 FilterGenericHnAnchored.prototype.re = null;
@@ -659,6 +706,10 @@ FilterGenericHnAnchored.prototype.anchor = 0x4;
 FilterGenericHnAnchored.prototype.match = function(url) {
     if ( this.re === null ) {
         this.re = new RegExp(rawToRegexStr(this.s, this.anchor));
+    }
+    if(this.re.test(url)){
+        if (this.g !== undefined)
+            return this.g + 5;
     }
     return this.re.test(url);
 };
@@ -673,23 +724,23 @@ FilterGenericHnAnchored.prototype.logData = function() {
 };
 
 FilterGenericHnAnchored.prototype.compile = function() {
-    return [ this.fid, this.s ];
+    return [ this.fid, this.s, this.g ];
 };
 
 FilterGenericHnAnchored.compile = function(details) {
-    return [ FilterGenericHnAnchored.fid, details.f ];
+    return [ FilterGenericHnAnchored.fid, details.f, details.g ];
 };
 
 FilterGenericHnAnchored.load = function(args) {
-    return new FilterGenericHnAnchored(args[1]);
+    return new FilterGenericHnAnchored(args[1], args[2]);
 };
 
 registerFilterClass(FilterGenericHnAnchored);
 
 /******************************************************************************/
 
-var FilterGenericHnAndRightAnchored = function(s) {
-    FilterGenericHnAnchored.call(this, s);
+var FilterGenericHnAndRightAnchored = function(s, g) {
+    FilterGenericHnAnchored.call(this, s, g);
 };
 
 FilterGenericHnAndRightAnchored.prototype = Object.create(
@@ -710,31 +761,36 @@ FilterGenericHnAndRightAnchored.prototype = Object.create(
         },
         compile: {
             value: function() {
-                return [ this.fid, this.s ];
+                return [ this.fid, this.s, this.g ];
             }
         }
     }
 );
 
 FilterGenericHnAndRightAnchored.compile = function(details) {
-    return [ FilterGenericHnAndRightAnchored.fid, details.f ];
+    return [ FilterGenericHnAndRightAnchored.fid, details.f, details.g ];
 };
 
 FilterGenericHnAndRightAnchored.load = function(args) {
-    return new FilterGenericHnAndRightAnchored(args[1]);
+    return new FilterGenericHnAndRightAnchored(args[1], args[2]);
 };
 
 registerFilterClass(FilterGenericHnAndRightAnchored);
 
 /******************************************************************************/
 
-var FilterRegex = function(s) {
+var FilterRegex = function(s, g) {
     this.re = s;
+    this.g = g;
 };
 
 FilterRegex.prototype.match = function(url) {
     if ( typeof this.re === 'string' ) {
         this.re = new RegExp(this.re, 'i');
+    }
+    if(this.re.test(url)){
+        if (this.g !== undefined)
+            return this.g + 5;
     }
     return this.re.test(url);
 };
@@ -751,16 +807,17 @@ FilterRegex.prototype.logData = function() {
 FilterRegex.prototype.compile = function() {
     return [
         this.fid,
-        typeof this.re === 'string' ? this.re : this.re.source
+        typeof this.re === 'string' ? this.re : this.re.source,
+        this.g
     ];
 };
 
 FilterRegex.compile = function(details) {
-    return [ FilterRegex.fid, details.f ];
+    return [ FilterRegex.fid, details.f, details.g ];
 };
 
 FilterRegex.load = function(args) {
-    return new FilterRegex(args[1]);
+    return new FilterRegex(args[1], args[2]);
 };
 
 registerFilterClass(FilterRegex);
@@ -1018,8 +1075,15 @@ FilterOrigin.compile = function(details) {
 };
 
 FilterOrigin.load = function(args) {
+    var fdata = args[2]
+
+    if(typeof fdata === "object")
+        fdata[Object.keys(fdata).length] = args[args.length - 1];
+    else
+        fdata = [fdata, args[args.length - 1]];
+
     var f = FilterOrigin.matcherFactory(args[1]);
-    f.wrapped = filterFromCompiledData(args[2]);
+    f.wrapped = filterFromCompiledData(fdata);
     return f;
 };
 
@@ -1061,8 +1125,15 @@ FilterDataHolder.compile = function(details) {
 };
 
 FilterDataHolder.load = function(args) {
+    var fdata = args[3];
+
+    if(typeof fdata === "object")
+        fdata[Object.keys(fdata).length] = args[args.length - 1];
+    else
+        fdata = [fdata, args[args.length - 1]];
+
     var f = new FilterDataHolder(args[1], args[2]);
-    f.wrapped = filterFromCompiledData(args[3]);
+    f.wrapped = filterFromCompiledData(fdata);
     return f;
 };
 
@@ -1304,12 +1375,13 @@ FilterBucket.prototype.promote = function(i) {
 };
 
 FilterBucket.prototype.match = function(url, tokenBeg) {
-    var filters = this.filters;
+    var filters = this.filters, match;
     for ( var i = 0, n = filters.length; i < n; i++ ) {
-        if ( filters[i].match(url, tokenBeg) === true ) {
+        match = filters[i].match(url, tokenBeg)
+        if ( match ) {
             this.f = filters[i];
             if ( i >= 16 ) { this.promote(i); }
-            return true;
+            return match;
         }
     }
     return false;
@@ -1484,7 +1556,7 @@ FilterParser.prototype.parsePartyOption = function(firstParty, not) {
 
 /******************************************************************************/
 
-FilterParser.prototype.parseDomainOption = function(s) {
+FilterParser.prototype.parseDomainOption = function(s, g) {
     if ( this.reHasUnicode.test(s) ) {
         var hostnames = s.split('|'),
             i = hostnames.length;
@@ -1503,7 +1575,7 @@ FilterParser.prototype.parseDomainOption = function(s) {
 
 /******************************************************************************/
 
-FilterParser.prototype.parseOptions = function(s) {
+FilterParser.prototype.parseOptions = function(s, g) {
     this.fopts = s;
     var opts = s.split(',');
     var opt, not;
@@ -1688,9 +1760,11 @@ FilterParser.prototype.translate = function() {
 
 **/
 
-FilterParser.prototype.parse = function(raw) {
+FilterParser.prototype.parse = function(raw, blockType) {
     // important!
     this.reset();
+
+    this.g = blockType;
 
     var s = this.raw = raw;
 
@@ -2067,7 +2141,6 @@ FilterContainer.prototype.fromSelfie = function(selfie) {
     this.discardedCount = selfie.discardedCount;
 
     var entries;
-
     var categoryMap = new Map();
     entries = JSON.parse(selfie.categories);
     for ( var i = 0, ni = entries.length; i < ni; i++ ) {
@@ -2097,7 +2170,7 @@ FilterContainer.prototype.fromSelfie = function(selfie) {
 
 /******************************************************************************/
 
-FilterContainer.prototype.compile = function(raw, writer) {
+FilterContainer.prototype.compile = function(raw, writer, blockType) {
     // ORDER OF TESTS IS IMPORTANT!
 
     // Ignore empty lines
@@ -2106,7 +2179,7 @@ FilterContainer.prototype.compile = function(raw, writer) {
         return false;
     }
 
-    var parsed = this.filterParser.parse(s);
+    var parsed = this.filterParser.parse(s, blockType);
 
     // Ignore element-hiding filters
     if ( parsed.elemHiding ) {
@@ -2129,7 +2202,7 @@ FilterContainer.prototype.compile = function(raw, writer) {
         parsed.hostnamePure &&
         parsed.domainOpt === '' &&
         parsed.dataType === undefined &&
-        this.compileHostnameOnlyFilter(parsed, writer)
+        this.compileHostnameOnlyFilter(parsed, writer, blockType)
     ) {
         return true;
     }
@@ -2188,7 +2261,7 @@ FilterContainer.prototype.compile = function(raw, writer) {
         fdata.push(fwrapped);
     }
 
-    this.compileToAtomicFilter(fdata, parsed, writer);
+    this.compileToAtomicFilter(fdata, parsed, writer, blockType);
 
     return true;
 };
@@ -2197,7 +2270,7 @@ FilterContainer.prototype.compile = function(raw, writer) {
 
 // Using fast/compact dictionary when filter is a pure hostname.
 
-FilterContainer.prototype.compileHostnameOnlyFilter = function(parsed, writer) {
+FilterContainer.prototype.compileHostnameOnlyFilter = function(parsed, writer, blockType) {
     // Can't fit the filter in a pure hostname dictionary.
     // https://github.com/gorhill/uBlock/issues/1757
     // This should no longer happen with fix to above issue.
@@ -2209,14 +2282,14 @@ FilterContainer.prototype.compileHostnameOnlyFilter = function(parsed, writer) {
 
     var type = parsed.types;
     if ( type === 0 ) {
-        writer.push([ descBits, this.dotTokenHash, parsed.f ]);
+        writer.push([ descBits, this.dotTokenHash, parsed.f, blockType ]);
         return true;
     }
 
     var bitOffset = 1;
     do {
         if ( type & 1 ) {
-            writer.push([ descBits | (bitOffset << 4), this.dotTokenHash, parsed.f ]);
+            writer.push([ descBits | (bitOffset << 4), this.dotTokenHash, parsed.f, blockType ]);
         }
         bitOffset += 1;
         type >>>= 1;
@@ -2226,17 +2299,17 @@ FilterContainer.prototype.compileHostnameOnlyFilter = function(parsed, writer) {
 
 /******************************************************************************/
 
-FilterContainer.prototype.compileToAtomicFilter = function(fdata, parsed, writer) {
+FilterContainer.prototype.compileToAtomicFilter = function(fdata, parsed, writer, blockType) {
     var descBits = parsed.action | parsed.important | parsed.party | parsed.badFilter,
         type = parsed.types;
     if ( type === 0 ) {
-        writer.push([ descBits, parsed.tokenHash, fdata ]);
+        writer.push([ descBits, parsed.tokenHash, fdata, blockType ]);
         return;
     }
     var bitOffset = 1;
     do {
         if ( type & 1 ) {
-            writer.push([ descBits | (bitOffset << 4), parsed.tokenHash, fdata ]);
+            writer.push([ descBits | (bitOffset << 4), parsed.tokenHash, fdata, blockType ]);
         }
         bitOffset += 1;
         type >>>= 1;
@@ -2259,7 +2332,7 @@ FilterContainer.prototype.compileToAtomicFilter = function(fdata, parsed, writer
     descBits = typeNameToTypeValue.redirect;
     var i = redirects.length;
     while ( i-- ) {
-        writer.push([ descBits, redirects[i] ]);
+        writer.push([ descBits, redirects[i], blockType ]);
     }
 };
 
@@ -2299,6 +2372,11 @@ FilterContainer.prototype.fromCompiledContent = function(reader) {
         fingerprint = reader.fingerprint();
         tokenHash = args[1];
         fdata = args[2];
+
+        if(typeof fdata === "object")
+            fdata[Object.keys(fdata).length] = args[args.length - 1];
+        else
+            fdata = [fdata, args[args.length - 1]];
 
         // Special treatment: data-holding filters are stored separately
         // because they require special matching algorithm (unlike other
@@ -2515,13 +2593,17 @@ FilterContainer.prototype.matchAndFetchData = function(dataType, requestURL, out
 
 FilterContainer.prototype.matchTokens = function(bucket, url) {
     // Hostname-only filters
+    var match;
     var f = bucket.get(this.dotTokenHash);
-    if ( f !== undefined && f.match() === true ) {
-        this.thRegister = this.dotTokenHash;
-        this.fRegister = f;
-        return true;
-    }
 
+    if ( f !== undefined ) {
+        match = f.match();
+        if(match !== false) {
+            this.thRegister = this.dotTokenHash;
+            this.fRegister = f;
+            return match
+        }
+    }
     var tokenHashes = this.urlTokenizer.getTokens(),
         tokenHash, tokenOffset,
         i = 0;
@@ -2530,19 +2612,25 @@ FilterContainer.prototype.matchTokens = function(bucket, url) {
         if ( tokenHash === 0 ) { break; }
         tokenOffset = tokenHashes[i++];
         f = bucket.get(tokenHash);
-        if ( f !== undefined && f.match(url, tokenOffset) === true ) {
-            this.thRegister = tokenHash;
-            this.fRegister = f;
-            return true;
+        if ( f !== undefined ) {
+            match = f.match(url, tokenOffset);
+            if(match !== false) {
+                this.thRegister = tokenHash;
+                this.fRegister = f;
+                return match
+            }
         }
     }
 
     // Untokenizable filters
     f = bucket.get(this.noTokenHash);
-    if ( f !== undefined && f.match(url) === true ) {
-        this.thRegister = this.noTokenHash;
-        this.fRegister = f;
-        return true;
+    if ( f !== undefined ) {
+        match = f.match(url);
+        if(match !== false) {
+            this.thRegister = this.noTokenHash;
+            this.fRegister = f;
+            return match
+        }
     }
 
     return false;
@@ -2715,7 +2803,7 @@ FilterContainer.prototype.matchString = function(context) {
         ? FirstParty
         : ThirdParty;
     var categories = this.categories,
-        catBits, bucket;
+        catBits, bucket, result, toReturn;
 
     // https://github.com/chrisaljoudi/uBlock/issues/139
     // Test against important block filters.
@@ -2724,65 +2812,78 @@ FilterContainer.prototype.matchString = function(context) {
     // the `important` property it is "evaluate allow then evaluate block".
     catBits = BlockAnyTypeAnyParty | Important;
     if ( (bucket = categories.get(catBits)) ) {
-        if ( this.matchTokens(bucket, url) ) {
+        result = this.matchTokens(bucket, url);
+        if ( result ) {
             this.cbRegister = catBits;
-            return 1;
+            return result;
         }
     }
     catBits = BlockAnyType | Important | party;
     if ( (bucket = categories.get(catBits)) ) {
-        if ( this.matchTokens(bucket, url) ) {
+        result = this.matchTokens(bucket, url);
+        if ( result ) {
             this.cbRegister = catBits;
-            return 1;
+            return result;
         }
     }
     catBits = BlockAnyParty | Important | type;
     if ( (bucket = categories.get(catBits)) ) {
-        if ( this.matchTokens(bucket, url) ) {
+        result = this.matchTokens(bucket, url);
+        if ( result ) {
             this.cbRegister = catBits;
-            return 1;
+            return result;
         }
     }
     catBits = BlockAction | Important | type | party;
     if ( (bucket = categories.get(catBits)) ) {
-        if ( this.matchTokens(bucket, url) ) {
+        result = this.matchTokens(bucket, url);
+        if ( result ) {
             this.cbRegister = catBits;
-            return 1;
+            return result;
         }
     }
+
+    toReturn = 1;
 
     // Test against block filters
     catBits = BlockAnyTypeAnyParty;
     if ( (bucket = categories.get(catBits)) ) {
-        if ( this.matchTokens(bucket, url) ) {
+        result = this.matchTokens(bucket, url);
+        if ( result ) {
+            toReturn = result;
             this.cbRegister = catBits;
         }
     }
     if ( this.fRegister === null ) {
         catBits = BlockAnyType | party;
         if ( (bucket = categories.get(catBits)) ) {
-            if ( this.matchTokens(bucket, url) ) {
+            result = this.matchTokens(bucket, url);
+            if ( result ) {
+                toReturn = result;
                 this.cbRegister = catBits;
             }
         }
         if ( this.fRegister === null ) {
             catBits = BlockAnyParty | type;
             if ( (bucket = categories.get(catBits)) ) {
-                if ( this.matchTokens(bucket, url) ) {
+                result = this.matchTokens(bucket, url);
+                if ( result ) {
+                    toReturn = result;
                     this.cbRegister = catBits;
                 }
             }
             if ( this.fRegister === null ) {
                 catBits = BlockAction | type | party;
                 if ( (bucket = categories.get(catBits)) ) {
-                    if ( this.matchTokens(bucket, url) ) {
+                    result = this.matchTokens(bucket, url);
+                    if ( result ) {
+                        toReturn = result;
                         this.cbRegister = catBits;
                     }
                 }
             }
         }
     }
-
     // If there is no block filter, no need to test against allow filters
     if ( this.fRegister === null ) {
         return 0;
@@ -2818,7 +2919,7 @@ FilterContainer.prototype.matchString = function(context) {
         }
     }
 
-    return 1;
+    return toReturn;
 };
 
 /******************************************************************************/

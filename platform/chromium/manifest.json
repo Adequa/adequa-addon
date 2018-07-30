@@ -32,7 +32,7 @@
         },
         {
             "matches": ["http://*/*", "https://*/*"],
-            "js": ["/js/scriptlets/subscriber.js", "/web_accessible_resources/injector.js"],
+            "js": ["/js/scriptlets/subscriber.js"],
             "run_at": "document_idle",
             "all_frames": false
         }

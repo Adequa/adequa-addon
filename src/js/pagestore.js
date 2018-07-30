@@ -288,6 +288,8 @@ PageStore.prototype.init = function(tabId, context) {
     this.logData = undefined;
     this.perLoadBlockedRequestCount = 0;
     this.perLoadAllowedRequestCount = 0;
+    this.nbTrackersBlocked = 0;
+    this.nbAdsBlocked = 0;
     this.hiddenElementCount = ''; // Empty string means "unknown"
     this.remoteFontCount = 0;
     this.popupBlockedCount = 0;
@@ -556,7 +558,6 @@ PageStore.prototype.journalProcess = function(fromTimer) {
         aggregateCounts = 0,
         now = Date.now(),
         pivot = this.journalLastCommitted || 0;
-
     // Everything after pivot originates from current page.
     for ( i = pivot; i < n; i += 2 ) {
         hostname = journal[i];
@@ -641,10 +642,19 @@ PageStore.prototype.filterRequest = function(context) {
             this.logData = µb.sessionFirewall.toLogData();
         }
     }
-
     // Static filtering has lowest precedence.
     if ( result === 0 || result === 3 ) {
+
         result = µb.staticNetFilteringEngine.matchString(context);
+
+        if(result === 5) {
+            this.nbAdsBlocked++;
+            result = 1;
+        }
+        else if(result === 6) {
+            this.nbTrackersBlocked++;
+            result = 1;
+        }
 
         if ( result !== 0 && µb.logger.isEnabled() ) {
             this.logData = µb.staticNetFilteringEngine.toLogData();

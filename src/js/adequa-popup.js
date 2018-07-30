@@ -6,7 +6,7 @@
     var render = function() {
         let popupData = {};
         let toggleButton = document.getElementById('toggleNetFilteringSwitch');
-
+        let statsSwitch = document.getElementsByTagName('input')[0];
         const renderNetFilteringSwitch = function () {
             if (!uDom('body').hasClass('off')) {
                 toggleButton.innerHTML = `
@@ -21,11 +21,69 @@
             }
         };
 
+        const setNbTrackersBlocked = function (nbTrackersBlocked){
+            uDom('#trackers_blocked').nodes[0].innerHTML = nbTrackersBlocked || 0
+        };
+        const setNbAdsBlocked = function (nbAdsBlocked){
+            uDom('#ads_blocked').nodes[0].innerHTML = nbAdsBlocked || 0
+        };
+        const setTimeWon = function (timeWon){
+            uDom('#time_won').nodes[0].innerHTML = (timeWon || 0) + ' mins'
+        };
+
+        const renderTotalStats = function(){
+            messaging.send(
+                'adequa',
+                {
+                    what: 'fetchTotalStats'
+                },
+                function(stats){
+                    setNbTrackersBlocked(stats.trackersBlocked);
+                    setNbAdsBlocked(stats.adsBlocked);
+                    setTimeWon(Math.round(stats.timeWon/1000/60));
+                });
+        };
+
+        const renderPageStats = function(){
+            messaging.send(
+                'adequa',
+                {
+                    what: 'fetchCurrentStats',
+                    tabId: popupData.tabId
+                },
+                function(current){
+                    setNbTrackersBlocked(current.nbTrackersBlocked);
+                    setNbAdsBlocked(current.nbAdsBlocked);
+                    setTimeWon(Math.round(current.timeWon/1000/60));
+                });
+        };
+
+        const renderAdsViewed = function(){
+            messaging.send(
+                'adequa',
+                {
+                    what: 'fetchAdsViewed'
+                },
+                function(passions) {
+                    var adPrints = uDom('#ad-prints');
+                    var content = '';
+
+                    for (var item in passions) {
+                        item = passions[item]
+                        content = content + '<div class="stat"><p>' + item.passion.toUpperCase() + '</p><p>' + item.count + '</p></div>'
+                    }
+                    if (content === '')
+                        adPrints.nodes[0].innerHTML = '<p align="center">Aucune pub visionnée</p>';
+                    else
+                        adPrints.nodes[0].innerHTML = content;
+                });
+
+        };
+
         messaging.send('popupPanel', {
             what: 'getPopupData'
         }, function(response) {
             popupData = response;
-
             let elem = document.body;
             elem.classList.toggle(
                 'off',
@@ -36,38 +94,29 @@
             renderNetFilteringSwitch()
         });
 
-        messaging.send(
-            'adequa',
-            {
-                what: 'fetchStats',
-            },
-            function(stats){
-                uDom('#trackers_blocked').nodes[0].innerHTML = stats.trackersBlocked;
-                uDom('#ads_blocked').nodes[0].innerHTML = stats.adsBlocked;
-                uDom('#time_won').nodes[0].innerHTML = Math.round(stats.timeWon/1000/60) + ' mins';
+        messaging.send('adequa', {
+            what: 'fetchStatSwitchState'
+        }, function(state){
+            if(state === 'total') {
+                renderTotalStats();
+                statsSwitch.checked = false;
+            }
+            else {
+                renderPageStats();
+                statsSwitch.checked = true;
+            }
+        });
 
-                var adPrints = uDom('#ad-prints');
-                var content = '';
+        renderAdsViewed();
 
-                for(var item in stats.passions){
-                    item = stats.passions[item];
-                    content = content + '<div class="stat"><p>' + item.passion.toUpperCase() + '</p><p>' + item.count + '</p></div>'
-                }
-                if(content === '')
-                    adPrints.nodes[0].innerHTML = '<p align="center">Aucune pub visionnée</p>';
-                else
-                    adPrints.nodes[0].innerHTML = content;
-
-            });
-
-        var toggleNetFilteringSwitch = function(ev) {
+        var toggleNetFilteringSwitch = function(event) {
             if ( !popupData || !popupData.pageURL ) { return; }
             messaging.send(
                 'popupPanel',
                 {
                     what: 'toggleNetFiltering',
                     url: popupData.pageURL,
-                    scope: ev.ctrlKey || ev.metaKey ? 'page' : '',
+                    scope: event.ctrlKey || event.metaKey ? 'page' : '',
                     state: !uDom('body').toggleClass('off').hasClass('off'),
                     tabId: popupData.tabId
                 }
@@ -75,7 +124,20 @@
             renderNetFilteringSwitch()
         };
 
-        toggleButton.addEventListener('click', toggleNetFilteringSwitch)
+        var toggleStatsDisplayed = function(event) {
+            if(!event.target.checked)
+                renderTotalStats();
+            else
+                renderPageStats();
+
+            messaging.send('adequa', {
+                what: 'toggleStatSwitch',
+                state: event.target.checked
+            })
+        };
+
+        toggleButton.addEventListener('click', toggleNetFilteringSwitch);
+        statsSwitch.addEventListener('change', toggleStatsDisplayed);
     };
     render();
 })();

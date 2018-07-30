@@ -348,6 +348,7 @@ var popupDataFromTabId = function(tabId, tabTitle) {
         rootHostname,
         r.hostnameDict
     );
+
     return r;
 };
 
@@ -1292,34 +1293,51 @@ var onMessage = function(request, sender, callback) {
 
     // Async
     switch ( request.what ) {
-        case 'fetchStats':
+        case 'fetchTotalStats':
             var trackersBlocked = vAPI.adequa.storageDB.queryColumnSum('page_views', 'nb_trackers_blocked') || 0;
             var adsBlocked = vAPI.adequa.storageDB.queryColumnSum('page_views', 'nb_ads_blocked') || 0;
             var timeWon = vAPI.adequa.storageDB.queryColumnSum('page_views', 'load_time') || 0;
-            var passions = vAPI.adequa.storageDB.queryGroupBy('ad_prints', 'passion');
 
             callback({
                 trackersBlocked,
                 adsBlocked,
                 timeWon,
-                passions
             });
             return;
+        case 'fetchAdsViewed':
+            var passions = vAPI.adequa.storageDB.queryGroupBy('ad_prints', 'passion');
+            callback(passions);
+            return;
         case 'insertPageViewed':
-            let pageStore = µb.pageStoreFromTabId(sender.tab.id);
+            var pageStore = µb.pageStoreFromTabId(sender.tab.id);
             if ( pageStore !== null ) {
                 var url = pageStore.rawURL;
                 if(url.startsWith('http://') !== -1 || url.startsWith('https://') !==-1) {
                     let data = {
                         url: pageStore.rawURL,
                         consulted_at: Date.now() - 1000,
-                        nb_trackers_blocked: 0,
-                        nb_ads_blocked: pageStore.perLoadBlockedRequestCount,
+                        nb_trackers_blocked: pageStore.nbTrackersBlocked,
+                        nb_ads_blocked: pageStore.nbAdsBlocked,
                         is_partner: false,
                         load_time: request.data.loadTime
                     };
                     vAPI.adequa.storageDB.insert('page_views', data);
                     vAPI.adequa.storageDB.commit()
+
+                    vAPI.storage.get('current', function(current){
+                        current = current.current || {};
+
+                        if(current.stats === undefined)
+                            current.stats = {};
+
+                        current.stats[sender.tab.id] = {
+                            nbTrackersBlocked: pageStore.nbTrackersBlocked,
+                            nbAdsBlocked: pageStore.nbAdsBlocked,
+                            loadTime: request.data.loadTime
+                        };
+
+                        vAPI.storage.set({'current': current})
+                    });
                 }
             }
             return;
@@ -1338,13 +1356,36 @@ var onMessage = function(request, sender, callback) {
                 vAPI.tabs.injectScript(sender.tab.id, {code});
             }, 1000);
             return;
+        case 'toggleStatSwitch':
+            vAPI.storage.get('current', function(current){
+                current = current.current || {};
 
+                current.statSwitchState = request.state ? 'page' : 'total';
+
+                vAPI.storage.set({'current': current})
+            });
+            return;
+        case 'fetchStatSwitchState':
+            vAPI.storage.get('current',function(current) {
+                current = current.current || {};
+
+                callback(current.statSwitchState);
+            });
+            return;
+        case 'fetchCurrentStats':
+            vAPI.storage.get('current', function(current){
+                current = current.current || {};
+
+                var stats = current.stats || {};
+                var currentStats = current.stats[request.tabId];
+                callback(currentStats)
+            });
+            return;
         case 'isFirstInstall':
             vAPI.adequa.storage.isFirstInstall(function (firstInstall) {
                 callback(firstInstall);
             });
             return;
-
         case 'firstInstallFinished':
             vAPI.adequa.storage.setFirstInstall(false, callback);
             //TODO Close popup

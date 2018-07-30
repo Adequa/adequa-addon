@@ -1347,7 +1347,6 @@ var onMessage = function(request, sender, callback) {
 
         case 'firstInstallFinished':
             vAPI.adequa.storage.setFirstInstall(false, callback);
-            //TODO Close popup
             return;
 
         case 'saveInstallState':

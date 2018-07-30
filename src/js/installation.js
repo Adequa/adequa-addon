@@ -60,12 +60,12 @@ let resetScreen = function (/*smooth, endSmothAnimationCallback*/) { //TODO
 };
 
 
-let createScreen = function (content, buttonListener) {
+let createScreen = function (content, buttonListener, buttonText = null) {
   let body = document.body;
 
   body.appendChild(content);
 
-  let button = createElement('button', 'Suivant');
+  let button = createElement('button', buttonText === null ? 'Suivant' : buttonText);
   button.addEventListener('click', buttonListener);
   body.appendChild(button);
 };
@@ -190,17 +190,11 @@ let showFinalScreen = function () {
     vAPI.messaging.send('adequa', {what: 'firstInstallFinished'}, function () {
       vAPI.closePopup();
     });
-  });
+  }, 'Terminer');
 };
 
 
-let onFirstInstallReceived = function (firstInstall) {
-  if (firstInstall === false)
-    return;
-
-  //Remove the actual screen
-  resetScreen();
-
+let choiceScreen = function () {
   vAPI.messaging.send('adequa', {what: 'fetchInstallState'}, function (state) {
     switch (state) {
       case 1:
@@ -220,6 +214,17 @@ let onFirstInstallReceived = function (firstInstall) {
         break;
     }
   });
+};
+
+
+let onFirstInstallReceived = function (firstInstall) {
+  if (firstInstall === false)
+    return;
+
+  //Remove the actual screen
+  resetScreen();
+
+  choiceScreen();
 };
 
 

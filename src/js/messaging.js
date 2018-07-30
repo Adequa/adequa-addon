@@ -1377,7 +1377,7 @@ var onMessage = function(request, sender, callback) {
                 current = current.current || {};
 
                 var stats = current.stats || {};
-                var currentStats = current.stats[request.tabId];
+                var currentStats = current.stats[request.tabId] || {};
                 callback(currentStats)
             });
             return;

@@ -1310,7 +1310,7 @@ var onMessage = function(request, sender, callback) {
             if ( pageStore !== null ) {
                 var url = pageStore.rawURL;
                 if(url.startsWith('http://') !== -1 || url.startsWith('https://') !==-1) {
-                    let toInsert = {
+                    let data = {
                         url: pageStore.rawURL,
                         consulted_at: Date.now() - 1000,
                         nb_trackers_blocked: 0,
@@ -1318,7 +1318,7 @@ var onMessage = function(request, sender, callback) {
                         is_partner: false,
                         load_time: request.data.loadTime
                     };
-                    vAPI.adequa.storageDB.insert('page_views', toInsert);
+                    vAPI.adequa.storageDB.insert('page_views', data);
                     vAPI.adequa.storageDB.commit()
                 }
             }
@@ -1335,8 +1335,19 @@ var onMessage = function(request, sender, callback) {
                     }
                 }, 100);`;
 
-                vAPI.tabs.injectScript(sender.tab.id, {code})
+                vAPI.tabs.injectScript(sender.tab.id, {code});
             }, 1000);
+            return;
+
+        case 'isFirstInstall':
+            vAPI.adequa.storage.isFirstInstall(function (firstInstall) {
+                callback(firstInstall);
+            });
+            return;
+
+        case 'firstInstallFinished':
+            vAPI.adequa.storage.setFirstInstall(false, callback);
+            //TODO Close popup
             return;
         default:
             break;

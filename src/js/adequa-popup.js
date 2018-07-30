@@ -42,7 +42,7 @@
                 what: 'resetForDebug',
             },
             function() {
-                render()
+                render();
             }
         );
     });
@@ -54,15 +54,15 @@
                 what: 'fetchStats',
             },
             function(stats){
-                uDom('#trackers_blocked').nodes[0].innerHTML = stats.trackersBlocked
-                uDom('#ads_blocked').nodes[0].innerHTML = stats.adsBlocked
-                uDom('#time_won').nodes[0].innerHTML = Math.round(stats.timeWon/1000/60) + ' mins'
+                uDom('#trackers_blocked').nodes[0].innerHTML = stats.trackersBlocked;
+                uDom('#ads_blocked').nodes[0].innerHTML = stats.adsBlocked;
+                uDom('#time_won').nodes[0].innerHTML = Math.round(stats.timeWon/1000/60) + ' mins';
 
                 var adPrints = uDom('#ad-prints');
                 var content = '';
 
                 for(var item in stats.passions){
-                    item = stats.passions[item]
+                    item = stats.passions[item];
                     content = content + '<div class="stat"><p>' + item.passion.toUpperCase() + '</p><p>' + item.count + '</p></div>'
                 }
                 if(content === '')
@@ -70,7 +70,8 @@
                 else
                     adPrints.nodes[0].innerHTML = content;
 
-            })
+            }
+        );
 
         var toggleNetFilteringSwitch = function(ev) {
             if ( !popupData || !popupData.pageURL ) { return; }

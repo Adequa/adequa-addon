@@ -83,6 +83,10 @@ var onAllReady = function() {
         ]);
     }
 
+    if(µb.firstInstall === true) {
+        vAPI.adequa.storage.setFirstInstall(µb.firstInstall);
+    }
+
     µb.contextMenu.update(null);
     µb.firstInstall = false;
 

@@ -1,4 +1,5 @@
 'use strict';
+
 (function() {
 
     vAPI.adequa = vAPI.adequa || {};
@@ -12,7 +13,7 @@
         vAPI.adequa.storageDB.createTable("ad_prints", ["passion", "page_view_id", "viewed_at", "ad_id"]);
         vAPI.adequa.storageDB.createTable("user_choices", ["made_at", "choice", "choice_feature"]);
 
-        vAPI.adequa.storageDB.commit()
+        vAPI.adequa.storageDB.commit();
     }
 
     var filterOutOutdatedNeeds = function(needs) {
@@ -136,5 +137,17 @@
             vAPI.storage.set({'tenders': tenders});
             callback(tenders);
         });
+    };
+
+    vAPI.adequa.storage.setFirstInstall = function (value, callback) {
+        callback = callback || function () {};
+
+        vAPI.storage.set({firstInstall: value}, callback);
+    };
+
+    vAPI.adequa.storage.isFirstInstall = function (callback) {
+      vAPI.storage.get('firstInstall', function(result) {
+          callback(result.firstInstall);
+      });
     };
 })();

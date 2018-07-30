@@ -2,52 +2,40 @@
 
 (function() {
     var messaging = vAPI.messaging;
-    var pendingChanges = [];
-    var asyncCalls = 0;
-
-    var commitChanges = function() {
-        for (var pendingChange of pendingChanges) {
-            pendingChange();
-        }
-        pendingChanges = [];
-        setTimeout(function() {
-            resizePopup();
-        }, 200);
-    };
-
-    var resizePopup = function() {
-        var height = uDom("body").offsetHeight;
-        var style = getComputedStyle(uDom("body"));
-        height += parseInt(style.marginTop) + parseInt(style.marginBottom);
-        alert(height);
-        uDom("body").style.height = height;
-    };
-
-    var registerAsyncCall = function(isStarting) {
-        if (isStarting) {
-            asyncCalls += 1;
-        } else {
-            asyncCalls -= 1;
-        }
-
-        if (asyncCalls <= 0) {
-            commitChanges();
-        }
-    };
-
-    uDom("#debug").on('click', function() {
-        messaging.send(
-            'adequa',
-            {
-                what: 'resetForDebug',
-            },
-            function() {
-                render();
-            }
-        );
-    });
 
     var render = function() {
+        let popupData = {};
+        let toggleButton = document.getElementById('toggleNetFilteringSwitch');
+
+        const renderNetFilteringSwitch = function () {
+            if (!uDom('body').hasClass('off')) {
+                toggleButton.innerHTML = `
+                <img src="img/icon_pause.png" height="30"/>
+                Désactiver l'AdFilter sur ce site
+                `;
+            } else {
+                toggleButton.innerHTML = `
+                <img src="img/icon_start.png" height="30"/>
+                Réactiver l'AdFilter sur ce site
+                `;
+            }
+        };
+
+        messaging.send('popupPanel', {
+            what: 'getPopupData'
+        }, function(response) {
+            popupData = response;
+
+            let elem = document.body;
+            elem.classList.toggle(
+                'off',
+                popupData.pageURL === '' ||
+                !popupData.netFilteringSwitch ||
+                popupData.pageHostname === 'behind-the-scene' && !popupData.advancedUserEnabled
+            );
+            renderNetFilteringSwitch()
+        });
+
         messaging.send(
             'adequa',
             {
@@ -70,8 +58,7 @@
                 else
                     adPrints.nodes[0].innerHTML = content;
 
-            }
-        );
+            });
 
         var toggleNetFilteringSwitch = function(ev) {
             if ( !popupData || !popupData.pageURL ) { return; }
@@ -85,8 +72,10 @@
                     tabId: popupData.tabId
                 }
             );
+            renderNetFilteringSwitch()
         };
 
+        toggleButton.addEventListener('click', toggleNetFilteringSwitch)
     };
     render();
 })();

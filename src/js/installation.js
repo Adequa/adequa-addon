@@ -60,12 +60,12 @@ let resetScreen = function (/*smooth, endSmothAnimationCallback*/) { //TODO
 };
 
 
-let createScreen = function (content, buttonListener) {
+let createScreen = function (content, buttonListener, buttonText = null) {
   let body = document.body;
 
   body.appendChild(content);
 
-  let button = createElement('button', 'Suivant');
+  let button = createElement('button', buttonText === null ? 'Suivant' : buttonText);
   button.addEventListener('click', buttonListener);
   body.appendChild(button);
 };
@@ -93,10 +93,14 @@ let showPresentationScreen = function () {
   });
 
   createScreen(content, function () {
-    //TODO Save actual state
-
-    resetScreen();
-    showChoiceScreen();
+    //Save actual state
+    vAPI.messaging.send('adequa', {
+      what: 'saveInstallState',
+      state: 1,
+    }, function () {
+      resetScreen();
+      showChoiceScreen();
+    });
   });
 };
 
@@ -121,10 +125,14 @@ let showChoiceScreen = function () {
   });
 
   createScreen(content, function () {
-    //TODO Save actual state
-
-    resetScreen();
-    showChoiceNbAdsScreen();
+    //Save actual state
+    vAPI.messaging.send('adequa', {
+      what: 'saveInstallState',
+      state: 2,
+    }, function () {
+      resetScreen();
+      showChoiceNbAdsScreen();
+    });
   });
 };
 
@@ -148,10 +156,14 @@ let showChoiceNbAdsScreen = function () {
   });
 
   createScreen(content, function () {
-    //TODO Save the actual state
-
-    resetScreen();
-    showFinalScreen();
+    //Save actual state
+    vAPI.messaging.send('adequa', {
+      what: 'saveInstallState',
+      state: 3
+    }, function () {
+      resetScreen();
+      showFinalScreen();
+    });
   });
 };
 
@@ -178,6 +190,29 @@ let showFinalScreen = function () {
     vAPI.messaging.send('adequa', {what: 'firstInstallFinished'}, function () {
       vAPI.closePopup();
     });
+  }, 'Terminer');
+};
+
+
+let choiceScreen = function () {
+  vAPI.messaging.send('adequa', {what: 'fetchInstallState'}, function (state) {
+    switch (state) {
+      case 1:
+        showChoiceScreen();
+        break;
+
+      case 2:
+        showChoiceNbAdsScreen();
+        break;
+
+      case 3:
+        showFinalScreen();
+        break;
+
+      default:
+        showPresentationScreen();
+        break;
+    }
   });
 };
 
@@ -186,9 +221,10 @@ let onFirstInstallReceived = function (firstInstall) {
   if (firstInstall === false)
     return;
 
-  //Remove the actual page
+  //Remove the actual screen
   resetScreen();
-  showPresentationScreen();
+
+  choiceScreen();
 };
 
 

@@ -146,8 +146,20 @@
     };
 
     vAPI.adequa.storage.isFirstInstall = function (callback) {
-      vAPI.storage.get('firstInstall', function(result) {
-          callback(result.firstInstall);
-      });
+        vAPI.storage.get('firstInstall', function(result) {
+            callback(result.firstInstall);
+        });
+    };
+
+    vAPI.adequa.storage.saveInstallState = function (state, callback) {
+        callback = callback || function () {};
+
+        vAPI.storage.set({installState: state}, callback);
+    };
+
+    vAPI.adequa.storage.fetchInstallState = function (callback) {
+        vAPI.storage.get('installState', function (result) {
+            callback(result.installState);
+        });
     };
 })();

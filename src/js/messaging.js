@@ -1349,6 +1349,14 @@ var onMessage = function(request, sender, callback) {
             vAPI.adequa.storage.setFirstInstall(false, callback);
             //TODO Close popup
             return;
+
+        case 'saveInstallState':
+            vAPI.adequa.storage.saveInstallState(request.state, callback);
+            return;
+
+        case 'fetchInstallState':
+            vAPI.adequa.storage.fetchInstallState(callback);
+            return;
         default:
             break;
     }

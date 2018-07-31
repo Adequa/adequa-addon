@@ -622,6 +622,13 @@ PageStore.prototype.filterRequest = function(context) {
     if ( cacheableResult ) {
         var entry = this.netFilteringCache.lookupResult(context);
         if ( entry !== undefined ) {
+            if(entry.result === 5) {
+                this.nbAdsBlocked++;
+            }
+            else if(entry.result === 6) {
+                this.nbTrackersBlocked++;
+            }
+
             this.logData = entry.logData;
             return entry.result;
         }
@@ -630,7 +637,6 @@ PageStore.prototype.filterRequest = function(context) {
     // Dynamic URL filtering.
     var result = µb.sessionURLFiltering.evaluateZ(context.rootHostname, context.requestURL, requestType);
 
-
     if ( result !== 0 && µb.logger.isEnabled() ) {
         this.logData = µb.sessionURLFiltering.toLogData();
     }
@@ -638,6 +644,7 @@ PageStore.prototype.filterRequest = function(context) {
     // Dynamic hostname/type filtering.
     if ( result === 0 && µb.userSettings.advancedUserEnabled ) {
         result = µb.sessionFirewall.evaluateCellZY(context.rootHostname, context.requestHostname, requestType);
+
         if ( result !== 0 && result !== 3 && µb.logger.isEnabled() ) {
             this.logData = µb.sessionFirewall.toLogData();
         }
@@ -646,14 +653,11 @@ PageStore.prototype.filterRequest = function(context) {
     if ( result === 0 || result === 3 ) {
 
         result = µb.staticNetFilteringEngine.matchString(context);
-
         if(result === 5) {
             this.nbAdsBlocked++;
-            result = 1;
         }
         else if(result === 6) {
             this.nbTrackersBlocked++;
-            result = 1;
         }
 
         if ( result !== 0 && µb.logger.isEnabled() ) {
@@ -666,6 +670,9 @@ PageStore.prototype.filterRequest = function(context) {
     } else if ( result === 1 && this.collapsibleResources[requestType] === true ) {
         this.netFilteringCache.rememberBlock(context, true);
     }
+
+    if(result >= 5)
+        result = 1;
 
     return result;
 };

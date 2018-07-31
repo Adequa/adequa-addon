@@ -1309,6 +1309,14 @@ vAPI.domSurveyor = (function() {
                     data: event.data.message
                 })
             }
+            else if (event.source == window &&
+                event.data &&
+                event.data.direction == "adsNumber") {
+                vAPI.messaging.send('adequa', {
+                    what: 'storeNbAdsBlocked',
+                    data: event.data.message
+                })
+            }
         };
 
         window.addEventListener("message", onMessage);

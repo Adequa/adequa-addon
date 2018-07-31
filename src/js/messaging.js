@@ -529,6 +529,17 @@ var onMessage = function(request, sender, callback) {
         if ( request.isRootFrame && µb.logger.isEnabled() ) {
             µb.logCosmeticFilters(tabId);
         }
+        var items = JSON.stringify(response.specificCosmeticFilters.declarativeFilters);
+
+        var code = `
+                    var items = ${items};
+                    var count = 0;
+                    for(var item of items)
+                        if(document.querySelector(item) != null)
+                            count++;
+                    window.postMessage({direction: "adsNumber", message: {count}}, "*")`;
+
+        vAPI.tabs.injectScript(sender.tab.id, {code});
         break;
 
     case 'retrieveGenericCosmeticSelectors':
@@ -1313,35 +1324,61 @@ var onMessage = function(request, sender, callback) {
             if ( pageStore !== null ) {
                 var url = pageStore.rawURL;
                 if(url.startsWith('http://') !== -1 || url.startsWith('https://') !==-1) {
-                    let data = {
-                        url: pageStore.rawURL,
-                        consulted_at: Date.now() - 1000,
-                        nb_trackers_blocked: pageStore.nbTrackersBlocked,
-                        nb_ads_blocked: pageStore.nbAdsBlocked,
-                        is_partner: false,
-                        load_time: request.data.loadTime
-                    };
-                    vAPI.adequa.storageDB.insert('page_views', data);
-                    vAPI.adequa.storageDB.commit()
-
                     vAPI.storage.get('current', function(current){
                         current = current.current || {};
 
                         if(current.stats === undefined)
                             current.stats = {};
 
+                        var tabStats = current.stats[sender.tab.id];
+
                         current.stats[sender.tab.id] = {
+                            nbAdsBlocked: tabStats.nbAdsBlocked || 0,
+                            url: tabStats.url || "",
                             nbTrackersBlocked: pageStore.nbTrackersBlocked,
-                            nbAdsBlocked: pageStore.nbAdsBlocked,
                             loadTime: request.data.loadTime
                         };
+
+                        tabStats = current.stats[sender.tab.id];
+
+                        let data = {
+                            url: pageStore.rawURL,
+                            consulted_at: Date.now() - 1000,
+                            nb_trackers_blocked: tabStats.nbTrackersBlocked,
+                            nb_ads_blocked: tabStats.nbAdsBlocked,
+                            is_partner: false,
+                            load_time: tabStats.loadTime
+                        };
+                        vAPI.adequa.storageDB.insert('page_views', data);
+                        vAPI.adequa.storageDB.commit();
 
                         vAPI.storage.set({'current': current})
                     });
                 }
             }
             return;
+        case 'storeNbAdsBlocked':
+            vAPI.storage.get('current', function(current){
+                current = current.current || {};
 
+                if(current.stats === undefined)
+                    current.stats = {};
+
+                if(current.stats[sender.tab.id] !== undefined
+                    && current.stats[sender.tab.id].url === sender.url
+                    && request.data.count === 0)
+                    return;
+
+                var tabStats = current.stats[sender.tab.id];
+
+                current.stats[sender.tab.id] = {
+                    nbAdsBlocked: request.data.count,
+                    url: sender.url,
+                    nbTrackersBlocked: tabStats.nbTrackersBlocked || 0,
+                    loadTime: tabStats.loadTime || 0
+                };
+                vAPI.storage.set({'current': current})
+            });
         case 'loaded':
             setTimeout(() => {
                 let code = `

@@ -1,0 +1,46 @@
+header {
+  text-align: center;
+}
+
+header div {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+
+  border-top: 2px solid black;
+  border-bottom: 2px solid black;
+
+  transform: translateX(-50%) translateY(-50%);
+}
+
+header h2 {
+  font-size: 16px;
+}
+
+.bloc {
+  width: 80%;
+  min-height: 45px;
+  margin-bottom: 40px;
+}
+
+.bloc div {
+  padding: 5px;
+}
+
+.protect {
+  background-color: #FBF885;
+  margin-left: 20%;
+
+  text-align: right;
+}
+
+.pleasent {
+  background-color: #7089E0;
+}
+
+.support {
+  background-color: #DD493E;
+  margin-left: 20%;
+
+  text-align: right;
+}

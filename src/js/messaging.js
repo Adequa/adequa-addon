@@ -1438,6 +1438,10 @@ var onMessage = function(request, sender, callback) {
         case 'savePassions':
             vAPI.adequa.storage.savePassions(request.passions, callback);
             return;
+
+        case 'saveNbMaxAdsPerDay':
+            vAPI.adequa.storage.saveNbMaxAdsPerDay(request.nbMaxAdsPerDay, callback);
+            return;
         default:
             break;
     }

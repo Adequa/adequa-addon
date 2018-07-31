@@ -166,4 +166,8 @@
     vAPI.adequa.storage.savePassions = function (passions, callback) {
         vAPI.storage.set({passions: passions}, callback);
     };
+
+    vAPI.adequa.storage.saveNbMaxAdsPerDay = function (nbMaxAdsPerDay, callback) {
+        vAPI.storage.set({nbMaxAdsPerDay: nbMaxAdsPerDay}, callback);
+    };
 })();

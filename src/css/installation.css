@@ -1,0 +1,51 @@
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  width: 300px;
+  min-height: 380px;
+}
+
+header {
+  position: relative;
+  height: 80px;
+  padding: 20px 10px 0;
+
+  text-align: left;
+
+  background-color: #fff;
+}
+
+header p {
+  width: 55%;
+}
+
+.next {
+  display: inline-block;
+  width: 35px;
+  height: 35px;
+  margin: 7px 0 10px;
+
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+
+  font-size: 35px;
+  line-height: 35px;
+  text-align: center;
+
+  cursor: pointer;
+
+  border-radius: 50%;
+  transform: rotate(90deg) translateY(50%);
+  transition: all .3s;
+}
+
+.next:hover {
+  background-color: #eee;
+  box-shadow: 0 0 2px #000;
+  color: #666;
+}

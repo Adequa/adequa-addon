@@ -4,6 +4,9 @@
     var messaging = vAPI.messaging;
 
     var render = function() {
+        //Disabled useless stylesheets
+        toggleStyle('adequa-popup.css', false);
+
         let popupData = {};
         let toggleButton = document.getElementById('toggleNetFilteringSwitch');
         let statsSwitch = document.getElementsByTagName('input')[0];

@@ -1,0 +1,68 @@
+header {
+  text-align: left;
+}
+
+body {
+  background-color: #7089E0;
+}
+
+.left {
+  float: left;
+  width: 30%;
+  height: 100%;
+  padding: 10px;
+  position: relative;
+}
+
+.left .range-container {
+  position: absolute;
+  left: 50%;
+  transform: rotate(90deg) translateY(-50%);
+  transform-origin: top left;
+}
+
+.left .range-container input[type="range"] {
+  width: 250px;
+  height: 20px;
+  background-color: #fff;
+  outline: none;
+  opacity: 0.7;
+  transition: opacity .2s;
+}
+
+.left .range-container input[type="range"]:hover {
+  opacity: 1;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none; /* Override default look */
+  appearance: none;
+  width: 25px; /* Set a specific slider handle width */
+  height: 25px; /* Slider handle height */
+  background: #4CAF50; /* Green background */
+  cursor: pointer; /* Cursor on hover */
+}
+
+input[type="range"]::-moz-range-thumb {
+  width: 25px; /* Set a specific slider handle width */
+  height: 25px; /* Slider handle height */
+  background: #4CAF50; /* Green background */
+  cursor: pointer; /* Cursor on hover */
+}
+
+.right {
+  float: right;
+  width: 70%;
+  padding: 0 10px;
+
+  text-align: right;
+}
+
+.right > p {
+  margin: 10px 0;
+  color: #fff;
+}
+
+.right div {
+  margin-bottom: 10px;
+}

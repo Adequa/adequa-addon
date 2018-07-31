@@ -1,109 +1,33 @@
 'use strict';
 
-let createElement = function (tag, content) {
-  let str = tag;
-  tag = str.split('&')[0].split('.');
-
-  let newDiv = document.createElement(tag[0]);
-
-  let attributes = str.split('&')[1];
-  if (attributes) {
-    attributes = attributes.split(',');
-
-    for (let i = 0; i < attributes.length; i++) {
-      let qualifiedName = attributes[i].split('=')[0],
-        value = attributes[i].split('=')[1];
-
-      newDiv.setAttribute(qualifiedName, value);
-    }
-  }
-
-  if (Array.isArray(content)) {
-    for (let i = 0; i < content.length; i++) {
-      newDiv.appendChild(content[i]);
-    }
-  }
-  else {
-    if (content !== null) {
-      let newContent = document.createTextNode(content);
-      newDiv.appendChild(newContent);
-    }
-  }
-
-  return newDiv;
-};
-
-let createElementsFromObject = function (elems, hasParent) {
-  let elements = [],
-    elem = null;
-
-  Object.keys(elems).map(function (key) {
-    let value = elems[key];
-
-    if (typeof value === 'object') {
-      let nodes = createElementsFromObject(value, true);
-      elem = createElement(key, nodes);
-    }
-    else {
-      elem = createElement(key, value);
-    }
-
-    elements.push(elem);
-  });
-
-  if (elements.length > 1 && !hasParent)
-    return createElement('div', elements);
-  else if (elements.length === 1 && !hasParent)
-    return elements[0];
-
-  return elements;
-};
-
-let removeChilds = function (node) {
-  if (Array.isArray(node))
-    node = node[0];
-
-  while (node.firstChild) {
-    node.removeChild(node.firstChild);
-  }
-
-  return node;
-};
-
-
-let resetScreen = function (/*smooth, endSmoothAnimationCallback*/) { //TODO
-  removeChilds(document.body);
-};
-
-
-let createScreen = function (content, buttonListener, buttonText = null) {
-  let body = document.body;
-
-  body.appendChild(content);
-
-  let button = createElement('button', buttonText === null ? 'Suivant' : buttonText);
-  button.addEventListener('click', buttonListener);
-  body.appendChild(button);
-};
-
 
 let showPresentationScreen = function () {
+  toggleStyle('presentation.css');
+
   let content = createElementsFromObject({
     header: {
-      h1: 'Bravo',
-      h2: 'Tu t\'apprêtes à :'
+      div: {
+        h1: 'Bravo',
+        h2: 'Tu t\'apprêtes à :'
+      }
     },
     div: {
-      'div.protect': {
-        h2: 'PROTÉGER',
-        p: 'La navigation sur internet'
+      'div&class=bloc protect': {
+        div: {
+          h2: 'PROTÉGER',
+          p: 'La navigation sur internet'
+        }
       },
-      'div.pleasent': {
-        p: 'Rendre la navigation plus AGRÉABLE'
+      'div&class=bloc pleasent': {
+        div: {
+          p: 'Rendre la navigation plus AGRÉABLE'
+        }
       },
-      'div.support': {
-        h2: 'SOUTENIR',
-        p: 'Les créateurs de contenus gratuits'
+      'div&class=bloc support': {
+        div: {
+          h2: 'SOUTENIR',
+          p: 'Les créateurs de contenus gratuits'
+        }
       }
     }
   });
@@ -122,11 +46,13 @@ let showPresentationScreen = function () {
 
 
 let showChoiceScreen = function () {
+  toggleStyle('choice.css');
+
   let content = createElementsFromObject({
     header: {
       p: 'Choisis le thème qui t\'intéresse parmi les suivants (au moins un) :',
     },
-    div: {
+    'div&class=body': {
       ul: {
         'li.b': {
           'input.b&type=checkbox,id=b,value=0': '',
@@ -176,6 +102,18 @@ let showChoiceScreen = function () {
       return input.value;
     });
 
+    //Check if one, at least, is selected
+    if(inputsCheckedValues.length === 0) {
+      let elem = createElement('p&style=color: #f00', 'Vous devez renseigner au moins un thème');
+      document.body.appendChild(elem);
+
+      setTimeout(function () {
+        document.body.removeChild(elem);
+      }, 3000);
+
+      return;
+    }
+
     vAPI.messaging.send('adequa', {
       what: 'savePassions',
       passions: inputsCheckedValues
@@ -195,51 +133,88 @@ let showChoiceScreen = function () {
 
 
 let showChoiceNbAdsScreen = function () {
+  toggleStyle('choice-nb-ads.css');
+
+  let nbMaxAdsPerDay = 15;
+
+  let onCreated = function (content) {
+    let onInput = function () {
+      let value = this.value;
+
+      nbMaxAdsPerDay = value;
+      content.getElementsByClassName('ads-per-day')[0].innerHTML = `${value} pubs/jour recommandé`;
+    };
+
+    content.getElementsByTagName('input')[0].addEventListener('input', onInput);
+  };
+
   let content = createElementsFromObject({
     header: {
       p: 'Choisis le nombre de pubs que tu acceptes de voir par jour'
     },
-    p: '(une pub rapporte environ 0,5 centimes d\'euros à un éditeur)',
-    'div.me': {
-      h2: 'POUR TOI',
-      p: '15 pubs/jour recommandé'
+    'div&class=left': {
+      'div&class=range-container': {
+        'input&type=range,min=15,max=60,step=1,value=15,id=range': ''
+      }
     },
-    'div.them': {
-      h2: 'POUR LES ÉDITEURS',
-      'p.day': '7,5 cents/jour',
-      'p.month': '2,25€/mois',
-      'p.year': '27€/an'
+    'div&class=right': {
+      p: '(une pub rapporte environ 0,5 centimes d\'euros à un éditeur)',
+      'div.me': {
+        h3: 'POUR TOI',
+        'p&class=ads-per-day': '15 pubs/jour recommandé'
+      },
+      'div.them': {
+        h3: 'POUR LES ÉDITEURS',
+        'p.day': '7,5 cents/jour',
+        'p.month': '2,25€/mois',
+        'p.year': '27€/an'
+      }
     }
-  });
+  }, onCreated);
 
   createScreen(content, function () {
-    //Save actual state
     vAPI.messaging.send('adequa', {
-      what: 'saveInstallState',
-      state: 3
+      what: 'saveNbMaxAdsPerDay',
+      nbMaxAdsPerDay: nbMaxAdsPerDay
     }, function () {
-      resetScreen();
-      showFinalScreen();
+
+      //Save actual state
+      vAPI.messaging.send('adequa', {
+        what: 'saveInstallState',
+        state: 3
+      }, function () {
+        resetScreen();
+        showFinalScreen();
+      });
+
     });
   });
 };
 
 
 let showFinalScreen = function () {
+  toggleStyle('final-screen.css');
+
   let content = createElementsFromObject({
     header: {
-      'p.strong': 'Paré à surfer !',
+      'p&class=strong': 'Paré à surfer !',
       p: 'Clique de temps en temps sur le bouton Adequa'
     },
-    'div.ads': {
-      h3: 'Combien de traceurs et de pubs ciblées',
-      h2: 'Tu as évitées'
+    'div&class=bloc ads': {
+      div: {
+        p: 'Combien de traceurs et de pubs ciblées',
+        h2: 'Tu as évitées'
+      }
     },
-    'div.accepted': {
-      p: 'Combien de pubs tu as acceptées & la valeur que tu as générée pour les éditeurs'
+    'div&class=bloc accepted': {
+      div: {
+        p: 'Combien de pubs tu as acceptées & la valeur que tu as générée pour les éditeurs'
+      }
     },
-    'div.free-internet': {
-      p: 'Comment tu peux continuer de soutenir l\'internet gratuit'
+    'div&class=bloc free-internet': {
+      div: {
+        p: 'Comment tu peux continuer de soutenir l\'internet gratuit'
+      }
     }
   });
 
@@ -247,7 +222,7 @@ let showFinalScreen = function () {
     vAPI.messaging.send('adequa', {what: 'firstInstallFinished'}, function () {
       vAPI.closePopup();
     });
-  }, 'Terminer');
+  }, true);
 };
 
 

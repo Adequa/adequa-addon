@@ -1397,6 +1397,10 @@ var onMessage = function(request, sender, callback) {
         case 'fetchInstallState':
             vAPI.adequa.storage.fetchInstallState(callback);
             return;
+
+        case 'savePassions':
+            vAPI.adequa.storage.savePassions(request.passions, callback);
+            return;
         default:
             break;
     }

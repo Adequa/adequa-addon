@@ -162,4 +162,8 @@
             callback(result.installState);
         });
     };
+
+    vAPI.adequa.storage.savePassions = function (passions, callback) {
+        vAPI.storage.set({passions: passions}, callback);
+    };
 })();

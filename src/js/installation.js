@@ -1,8 +1,22 @@
 'use strict';
 
 let createElement = function (tag, content) {
-  tag = tag.split('.');
+  let str = tag;
+  tag = str.split('&')[0].split('.');
+
   let newDiv = document.createElement(tag[0]);
+
+  let attributes = str.split('&')[1];
+  if (attributes) {
+    attributes = attributes.split(',');
+
+    for (let i = 0; i < attributes.length; i++) {
+      let qualifiedName = attributes[i].split('=')[0],
+        value = attributes[i].split('=')[1];
+
+      newDiv.setAttribute(qualifiedName, value);
+    }
+  }
 
   if (Array.isArray(content)) {
     for (let i = 0; i < content.length; i++) {
@@ -10,8 +24,10 @@ let createElement = function (tag, content) {
     }
   }
   else {
-    let newContent = document.createTextNode(content);
-    newDiv.appendChild(newContent);
+    if (content !== null) {
+      let newContent = document.createTextNode(content);
+      newDiv.appendChild(newContent);
+    }
   }
 
   return newDiv;
@@ -37,7 +53,7 @@ let createElementsFromObject = function (elems, hasParent) {
 
   if (elements.length > 1 && !hasParent)
     return createElement('div', elements);
-  else if(elements.length === 1 && !hasParent)
+  else if (elements.length === 1 && !hasParent)
     return elements[0];
 
   return elements;
@@ -55,7 +71,7 @@ let removeChilds = function (node) {
 };
 
 
-let resetScreen = function (/*smooth, endSmothAnimationCallback*/) { //TODO
+let resetScreen = function (/*smooth, endSmoothAnimationCallback*/) { //TODO
   removeChilds(document.body);
 };
 
@@ -112,26 +128,67 @@ let showChoiceScreen = function () {
     },
     div: {
       ul: {
-        'li.b': 'BUSINESS',
-        'li.cl': 'CULTURE & LOISIRS',
-        'li.mas': 'MAISON & SANTÉ',
-        'li.mos': 'MODE & SHOPPING',
-        'li.s': 'SPORT',
-        'li.st': 'SCIENCES & TECHNO',
-        'li.a': 'AUTOMOBILES',
-        'li.v': 'VOYAGES',
+        'li.b': {
+          'input.b&type=checkbox,id=b,value=0': '',
+          'label.b&for=b': 'BUSINESS',
+        },
+        'li.cl': {
+          'input.cl&type=checkbox,id=cl,value=1': '',
+          'label.cl&for=cl': 'CULTURE & LOISIRS',
+        },
+        'li.mas': {
+          'input.mas&type=checkbox,id=mas,value=2': '',
+          'label.mas&for=mas': 'MAISON & SANTÉ',
+        },
+        'li.mos': {
+          'input.mos&type=checkbox,id=mos,value=3': '',
+          'label.mos&for=mos': 'MODE & SHOPPING',
+        },
+        'li.s': {
+          'input.s&type=checkbox,id=s,value=4': '',
+          'label.s&for=s': 'SPORT',
+        },
+        'li.st': {
+          'input.st&type=checkbox,id=st,value=5': '',
+          'label.st&for=st': 'SCIENCES & TECHNO',
+        },
+        'li.a': {
+          'input.a&type=checkbox,id=a,value=6': '',
+          'label.a&for=a': 'AUTOMOBILES',
+        },
+        'li.v': {
+          'input.v&type=checkbox,id=v,value=7': '',
+          'label.v&for=v': 'VOYAGES',
+        }
       }
     }
   });
 
   createScreen(content, function () {
-    //Save actual state
+    //Retrieve every inputs
+    let inputs = Array.from(document.getElementsByTagName('input'));
+
+    let inputsChecked = inputs.filter(function (input) {
+      return input.type.toLowerCase() === 'checkbox' && input.checked === true;
+    });
+
+    let inputsCheckedValues = inputsChecked.map(function (input) {
+      return input.value;
+    });
+
     vAPI.messaging.send('adequa', {
-      what: 'saveInstallState',
-      state: 2,
+      what: 'savePassions',
+      passions: inputsCheckedValues
     }, function () {
-      resetScreen();
-      showChoiceNbAdsScreen();
+      //Save actual state after saving passions
+      vAPI.messaging.send('adequa', {
+        what: 'saveInstallState',
+        state: 2,
+      }, function () {
+        resetScreen();
+        showChoiceNbAdsScreen();
+      });
+
     });
   });
 };

@@ -28,7 +28,10 @@
             uDom('#ads_blocked').nodes[0].innerHTML = nbAdsBlocked || 0
         };
         const setTimeWon = function (timeWon){
-            uDom('#time_won').nodes[0].innerHTML = (timeWon || 0) + ' mins'
+            console.log(timeWon)
+            console.log((timeWon || 0))
+            console.log((timeWon || 0).toFixed(2))
+            uDom('#time_won').nodes[0].innerHTML = (timeWon || 0).toFixed(2) + ' mins'
         };
 
         const renderTotalStats = function(){
@@ -40,7 +43,7 @@
                 function(stats){
                     setNbTrackersBlocked(stats.trackersBlocked);
                     setNbAdsBlocked(stats.adsBlocked);
-                    setTimeWon(Math.round(stats.timeWon/1000/60));
+                    setTimeWon(stats.timeWon / 1000 / 60);
                 });
         };
 
@@ -54,7 +57,7 @@
                 function(current){
                     setNbTrackersBlocked(current.nbTrackersBlocked);
                     setNbAdsBlocked(current.nbAdsBlocked);
-                    setTimeWon(Math.round(current.timeWon / 1000 / 60));
+                    setTimeWon(current.loadTime / 1000 / 60);
                 });
         };
 

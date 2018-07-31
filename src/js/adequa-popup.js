@@ -54,7 +54,7 @@
                 function(current){
                     setNbTrackersBlocked(current.nbTrackersBlocked);
                     setNbAdsBlocked(current.nbAdsBlocked);
-                    setTimeWon(Math.round(current.timeWon/1000/60));
+                    setTimeWon(Math.round(current.timeWon / 1000 / 60));
                 });
         };
 
@@ -139,5 +139,6 @@
         toggleButton.addEventListener('click', toggleNetFilteringSwitch);
         statsSwitch.addEventListener('change', toggleStatsDisplayed);
     };
-    render();
+    if(uDom('body').hasClass('adequa-popup'))
+        render();
 })();

@@ -170,4 +170,11 @@
     vAPI.adequa.storage.saveNbMaxAdsPerDay = function (nbMaxAdsPerDay, callback) {
         vAPI.storage.set({nbMaxAdsPerDay: nbMaxAdsPerDay}, callback);
     };
+
+    vAPI.adequa.storage.fetchNbMaxAdsPerDay = function (callback) {
+        vAPI.storage.get('nbMaxAdsPerDAy', function (result) {
+            console.log(result, 'oui');
+            callback(result.nbMaxAdsPerDay);
+        });
+    };
 })();

@@ -1,8 +1,9 @@
 'use strict';
 
+let primaryStyles = ['common.css', 'installation.css'];
 
 let showPresentationScreen = function () {
-  toggleStyle('presentation.css');
+  toggleStyle(primaryStyles.concat('presentation.css'));
 
   let content = createElementsFromObject({
     header: {
@@ -46,7 +47,7 @@ let showPresentationScreen = function () {
 
 
 let showChoiceScreen = function () {
-  toggleStyle('choice.css');
+  toggleStyle(primaryStyles.concat('choice.css'));
 
   let content = createElementsFromObject({
     header: {
@@ -133,7 +134,7 @@ let showChoiceScreen = function () {
 
 
 let showChoiceNbAdsScreen = function () {
-  toggleStyle('choice-nb-ads.css');
+  toggleStyle(primaryStyles.concat('choice-nb-ads.css'));
 
   let nbMaxAdsPerDay = 15;
 
@@ -193,7 +194,7 @@ let showChoiceNbAdsScreen = function () {
 
 
 let showFinalScreen = function () {
-  toggleStyle('final-screen.css');
+  toggleStyle(primaryStyles.concat('final-screen.css'));
 
   let content = createElementsFromObject({
     header: {

@@ -1442,6 +1442,11 @@ var onMessage = function(request, sender, callback) {
         case 'saveNbMaxAdsPerDay':
             vAPI.adequa.storage.saveNbMaxAdsPerDay(request.nbMaxAdsPerDay, callback);
             return;
+
+        case 'fetchNbMaxAdsPerDay':
+            console.log('non');
+            vAPI.storage.get('nbMaxAdsPerDay', callback);
+            return;
         default:
             break;
     }

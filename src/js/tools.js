@@ -59,8 +59,10 @@ let createElementsFromObject = function (elems, onCreatedCallback, hasParent) {
   if (elements.length > 1 && !hasParent) {
     return createElement('div', elements, onCreatedCallback);
   }
-  else if (elements.length === 1 && !hasParent)
+  else if (elements.length === 1 && !hasParent) {
+    onCreatedCallback(elements[0]);
     return elements[0];
+  }
 
   return elements;
 };
@@ -95,21 +97,17 @@ let createScreen = function (content, buttonListener, buttonFinish = false) {
 };
 
 
-let toggleStyle = function (style, isInstallation = true) {
-  let except = [];
-  if(isInstallation === true)
-    except = ['common.css', 'installation.css'];
-  else
-    except = ['common.css'];
-
-  //Filter to remove useful stylesheets
-  let styles = Array.from(document.styleSheets).filter(function (style) {
-    return style.href.search(except.join('|')) === -1;
-  });
-
-  for(let i = 0; i < styles.length; i++) {
-    styles[i].disabled = styles[i].href.search(style) === -1 ? true : false;
+let toggleStyle = function (styles = []) {
+  if(!Array.isArray(styles)) {
+    console.error('styles must be type of array: ', styles);
+    return;
   }
 
-  console.log(document.styleSheets);
+  //Disable useless stylesheets
+  Array.from(document.styleSheets).forEach(function (style) {
+    if(style.href.search(styles.join('|')) === -1)
+      style.disabled = true;
+    else
+      style.disabled = false;
+  });
 };

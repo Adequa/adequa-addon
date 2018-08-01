@@ -85,6 +85,10 @@ var onAllReady = function() {
 
     if(µb.firstInstall === true) {
         vAPI.adequa.storage.setFirstInstall(µb.firstInstall);
+        µb.scheduleAssetUpdater(0);
+        µb.assets.updateStart({
+            delay: µb.hiddenSettings.manualUpdateAssetFetchPeriod
+        });
     }
 
     µb.contextMenu.update(null);

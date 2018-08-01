@@ -1330,11 +1330,12 @@ var onMessage = function(request, sender, callback) {
                         if(current.stats === undefined)
                             current.stats = {};
 
-                        var tabStats = current.stats[sender.tab.id];
+                        var tabStats = current.stats[sender.tab.id] || {};
 
                         current.stats[sender.tab.id] = {
                             nbAdsBlocked: tabStats.nbAdsBlocked || 0,
                             url: tabStats.url || "",
+                            isPartner: ((tabStats.url || "") === sender.url ? tabStats.isPartner : false) || false,
                             nbTrackersBlocked: pageStore.nbTrackersBlocked,
                             loadTime: request.data.loadTime
                         };
@@ -1346,7 +1347,7 @@ var onMessage = function(request, sender, callback) {
                             consulted_at: Date.now() - 1000,
                             nb_trackers_blocked: tabStats.nbTrackersBlocked,
                             nb_ads_blocked: tabStats.nbAdsBlocked,
-                            is_partner: false,
+                            is_partner: tabStats.isPartner,
                             load_time: tabStats.loadTime
                         };
                         vAPI.adequa.storageDB.insert('page_views', data);
@@ -1369,29 +1370,52 @@ var onMessage = function(request, sender, callback) {
                     && request.data.count === 0)
                     return;
 
-                var tabStats = current.stats[sender.tab.id];
+                var tabStats = current.stats[sender.tab.id] || {};
 
                 current.stats[sender.tab.id] = {
                     nbAdsBlocked: request.data.count,
                     url: sender.url,
+                    isPartner: ((tabStats.url || "") === sender.url ? tabStats.isPartner : false) || false,
                     nbTrackersBlocked: tabStats.nbTrackersBlocked || 0,
                     loadTime: tabStats.loadTime || 0
                 };
+
                 vAPI.storage.set({'current': current})
             });
         case 'loaded':
             setTimeout(() => {
-                let code = `
-                const interval = setInterval(() => {
+                var code = `
+                const ADinterval = setInterval(() => {
                     if(window.performance.getEntriesByType('navigation')[0].duration != 0) {
                         const loadTime = Math.round(window.performance.getEntriesByType('navigation')[0].duration);
                         window.postMessage({direction: "insert", message: {loadTime}}, "*")
-                        clearInterval(interval);
+                        clearInterval(ADinterval);
                     }
-                }, 100);`;
+                }, 200);`;
 
                 vAPI.tabs.injectScript(sender.tab.id, {code});
             }, 1000);
+            return;
+        case 'checkIfPartner':
+            vAPI.storage.get('current', function(current){
+                current = current.current || {};
+
+                if(current.stats === undefined)
+                    current.stats = {};
+
+                var tabStats = current.stats[sender.tab.id] || {};
+
+                adequaPartnerList.isPartner((new URL(sender.url)).hostname, function(isPartner){
+                    current.stats[sender.tab.id] = {
+                        nbAdsBlocked: tabStats.nbAdsBlocked || 0,
+                        url: sender.url,
+                        isPartner: isPartner,
+                        nbTrackersBlocked: tabStats.nbTrackersBlocked || 0,
+                        loadTime: tabStats.loadTime || 0
+                    };
+                    vAPI.storage.set({'current': current})
+                });
+            });
             return;
         case 'toggleStatSwitch':
             vAPI.storage.get('current', function(current){
@@ -1414,7 +1438,7 @@ var onMessage = function(request, sender, callback) {
                 current = current.current || {};
 
                 var stats = current.stats || {};
-                var currentStats = current.stats[request.tabId] || {};
+                var currentStats = stats[request.tabId] || {};
                 callback(currentStats)
             });
             return;

@@ -1449,10 +1449,6 @@ var onMessage = function(request, sender, callback) {
             return;
         case 'firstInstallFinished':
             vAPI.adequa.storage.setFirstInstall(false, callback);
-            µb.scheduleAssetUpdater(0);
-            µb.assets.updateStart({
-                delay: µb.hiddenSettings.manualUpdateAssetFetchPeriod
-            });
             return;
 
         case 'saveInstallState':

@@ -1300,6 +1300,7 @@ vAPI.domSurveyor = (function() {
                     direction: "hasAdequa",
                     message: true
                 }, "*");
+                vAPI.messaging.send('adequa', {what: 'checkIfPartner'})
             }
             else if (event.source == window &&
                 event.data &&

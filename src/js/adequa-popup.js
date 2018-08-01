@@ -31,9 +31,6 @@
             uDom('#ads_blocked').nodes[0].innerHTML = nbAdsBlocked || 0
         };
         const setTimeWon = function (timeWon){
-            console.log(timeWon)
-            console.log((timeWon || 0))
-            console.log((timeWon || 0).toFixed(2))
             uDom('#time_won').nodes[0].innerHTML = (timeWon || 0).toFixed(2) + ' mins'
         };
 

@@ -10,7 +10,14 @@
         let popupData = {};
         let toggleButton = document.getElementById('toggleNetFilteringSwitch');
         let statsSwitch = document.getElementsByTagName('input')[0];
+        let trackersBlockedElement = uDom('#trackers_blocked').nodes[0];
+        let adsBlockedElement = uDom('#ads_blocked').nodes[0];
+        let timeWonElement = uDom('#time_won').nodes[0];
+
         const renderNetFilteringSwitch = function () {
+            if(toggleButton == null)
+                return;
+
             if (!uDom('body').hasClass('off')) {
                 toggleButton.innerHTML = `
                 <img src="img/icon_pause.png" height="30"/>
@@ -25,13 +32,16 @@
         };
 
         const setNbTrackersBlocked = function (nbTrackersBlocked){
-            uDom('#trackers_blocked').nodes[0].innerHTML = nbTrackersBlocked || 0
+            if(trackersBlockedElement !== undefined)
+                trackersBlockedElement.innerHTML = nbTrackersBlocked || 0
         };
         const setNbAdsBlocked = function (nbAdsBlocked){
-            uDom('#ads_blocked').nodes[0].innerHTML = nbAdsBlocked || 0
+            if(adsBlockedElement !== undefined)
+                adsBlockedElement.innerHTML = nbAdsBlocked || 0
         };
         const setTimeWon = function (timeWon){
-            uDom('#time_won').nodes[0].innerHTML = (timeWon || 0).toFixed(2) + ' mins'
+            if(timeWonElement !== undefined)
+                timeWonElement.innerHTML = (timeWon || 0).toFixed(2) + ' mins'
         };
 
         const renderTotalStats = function(){
@@ -68,17 +78,21 @@
                     what: 'fetchAdsViewed'
                 },
                 function(passions) {
-                    var adPrints = uDom('#ad-prints');
+                    var adPrints = uDom('#ad-prints').nodes[0];
                     var content = '';
 
                     for (var item in passions) {
                         item = passions[item]
                         content = content + '<div class="stat"><p>' + item.passion.toUpperCase() + '</p><p>' + item.count + '</p></div>'
                     }
+
+                    if(adPrints === undefined)
+                        return;
+
                     if (content === '')
-                        adPrints.nodes[0].innerHTML = '<p align="center">Aucune pub visionnée</p>';
+                        adPrints.innerHTML = '<p align="center">Aucune pub visionnée</p>';
                     else
-                        adPrints.nodes[0].innerHTML = content;
+                        adPrints.innerHTML = content;
                 });
 
         };
@@ -138,9 +152,10 @@
                 state: event.target.checked
             })
         };
-
-        toggleButton.addEventListener('click', toggleNetFilteringSwitch);
-        statsSwitch.addEventListener('change', toggleStatsDisplayed);
+        if(toggleButton != null)
+            toggleButton.addEventListener('click', toggleNetFilteringSwitch);
+        if(statsSwitch != undefined)
+            statsSwitch.addEventListener('change', toggleStatsDisplayed);
     };
     if(uDom('body').hasClass('adequa-popup'))
         render();

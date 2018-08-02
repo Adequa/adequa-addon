@@ -937,9 +937,11 @@ vAPI.tabs.registerListeners();
         var pageStore = this.pageStoreFromTabId(tabId);
         if ( pageStore !== null ) {
             state = pageStore.getNetFilteringSwitch();
-            // if ( state && this.userSettings.showIconBadge && pageStore.perLoadBlockedRequestCount ) {
-            //     badge = this.formatCount(pageStore.perLoadBlockedRequestCount);
-            // }
+
+            var current = µBlock.adequaCurrent || {};
+            var stats = current.stats || {};
+            var tabStats = stats[tabId] || {};
+            badge = (tabStats.nbAdsBlocked || 0) + (tabStats.nbTrackersBlocked || 0) + '';
         }
 
         vAPI.setIcon(tabId, state ? 'on' : 'off', badge);

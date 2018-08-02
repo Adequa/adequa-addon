@@ -1278,18 +1278,6 @@ vAPI.domSurveyor = (function() {
             return;
         }
 
-        if ( vAPI.domWatcher instanceof Object ) {
-            vAPI.domWatcher.start();
-        }
-
-        // Element picker works only in top window for now.
-        if (
-            window !== window.top ||
-            vAPI.domFilterer instanceof Object === false
-        ) {
-            return;
-        }
-
         vAPI.messaging.send('adequa', {what: 'loaded'})
 
         var onMessage = function(event) {
@@ -1317,10 +1305,23 @@ vAPI.domSurveyor = (function() {
                     what: 'storeNbAdsBlocked',
                     data: event.data.message
                 })
+                console.log('count', event.data.message)
             }
         };
 
         window.addEventListener("message", onMessage);
+
+        if ( vAPI.domWatcher instanceof Object ) {
+            vAPI.domWatcher.start();
+        }
+
+        // Element picker works only in top window for now.
+        if (
+            window !== window.top ||
+            vAPI.domFilterer instanceof Object === false
+        ) {
+            return;
+        }
 
         // To send mouse coordinates to main process, as the chrome API fails
         // to provide the mouse position to context menu listeners.

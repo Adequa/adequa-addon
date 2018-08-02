@@ -13,6 +13,7 @@
         let trackersBlockedElement = uDom('#trackers_blocked').nodes[0];
         let adsBlockedElement = uDom('#ads_blocked').nodes[0];
         let timeWonElement = uDom('#time_won').nodes[0];
+        let generatedElement = uDom('#generated').nodes[0];
 
         const renderNetFilteringSwitch = function () {
             if(toggleButton == null)
@@ -42,6 +43,10 @@
         const setTimeWon = function (timeWon){
             if(timeWonElement !== undefined)
                 timeWonElement.innerHTML = (timeWon || 0).toFixed(2) + ' mins'
+        };
+        const setGenerated = function (adsCount){
+            if(generatedElement !== undefined)
+                generatedElement.innerHTML = ((adsCount || 0) * 0.005).toFixed(2) + '€'
         };
 
         const renderTotalStats = function(){
@@ -80,10 +85,12 @@
                 function(passions) {
                     var adPrints = uDom('#ad-prints').nodes[0];
                     var content = '';
+                    var adsCount = 0;
 
                     for (var item in passions) {
                         item = passions[item]
                         content = content + '<div class="stat"><p>' + item.passion.toUpperCase() + '</p><p>' + item.count + '</p></div>'
+                        adsCount += item.count;
                     }
 
                     if(adPrints === undefined)
@@ -93,6 +100,8 @@
                         adPrints.innerHTML = '<p align="center">Aucune pub visionnée</p>';
                     else
                         adPrints.innerHTML = content;
+
+                    setGenerated(adsCount);
                 });
 
         };

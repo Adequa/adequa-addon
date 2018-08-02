@@ -290,6 +290,7 @@ PageStore.prototype.init = function(tabId, context) {
     this.perLoadAllowedRequestCount = 0;
     this.nbTrackersBlocked = 0;
     this.nbAdsBlocked = 0;
+    this.adsAllowed = false;
     this.hiddenElementCount = ''; // Empty string means "unknown"
     this.remoteFontCount = 0;
     this.popupBlockedCount = 0;
@@ -617,12 +618,21 @@ PageStore.prototype.filterRequest = function(context) {
         return 1;
     }
 
+    if(µBlock.partnerList.indexOf(context.rootDomain) !== -1)
+        if((µBlock.adequaCurrent.adsViewedToday || 0) < (µBlock.adequaCurrent.nbMaxAdsPerDay || 25)) {
+            this.adsAllowed = true;
+            this.noCosmeticFiltering = true;
+            this.noGenericCosmeticFiltering = true;
+
+            return 0;
+        }
+
     var cacheableResult = this.cacheableResults[requestType] === true;
 
     if ( cacheableResult ) {
         var entry = this.netFilteringCache.lookupResult(context);
         if ( entry !== undefined ) {
-            if(entry.result === 5) {
+            if(entry.result === 5 && !this.adsAllowed) {
                 this.nbAdsBlocked++;
             }
             else if(entry.result === 6) {
@@ -630,6 +640,9 @@ PageStore.prototype.filterRequest = function(context) {
             }
 
             this.logData = entry.logData;
+            if(this.adsAllowed)
+                return 0;
+
             return entry.result;
         }
     }
@@ -653,7 +666,8 @@ PageStore.prototype.filterRequest = function(context) {
     if ( result === 0 || result === 3 ) {
 
         result = µb.staticNetFilteringEngine.matchString(context);
-        if(result === 5) {
+
+        if(result === 5 && !this.adsAllowed) {
             this.nbAdsBlocked++;
         }
         else if(result === 6) {
@@ -670,6 +684,9 @@ PageStore.prototype.filterRequest = function(context) {
     } else if ( result === 1 && this.collapsibleResources[requestType] === true ) {
         this.netFilteringCache.rememberBlock(context, true);
     }
+
+    if(result === 5 && this.adsAllowed)
+        result = 0;
 
     if(result >= 5)
         result = 1;

@@ -14,11 +14,13 @@ var adequaPartnerList = (function(){
         //TODO fetch list from server
         var raw = `
         adequa.oo
+        lefigaro.fr
         lemonde.fr
         `;
 
         var list = listParser(raw) || [];
         vAPI.storage.set({'partnerList': {list, timestamp: Date.now()}});
+        µBlock.partnerList = list;
 
         if(typeof callback === "function")
             callback(list)
@@ -52,6 +54,10 @@ var adequaPartnerList = (function(){
         this.refreshList = refreshList;
         this.isPartner = isPartner;
     };
+
+    getPartnerList(function(list){
+        µBlock.partnerList = list;
+    });
 
     return new api()
 })();

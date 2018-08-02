@@ -1,9 +1,33 @@
 'use strict';
 
+function mergeDeep(...objects) {
+    const isObject = obj => obj && typeof obj === 'object';
+
+    return objects.reduce((prev, obj) => {
+        Object.keys(obj).forEach(key => {
+            const pVal = prev[key];
+            const oVal = obj[key];
+
+            if (Array.isArray(pVal) && Array.isArray(oVal)) {
+                prev[key] = pVal.concat(...oVal);
+            }
+            else if (isObject(pVal) && isObject(oVal)) {
+                prev[key] = mergeDeep(pVal, oVal);
+            }
+            else {
+                prev[key] = oVal;
+            }
+        });
+
+        return prev;
+    }, {});
+}
+
 (function() {
 
     vAPI.adequa = vAPI.adequa || {};
     vAPI.adequa.storage = vAPI.adequa.storage || {};
+    vAPI.adequa.current = vAPI.adequa.current || {};
 
     if(!vAPI.adequa.storageDB)
         vAPI.adequa.storageDB = new localStorageDB("adequa", localStorage);
@@ -15,6 +39,21 @@
 
         vAPI.adequa.storageDB.commit();
     }
+
+    vAPI.storage.get('current', function(current){
+        µBlock.adequaCurrent = current.current || {};
+    });
+
+    vAPI.adequa.current.setCurrent = function(newCurrent){
+        vAPI.storage.get('current', function(oldCurrent){
+            oldCurrent = oldCurrent.current || {};
+
+            var current = mergeDeep(oldCurrent, newCurrent);
+            µBlock.adequaCurrent = current;
+
+            vAPI.storage.set({'current': current})
+        });
+    };
 
     var filterOutOutdatedNeeds = function(needs) {
         var threshold = 7 * 24 * 60 * 60 * 1000;
@@ -169,6 +208,8 @@
 
     vAPI.adequa.storage.saveNbMaxAdsPerDay = function (nbMaxAdsPerDay, callback) {
         vAPI.storage.set({nbMaxAdsPerDay: nbMaxAdsPerDay}, callback);
+
+        vAPI.adequa.current.setCurrent({nbMaxAdsPerDay});
     };
 
     vAPI.adequa.storage.fetchNbMaxAdsPerDay = function (callback) {

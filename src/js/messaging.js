@@ -532,14 +532,19 @@ var onMessage = function(request, sender, callback) {
         var items = JSON.stringify(response.specificCosmeticFilters.declarativeFilters);
 
         var code = `
-                    var items = ${items};
-                    var count = 0;
-                    for(var item of items)
-                        if(document.querySelector(item) != null)
-                            count++;
-                    window.postMessage({direction: "adsNumber", message: {count}}, "*")`;
-
-        vAPI.tabs.injectScript(sender.tab.id, {code});
+                    var countAds = function() {
+                        var items = ${items};
+                        console.log(items)
+                        var count = 0;
+                        for(var item of items)
+                            if(document.querySelector(item) != null)
+                                count++;
+                        window.postMessage({direction: "adsNumber", message: {count}}, "*")
+                    };
+                    countAds();
+                    `;
+        if(items.length > 0)
+            vAPI.tabs.injectScript(sender.tab.id, {code});
         break;
 
     case 'retrieveGenericCosmeticSelectors':
@@ -1298,6 +1303,10 @@ vAPI.messaging.listen('scriptlets', onMessage);
 
 /******************************************************************************/
 /******************************************************************************/
+function hostname(url) {
+    var match = url.match(/:\/\/(www[0-9]?\.)?(.[^/:]+)/i);
+    if ( match != null && match.length > 2 && typeof match[2] === 'string' && match[2].length > 0 ) return match[2];
+}
 
 var onMessage = function(request, sender, callback) {
     var µb = µBlock;
@@ -1323,6 +1332,7 @@ var onMessage = function(request, sender, callback) {
             var pageStore = µb.pageStoreFromTabId(sender.tab.id);
             if ( pageStore !== null ) {
                 var url = pageStore.rawURL;
+                var impression = false, id, adsCount;
                 if(url.startsWith('http://') !== -1 || url.startsWith('https://') !==-1) {
                     vAPI.storage.get('current', function(current){
                         current = current.current || {};
@@ -1332,10 +1342,21 @@ var onMessage = function(request, sender, callback) {
 
                         var tabStats = current.stats[sender.tab.id] || {};
 
+                        if(pageStore.adsAllowed === true) {
+                            impression = {
+                                passion: hostname(sender.url),
+                                viewed_at: Date.now(),
+                                ad_id: 0
+                            };
+                            adsCount = tabStats.nbAdsBlocked;
+                            tabStats.nbAdsBlocked = 0;
+                        }
+
+
                         current.stats[sender.tab.id] = {
                             nbAdsBlocked: tabStats.nbAdsBlocked || 0,
                             url: tabStats.url || "",
-                            isPartner: ((tabStats.url || "") === sender.url ? tabStats.isPartner : false) || false,
+                            isPartner: µBlock.partnerList.indexOf(hostname(sender.url)) !== -1,
                             nbTrackersBlocked: pageStore.nbTrackersBlocked,
                             loadTime: request.data.loadTime
                         };
@@ -1350,10 +1371,18 @@ var onMessage = function(request, sender, callback) {
                             is_partner: tabStats.isPartner,
                             load_time: tabStats.loadTime
                         };
-                        vAPI.adequa.storageDB.insert('page_views', data);
+
+                        id = vAPI.adequa.storageDB.insert('page_views', data);
+                        if(impression){
+                            current.adsViewedToday = (current.adsViewedToday || 0) + adsCount;
+                            impression.page_view_id = id;
+                            for(var i=0; i<adsCount;i++)
+                                vAPI.adequa.storageDB.insert('ad_prints', impression);
+                        }
                         vAPI.adequa.storageDB.commit();
 
-                        vAPI.storage.set({'current': current})
+                        vAPI.adequa.current.setCurrent(current);
+                        µBlock.updateBadgeAsync(sender.tab.id)
                     });
                 }
             }
@@ -1375,14 +1404,14 @@ var onMessage = function(request, sender, callback) {
                 current.stats[sender.tab.id] = {
                     nbAdsBlocked: request.data.count,
                     url: sender.url,
-                    isPartner: ((tabStats.url || "") === sender.url ? tabStats.isPartner : false) || false,
-                    nbTrackersBlocked: tabStats.nbTrackersBlocked || 0,
-                    loadTime: tabStats.loadTime || 0
+                    isPartner: µBlock.partnerList.indexOf(hostname(sender.url)) !== -1,
                 };
 
-                vAPI.storage.set({'current': current})
+                vAPI.adequa.current.setCurrent(current)
             });
+
         case 'loaded':
+            console.log('loaded')
             setTimeout(() => {
                 var code = `
                 const ADinterval = setInterval(() => {
@@ -1390,31 +1419,23 @@ var onMessage = function(request, sender, callback) {
                         const loadTime = Math.round(window.performance.getEntriesByType('navigation')[0].duration);
                         window.postMessage({direction: "insert", message: {loadTime}}, "*")
                         clearInterval(ADinterval);
+                        countAds();
                     }
                 }, 200);`;
 
                 vAPI.tabs.injectScript(sender.tab.id, {code});
-            }, 1000);
+            }, 2000);
             return;
         case 'checkIfPartner':
-            vAPI.storage.get('current', function(current){
-                current = current.current || {};
+            var current = {stats:{}};
 
-                if(current.stats === undefined)
-                    current.stats = {};
+            adequaPartnerList.isPartner(hostname(sender.url), function(isPartner) {
+                current.stats[sender.tab.id] = {
+                    url: sender.url,
+                    isPartner: isPartner,
+                };
 
-                var tabStats = current.stats[sender.tab.id] || {};
-
-                adequaPartnerList.isPartner((new URL(sender.url)).hostname, function(isPartner){
-                    current.stats[sender.tab.id] = {
-                        nbAdsBlocked: tabStats.nbAdsBlocked || 0,
-                        url: sender.url,
-                        isPartner: isPartner,
-                        nbTrackersBlocked: tabStats.nbTrackersBlocked || 0,
-                        loadTime: tabStats.loadTime || 0
-                    };
-                    vAPI.storage.set({'current': current})
-                });
+                vAPI.adequa.current.setCurrent(current);
             });
             return;
         case 'toggleStatSwitch':

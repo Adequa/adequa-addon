@@ -54,9 +54,7 @@ header p.strong {
 }
 
 .finish:hover {
-  background-color: #eee;
-  box-shadow: 0 0 2px #000;
-  color: #666;
+  transform: translateX(-50%) scale(1.25);
 }
 
 .finish::before, .finish::after {

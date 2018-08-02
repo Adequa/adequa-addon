@@ -91,7 +91,7 @@ let createScreen = function (content, buttonListener, buttonFinish = false) {
 
   let button = createElement(
     'span&class='.concat(buttonFinish === false ? 'next' : 'finish'),
-    buttonFinish === false ? '>' : '');
+    buttonFinish === false ? 'V' : '');
   button.addEventListener('click', buttonListener);
   body.appendChild(button);
 };

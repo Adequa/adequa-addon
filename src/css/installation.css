@@ -38,16 +38,14 @@ header p {
   font-size: 35px;
   line-height: 35px;
   text-align: center;
+  font-family: sans-serif;
 
   cursor: pointer;
 
-  border-radius: 50%;
-  transform: rotate(90deg) translateY(50%);
+  transform: translateX(-50%);
   transition: all .3s;
 }
 
 .next:hover {
-  background-color: #eee;
-  box-shadow: 0 0 2px #000;
-  color: #666;
+  transform: translateX(-50%) scale(1.25);
 }

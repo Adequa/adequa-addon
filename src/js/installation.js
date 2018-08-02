@@ -144,6 +144,9 @@ let showChoiceNbAdsScreen = function () {
 
       nbMaxAdsPerDay = value;
       content.getElementsByClassName('ads-per-day')[0].innerHTML = `${value} pubs/jour recommandé`;
+      content.getElementsByClassName('day')[0].innerHTML = `${(value * 0.5).toFixed(2)} cents/jour`;
+      content.getElementsByClassName('month')[0].innerHTML = `${(value * 0.15).toFixed(2)}€/mois`;
+      content.getElementsByClassName('year')[0].innerHTML = `${(value * 1.8).toFixed(2)}€/an`;
     };
 
     content.getElementsByTagName('input')[0].addEventListener('input', onInput);
@@ -166,9 +169,9 @@ let showChoiceNbAdsScreen = function () {
       },
       'div.them': {
         h3: 'POUR LES ÉDITEURS',
-        'p.day': '7,5 cents/jour',
-        'p.month': '2,25€/mois',
-        'p.year': '27€/an'
+        'p&class=day': '7,5 cents/jour',
+        'p&class=month': '2,25€/mois',
+        'p&class=year': '27€/an'
       }
     }
   }, onCreated);

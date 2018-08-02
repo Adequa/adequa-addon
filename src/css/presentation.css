@@ -21,12 +21,20 @@ header h2 {
 
 .bloc {
   width: 80%;
-  min-height: 45px;
+  height: 55px;
   margin-bottom: 40px;
 }
 
 .bloc div {
+  position: relative;
   padding: 5px;
+}
+
+.bloc div img {
+  float: left;
+  position: absolute;
+  left: -22px;
+  height: 45px;
 }
 
 .protect {
@@ -36,8 +44,17 @@ header h2 {
   text-align: right;
 }
 
+.protect p {
+  font-size: 13px;
+}
+
 .pleasent {
   background-color: #7089E0;
+}
+
+.pleasent div img {
+  left: auto;
+  right: -22px;
 }
 
 .support {

@@ -15,17 +15,20 @@ let showPresentationScreen = function () {
     div: {
       'div&class=bloc protect': {
         div: {
+          'img&src=img/PICTO_ADEQUA_VF-1.png': '',
           h2: 'PROTÉGER',
           p: 'La navigation sur internet'
         }
       },
       'div&class=bloc pleasent': {
         div: {
+          'img&src=img/PICTO_ADEQUA_VF-2.png': '',
           p: 'Rendre la navigation plus AGRÉABLE'
         }
       },
       'div&class=bloc support': {
         div: {
+          'img&src=img/PICTO_ADEQUA_VF-3.png': '',
           h2: 'SOUTENIR',
           p: 'Les créateurs de contenus gratuits'
         }

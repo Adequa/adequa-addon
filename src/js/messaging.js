@@ -1411,7 +1411,6 @@ var onMessage = function(request, sender, callback) {
             });
 
         case 'loaded':
-            console.log('loaded')
             setTimeout(() => {
                 var code = `
                 const ADinterval = setInterval(() => {

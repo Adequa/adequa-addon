@@ -623,8 +623,6 @@ PageStore.prototype.filterRequest = function(context) {
             this.adsAllowed = true;
             this.noCosmeticFiltering = true;
             this.noGenericCosmeticFiltering = true;
-
-            return 0;
         }
 
     var cacheableResult = this.cacheableResults[requestType] === true;

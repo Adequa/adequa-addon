@@ -15,7 +15,6 @@ var adequaPartnerList = (function(){
         var raw = `
         adequa.oo
         lefigaro.fr
-        lemonde.fr
         `;
 
         var list = listParser(raw) || [];

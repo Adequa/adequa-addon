@@ -694,9 +694,8 @@
             let blockType = 2;
 
             if(list.availableFilterLists)
-                blockType = list.availableFilterLists[key].group === "ads" ? 0 : 1;
-            if(blockType === 2)
-                debugger
+                blockType = list.availableFilterLists[key].group === "ads" ? 0 : list.availableFilterLists[key].group === "privacy" ? 1 : 3;
+
             if ( details.content === '' ) {
                 details.content = µb.compileFilters(rawContent, blockType);
                 µb.assets.put(compiledPath, details.content);
@@ -1177,9 +1176,8 @@
                         let blockType = 2;
 
                         if(list.availableFilterLists)
-                            blockType = list.availableFilterLists[key].group === "ads" ? 0 : 1;
-                        if(blockType === 2)
-                            debugger
+                            blockType = list.availableFilterLists[key].group === "ads" ? 0 : list.availableFilterLists[key].group === "privacy" ? 1 : 3;
+
                         this.assets.put(
                             'compiled/' + details.assetKey,
                             this.compileFilters(details.content, blockType)

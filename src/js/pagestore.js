@@ -621,8 +621,6 @@ PageStore.prototype.filterRequest = function(context) {
     if(µBlock.partnerList.indexOf(context.rootDomain) !== -1)
         if((µBlock.adequaCurrent.adsViewedToday || 0) < (µBlock.adequaCurrent.nbMaxAdsPerDay || 25)) {
             this.adsAllowed = true;
-            this.noCosmeticFiltering = true;
-            this.noGenericCosmeticFiltering = true;
         }
 
     var cacheableResult = this.cacheableResults[requestType] === true;
@@ -686,6 +684,8 @@ PageStore.prototype.filterRequest = function(context) {
     if(result === 5 && this.adsAllowed)
         result = 0;
 
+    if(result === 8 && this.adsAllowed)
+        result = 0;
     if(result >= 5)
         result = 1;
 

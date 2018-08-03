@@ -1304,8 +1304,7 @@ vAPI.domSurveyor = (function() {
                 vAPI.messaging.send('adequa', {
                     what: 'storeNbAdsBlocked',
                     data: event.data.message
-                })
-                console.log('count', event.data.message)
+                });
             }
         };
 
@@ -1362,6 +1361,14 @@ vAPI.domSurveyor = (function() {
             vAPI.domWatcher = vAPI.domCollapser = vAPI.domFilterer =
             vAPI.domSurveyor = vAPI.domIsLoaded = null;
             return;
+        }
+
+        if(response.customCosmeticFiltering){
+            var domFilterer = vAPI.domFilterer;
+            domFilterer.addCSSRule(
+                response.annoyingAds || [],
+                'display:none!important;'
+            );
         }
 
         if ( response.noCosmeticFiltering ) {

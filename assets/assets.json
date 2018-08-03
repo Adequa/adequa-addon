@@ -57,6 +57,13 @@
 		],
 		"supportURL": "https://forums.lanik.us/"
 	},
+	"adequa-partner": {
+		"content": "filters",
+		"group": "default",
+		"updateAfter": 30,
+		"title": "Adequa Partner",
+		"contentURL": "assets/exceptionrules.txt"
+	},
 	"fanboy-enhanced": {
 		"content": "filters",
 		"group": "privacy",

@@ -1,7 +1,5 @@
 'use strict';
 
-let primaryStyles = ['common.css', 'installation.css'];
-
 let showPresentationScreen = function () {
   changeScreen('installation-presentation.html', function (dom) {
 
@@ -16,7 +14,6 @@ let showPresentationScreen = function () {
     });
 
   });
-  return;
 };
 
 
@@ -105,8 +102,6 @@ let showFinalScreen = function () {
       vAPI.messaging.send('adequa', {what: 'firstInstallFinished'}, vAPI.closePopup);
     });
   });
-
-  return;
 };
 
 

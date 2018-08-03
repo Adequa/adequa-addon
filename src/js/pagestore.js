@@ -686,6 +686,10 @@ PageStore.prototype.filterRequest = function(context) {
 
     if(result === 8 && this.adsAllowed)
         result = 0;
+
+    if(result === 8)
+        console.log(context)
+
     if(result >= 5)
         result = 1;
 

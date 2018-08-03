@@ -6,7 +6,7 @@
 
 body {
     box-sizing: border-box;
-    width: 400px;
+    width: 100%;
 }
 
 .stats {
@@ -23,10 +23,14 @@ body {
 .stats > div {
     height: 150px;
     width: 70%;
-    padding: 10px;
     display: flex;
+    padding: 5px 0;
     justify-content: space-evenly;
     flex-direction: column;
+}
+
+.stats > div > div {
+    padding: 10px;
 }
 
 .stat {
@@ -160,4 +164,15 @@ input:checked + .redbox {
     transition: 0.4s;
     right: 0;
     left: calc(50% - 10px);
+}
+.adslist{
+    justify-content: space-between!important;
+}
+#ad-total{
+    border-top: 2px solid white;
+}
+#ad-list{
+    margin: 20px 0;
+    height: 100%;
+    overflow-y: auto;
 }

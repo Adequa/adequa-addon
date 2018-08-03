@@ -1433,6 +1433,14 @@ var onMessage = function(request, sender, callback) {
 
             vAPI.tabs.injectScript(sender.tab.id, {code});
             return;
+        case 'fetchTotalNumberAdsViewed':
+            callback(vAPI.adequa.storageDB.rowCount('ad_prints'));
+            return;
+        case 'fetchAdsViewedStats':
+            var viewedToday = µBlock.adequaCurrent.adsViewedToday;
+            var maxPerDay = µBlock.adequaCurrent.nbMaxAdsPerDay;
+            callback({sawToday: viewedToday, NbMaxAdsPerDay: maxPerDay});
+            return;
         case 'checkIfPartner':
             var current = {stats:{}};
 

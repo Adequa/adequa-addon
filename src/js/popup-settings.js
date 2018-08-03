@@ -9,7 +9,7 @@
 
     let onCreated = function (content) {
       content.getElementsByClassName('back')[0].addEventListener('click', function () {
-        toggleStyle(['common.css', 'adequa-popup.css']);
+        toggleStyle(['common.css', 'cockpit.css']);
         resetScreen();
 
         Array.from(previousScreen).forEach(function (node) {

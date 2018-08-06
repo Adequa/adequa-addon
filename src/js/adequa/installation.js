@@ -69,7 +69,7 @@ let showChoiceNbAdsScreen = function () {
       let value = this.value;
 
       nbMaxAdsPerDay = value;
-      dom.getElementsByClassName('ads-per-day')[0].innerHTML = `${value} pubs/jour recommandé`;
+      dom.getElementsByClassName('ads-per-day')[0].innerHTML = `${value} pubs/jour`;
       dom.getElementsByClassName('day')[0].innerHTML = `${(value * 0.5).toFixed(2)} cents/jour`;
       dom.getElementsByClassName('month')[0].innerHTML = `${(value * 0.15).toFixed(2)}€/mois`;
       dom.getElementsByClassName('year')[0].innerHTML = `${(value * 1.8).toFixed(2)}€/an`;

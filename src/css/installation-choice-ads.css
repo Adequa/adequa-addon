@@ -18,38 +18,98 @@ header {
 .left .range-container {
   position: absolute;
   left: 50%;
-  transform: rotate(90deg) translateY(-50%);
+  width: 250%;
+
+  text-align: left;
+
+  transform: rotate(-90deg) translate(-100%, -50%);
   transform-origin: top left;
 }
 
-.left .range-container input[type="range"] {
-  width: 250px;
-  height: 20px;
-  background-color: #fff;
+.left .range-container p:first-child {
+  position: absolute;
+  top: 15px;
+  left: 4px;
+
+  font-weight: bold;
+
+  transform: rotate(90deg);
+  transform-origin: left;
+}
+
+.left .range-container p:last-child {
+  position: absolute;
+  right: 5px;
+  top: 36px;
+
+  text-align: right;
+  font-weight: bold;
+
+  transform: rotate(90deg);
+  transform-origin: right;
+}
+
+#range {
+  width: 100%;
+}
+
+/*.range-slider__range {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 25px;
+  border-radius: 5px;
+  background: #ff5500;
   outline: none;
-  opacity: 0.7;
-  transition: opacity .2s;
+  padding: 0;
+  margin: 0;
 }
 
-.left .range-container input[type="range"]:hover {
-  opacity: 1;
+// Range Handle
+  &::-webkit-slider-thumb {
+     appearance: none;
+     width: $range-handle-size;
+     height: $range-handle-size;
+     border-radius: 50%;
+     background: $range-handle-color;
+     cursor: pointer;
+     transition: background .15s ease-in-out;
+
+&:hover {
+   background: $range-handle-color-hover;
+ }
 }
 
-input[type="range"]::-webkit-slider-thumb {
-  -webkit-appearance: none; /* Override default look */
-  appearance: none;
-  width: 25px; /* Set a specific slider handle width */
-  height: 25px; /* Slider handle height */
-  background: #4CAF50; /* Green background */
-  cursor: pointer; /* Cursor on hover */
+&:active::-webkit-slider-thumb {
+   background: $range-handle-color-hover;
+ }
+
+&::-moz-range-thumb {
+   width: $range-handle-size;
+   height: $range-handle-size;
+   border: 0;
+   border-radius: 50%;
+   background: $range-handle-color;
+   cursor: pointer;
+   transition: background .15s ease-in-out;
+
+&:hover {
+   background: $range-handle-color-hover;
+ }
 }
 
-input[type="range"]::-moz-range-thumb {
-  width: 25px; /* Set a specific slider handle width */
-  height: 25px; /* Slider handle height */
-  background: #4CAF50; /* Green background */
-  cursor: pointer; /* Cursor on hover */
+&:active::-moz-range-thumb {
+   background: $range-handle-color-hover;
+ }
+
+// Focus state
+  &:focus {
+
+&::-webkit-slider-thumb {
+   box-shadow: 0 0 0 3px $shade-0,
+   0 0 0 6px $teal;
+ }
 }
+}*/
 
 .right {
   float: right;
@@ -60,10 +120,10 @@ input[type="range"]::-moz-range-thumb {
 }
 
 .right > p {
-  margin: 10px 0;
+  margin: 30px 0;
   color: #fff;
 }
 
-.right div {
-  margin-bottom: 10px;
+.right > div {
+  margin-bottom: 30px;
 }

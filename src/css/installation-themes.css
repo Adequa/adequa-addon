@@ -12,8 +12,15 @@ ul {
 
 li {
   position: relative;
-  margin-bottom: 10px;
+  padding: 5px 0;
+
   font-size: 1.5em;
+  font-family: "Josefin Sans", sans-serif;
+  font-weight: bold;
+}
+
+li:not(:last-child) {
+  border-bottom: 1px solid #000;
 }
 
 input[type="checkbox"] {
@@ -37,15 +44,14 @@ label::before {
   content: '';
   display: block;
   position: absolute;
+  top: 12px;
   left: 5px;
-  top: 5px;
-  bottom: 5px;
-  width: 25px;
+  bottom: 12px;
+  width: 10px;
 
-  border: 2px solid #fff;
   border-radius: 50%;
 
-  background-color: #FF0000;
+  background-color: #DD493E;
 
   transition: background-color .2s;
 }

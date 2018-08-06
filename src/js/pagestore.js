@@ -619,7 +619,7 @@ PageStore.prototype.filterRequest = function(context) {
     }
 
     if(µBlock.partnerList.indexOf(context.rootDomain) !== -1)
-        if((µBlock.adequaCurrent.adsViewedToday || 0) < (µBlock.adequaCurrent.nbMaxAdsPerDay || 25)) {
+        if((µBlock.adequaCurrent.adsViewedToday || 0) < (µBlock.adequaCurrent.nbMaxAdsPerDay || 0)) {
             this.adsAllowed = true;
         }
 

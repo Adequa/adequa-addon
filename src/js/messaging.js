@@ -1336,8 +1336,12 @@ var onMessage = function(request, sender, callback) {
             });
             return;
         case 'fetchAdsViewed':
-            var passions = vAPI.adequa.storageDB.queryGroupBy('ad_prints', 'passion');
-            callback(passions);
+            var current = µb.adequaCurrent || {};
+
+            if(current.stats === undefined)
+                current.stats = {};
+            if(current.stats[request.tabId] !== undefined)
+            callback(current.stats[request.tabId].nbAdsAllowed);
             return;
         case 'insertPageViewed':
             setTimeout(() => {
@@ -1401,7 +1405,7 @@ var onMessage = function(request, sender, callback) {
             }, 2000);
             return;
         case 'storeNbAdsBlocked':
-            current = µb.adequaCurrent || {};
+            var current = µb.adequaCurrent || {};
 
             if(current.stats === undefined)
                 current.stats = {};

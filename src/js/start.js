@@ -91,9 +91,7 @@ var onAllReady = function() {
         });
     }
     var resetAdsViewedToday = function(){
-        console.log(moment("24:00:00", "hh:mm:ss").diff(moment(), 'seconds'))
         vAPI.adequa.current.setCurrent({adsViewedToday: 0, day: moment().format('YYYY-MM-DD')});
-        setTimeout(resetAdsViewedToday, moment("24:00:00", "hh:mm:ss").diff(moment(), 'seconds'));
     };
 
     vAPI.storage.get('current', function(current){
@@ -113,8 +111,6 @@ var onAllReady = function() {
             resetAdsViewedToday();
             return;
         }
-
-        setTimeout(resetAdsViewedToday, moment("24:00:00", "hh:mm:ss").diff(moment(), 'seconds')*1000);
     });
 
     µb.contextMenu.update(null);

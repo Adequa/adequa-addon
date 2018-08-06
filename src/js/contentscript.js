@@ -1301,6 +1301,7 @@ vAPI.domSurveyor = (function() {
             else if (event.source == window &&
                 event.data &&
                 event.data.direction == "adsNumber") {
+                event.data.message.consultTime = window.performance.timing.responseStart;
                 vAPI.messaging.send('adequa', {
                     what: 'storeNbAdsBlocked',
                     data: event.data.message

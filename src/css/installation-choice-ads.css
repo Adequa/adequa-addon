@@ -1,9 +1,11 @@
-header {
-  text-align: left;
-}
-
 body {
   background-color: #7089E0;
+  font-size: 1.2em;
+}
+
+header {
+  font-size: .8em;
+  text-align: left;
 }
 
 .left {

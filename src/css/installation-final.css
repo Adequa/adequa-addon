@@ -7,15 +7,21 @@ header p.strong {
 }
 
 .bloc {
+  display: flex;
+  align-items: center;
+
   position: relative;
   width: 75%;
-  min-height: 45px;
+  height: 90px;
+  max-height: 90px;
 
   margin-bottom: 30px;
 }
 
 .bloc div {
   padding: 5px;
+  font-size: 1.2em;
+  text-transform: uppercase;
 }
 
 .ads {

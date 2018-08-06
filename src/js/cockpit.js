@@ -11,6 +11,7 @@
         let adsBlockedElement = uDom('#ads_blocked').nodes[0];
         let timeWonElement = uDom('#time_won').nodes[0];
         let generatedElement = uDom('#generated').nodes[0];
+        let adPrintsElement = uDom('#ad-on-page').nodes[0];
 
         const renderNetFilteringSwitch = function () {
             if(toggleButton == null)
@@ -45,6 +46,10 @@
             if(generatedElement !== undefined)
                 generatedElement.innerHTML = ((adsCount || 0) * 0.005).toFixed(2) + '€'
         };
+        const setAdsViewedOnPage = function (adsViewed){
+            if(adPrintsElement !== undefined)
+                adPrintsElement.innerHTML = adsViewed || 0
+        };
 
         const renderTotalStats = function(){
             messaging.send(
@@ -77,32 +82,16 @@
             messaging.send(
                 'adequa',
                 {
-                    what: 'fetchAdsViewed'
+                    what: 'fetchAdsViewed',
+                    tabId: popupData.tabId
                 },
-                function(passions) {
-                    var adPrints = uDom('#ad-list').nodes[0];
-                    var content = '';
-                    var adsCount = 0;
-
-                    for (var item in passions) {
-                        item = passions[item]
-                        content = content + '<div class="stat"><p>' + item.passion.toUpperCase() + '</p><p>' + item.count + '</p></div>'
-                        adsCount += item.count;
-                    }
-
-                    if(adPrints === undefined)
-                        return;
-
-                    if (content === '')
-                        adPrints.innerHTML = '<p align="center">Aucune pub visionnée</p>';
-                    else
-                        adPrints.innerHTML = content;
-
-                    setGenerated(adsCount);
+                function(adsViewed) {
+                    setAdsViewedOnPage(adsViewed)
                 });
             messaging.send('adequa', {what: 'fetchTotalNumberAdsViewed'}, function(adsViewed){
                 var totalAdsNumber = uDom('#total-ad-number').nodes[0];
                 totalAdsNumber.innerText = adsViewed + ''
+                setGenerated(adsViewed);
             });
             messaging.send('adequa', {what: 'fetchAdsViewedStats'}, function(adsViewed){
                 var adsViewedToday = uDom('#ads-viewed-today').nodes[0];
@@ -121,7 +110,8 @@
                 !popupData.netFilteringSwitch ||
                 popupData.pageHostname === 'behind-the-scene' && !popupData.advancedUserEnabled
             );
-            renderNetFilteringSwitch()
+            renderNetFilteringSwitch();
+            renderAdsViewed();
         });
 
         messaging.send('adequa', {
@@ -136,8 +126,6 @@
                 statsSwitch.checked = true;
             }
         });
-
-        renderAdsViewed();
 
         var toggleNetFilteringSwitch = function(event) {
             if ( !popupData || !popupData.pageURL ) { return; }

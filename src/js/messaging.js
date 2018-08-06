@@ -549,10 +549,12 @@ var onMessage = function(request, sender, callback) {
             vAPI.tabs.injectScript(sender.tab.id, {code});
 
         if(µBlock.partnerList.indexOf(hostname(sender.url)) !== -1){
-            response.noGenericCosmeticFiltering = true;
-            response.noCosmeticFiltering = true;
-            response.customCosmeticFiltering = true;
-            response.annoyingAds = ['#dfp-habillage'];
+            // if((µBlock.adequaCurrent.adsViewedToday || 0) < (µBlock.adequaCurrent.nbMaxAdsPerDay || 25)) {
+                response.noGenericCosmeticFiltering = true;
+                response.noCosmeticFiltering = true;
+                response.customCosmeticFiltering = true;
+                response.annoyingAds = ['#dfp-habillage'];
+            // }
         }
         break;
 
@@ -1334,8 +1336,12 @@ var onMessage = function(request, sender, callback) {
             });
             return;
         case 'fetchAdsViewed':
-            var passions = vAPI.adequa.storageDB.queryGroupBy('ad_prints', 'passion');
-            callback(passions);
+            var current = µb.adequaCurrent || {};
+
+            if(current.stats === undefined)
+                current.stats = {};
+            if(current.stats[request.tabId] !== undefined)
+            callback(current.stats[request.tabId].nbAdsAllowed);
             return;
         case 'insertPageViewed':
             setTimeout(() => {
@@ -1367,14 +1373,15 @@ var onMessage = function(request, sender, callback) {
                                 url: tabStats.url || "",
                                 isPartner: µBlock.partnerList.indexOf(hostname(sender.url)) !== -1,
                                 nbTrackersBlocked: pageStore.nbTrackersBlocked,
-                                loadTime: request.data.loadTime
+                                loadTime: request.data.loadTime,
+                                consulted_at: request.data.consultTime || Date.now()
                             };
 
                             tabStats = current.stats[sender.tab.id];
 
                             let data = {
                                 url: pageStore.rawURL,
-                                consulted_at: Date.now() - 1000,
+                                consulted_at: tabStats.consulted_at,
                                 nb_trackers_blocked: tabStats.nbTrackersBlocked,
                                 nb_ads_blocked: tabStats.nbAdsBlocked,
                                 is_partner: tabStats.isPartner,
@@ -1398,27 +1405,27 @@ var onMessage = function(request, sender, callback) {
             }, 2000);
             return;
         case 'storeNbAdsBlocked':
-            vAPI.storage.get('current', function(current){
-                current = current.current || {};
+            var current = µb.adequaCurrent || {};
 
-                if(current.stats === undefined)
-                    current.stats = {};
+            if(current.stats === undefined)
+                current.stats = {};
 
-                if(current.stats[sender.tab.id] !== undefined
-                    && current.stats[sender.tab.id].url === sender.url
-                    && request.data.blockedCount === 0
-                    && request.data.allowedCount === 0)
-                    return;
+            if(current.stats[sender.tab.id] !== undefined
+                && current.stats[sender.tab.id].url === sender.url
+                && current.stats[sender.tab.id].consulted_at === request.data.consultTime
+                && request.data.blockedCount <= current.stats[sender.tab.id].nbAdsBlocked
+                && request.data.allowedCount <= current.stats[sender.tab.id].nbAdsAllowed)
+                return;
+            console.log(request.data, current.stats[sender.tab.id], sender.url)
+            current.stats[sender.tab.id] = {
+                nbAdsAllowed: request.data.allowedCount,
+                nbAdsBlocked: request.data.blockedCount,
+                consulted_at: request.data.consultTime,
+                url: sender.url,
+                isPartner: µBlock.partnerList.indexOf(hostname(sender.url)) !== -1,
+            };
 
-                current.stats[sender.tab.id] = {
-                    nbAdsAllowed: request.data.allowedCount,
-                    nbAdsBlocked: request.data.blockedCount,
-                    url: sender.url,
-                    isPartner: µBlock.partnerList.indexOf(hostname(sender.url)) !== -1,
-                };
-
-                vAPI.adequa.current.setCurrent(current)
-            });
+            vAPI.adequa.current.setCurrent(current)
 
         case 'loaded':
             var code = `
@@ -1426,7 +1433,8 @@ var onMessage = function(request, sender, callback) {
                 if(window.performance.getEntriesByType('navigation')[0].duration != 0) {
                     countAds();
                     const loadTime = Math.round(window.performance.getEntriesByType('navigation')[0].duration);
-                    window.postMessage({direction: "insert", message: {loadTime}}, "*")
+                    const consultTime = window.performance.timing.responseStart;
+                    window.postMessage({direction: "insert", message: {loadTime, consultTime}}, "*")
                     clearInterval(ADinterval);
                 }
             }, 200);`;

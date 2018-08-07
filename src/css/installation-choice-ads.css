@@ -8,6 +8,10 @@ header {
   text-align: left;
 }
 
+.left, .right {
+  margin-top: 45px;
+}
+
 .left {
   float: left;
   width: 30%;

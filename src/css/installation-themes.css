@@ -2,6 +2,10 @@ body {
   background-color: #FBF885;
 }
 
+header p {
+  width: 60%;
+}
+
 .body {
   padding: 20px;
 }
@@ -15,7 +19,6 @@ li {
   padding: 5px 0;
 
   font-size: 1.5em;
-  font-family: "Josefin Sans", sans-serif;
   font-weight: bold;
 }
 
@@ -32,6 +35,8 @@ label {
   display: block;
   position: relative;
   padding: 6px 40px;
+
+  font-family: "Josefin Sans", sans-serif;
 
   cursor: pointer;
 }

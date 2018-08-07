@@ -32,6 +32,10 @@ header p.strong {
   text-align: right;
 }
 
+.ads h2 {
+  font-size: 1.1em;
+}
+
 .accepted {
   background-color: #7089E0;
 }
@@ -66,7 +70,7 @@ header p.strong {
   content: '';
   display: block;
   width: 28px;
-  height: 2px;
+  height: 4px;
   position: absolute;
   top: 50%;
   left: 50%;

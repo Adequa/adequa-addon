@@ -36,10 +36,18 @@ let showChoiceScreen = function () {
         let elem = dom.createElement('p');
         elem.appendChild(dom.createTextNode('Vous devez renseigner au moins un thème'));
         elem.style.color = '#f00';
+        elem.style.position = 'absolute';
+        elem.style.top = '80px';
+        elem.style.backgroundColor = 'rgba(0, 0, 0, .2)';
+        elem.style.padding = '5px';
+        elem.style.zIndex = '9999';
+        elem.style.fontWeight = 'bold';
+        elem.style.textAlign = 'center';
+        elem.style.width = '100%';
         dom.body.insertBefore(elem, dom.getElementById('next-screen'));
 
         setTimeout(function () {
-          dom.body.removeChild(elem);
+          // dom.body.removeChild(elem);
         }, 3000);
 
         return;
@@ -99,7 +107,9 @@ let showChoiceNbAdsScreen = function () {
 let showFinalScreen = function () {
   changeScreen('installation-final.html', function (dom) {
     dom.getElementById('finish').addEventListener('click', function () {
-      vAPI.messaging.send('adequa', {what: 'firstInstallFinished'}, vAPI.closePopup);
+      vAPI.messaging.send('adequa', {what: 'firstInstallFinished'}, function () {
+        changeScreen('cockpit.html');
+      });
     });
   });
 };

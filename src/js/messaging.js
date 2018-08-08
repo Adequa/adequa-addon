@@ -529,23 +529,87 @@ var onMessage = function(request, sender, callback) {
         if ( request.isRootFrame && µb.logger.isEnabled() ) {
             µb.logCosmeticFilters(tabId);
         }
-        var items = JSON.stringify(response.specificCosmeticFilters.declarativeFilters);
 
+        var items = JSON.stringify(['.dfp_slot']);
+        var blocked = JSON.stringify(response.specificCosmeticFilters.declarativeFilters);
         var code = `
-                    var countAds = function() {
-                        var items = ${items}, elem;
+                    var banner = document.createElement('div');
+                    banner.innerHTML='<img style="margin: 4px 8px;" src=" data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAACXBIWXMAAAsSAAALEgHS3X78AAAA6UlEQVR42u3XOwrCQBQF0LcLsRUhiN+g4Ae/CIqFLsxFaG9lFcHeBdjaWIm9G9B5EOEaGEzAybXIhQspD8mbx0RE5Gb6IPUp8MDqB6As6SWwvYFBSoBDFJADRI8B0PiA6DIAmhYg2gyApgOIJgMg4Ry8EQ0GQNMHRI0B0AwBUWUANJOE223za4Bmbno3vcbo2gVAWDOQATLAXwE800KM5l0BkiyjlQvAyXT3pVtALFkzUATEgjWEHiBmrFOAiCnrGJYAMWbtgQogRqxFVI/cuAPGJsRr/4W1in3bv+E+/C6uezQ9235OU+8LBe8tvZ2tmhYAAAAASUVORK5CYII=" alt="logo adequa" /> Adequa'
+                    banner.style.position = 'absolute';
+                    banner.style.bottom = 0;
+                    banner.style.left = 0;
+                    banner.style.right = 0;
+                    banner.style.height = '40px';
+                    banner.style.width = '100%';
+                    banner.style.background = '#7089E0';
+                    banner.style['z-index'] = 9999;
+                    banner.style.color = 'white';
+                    banner.style['font-size'] = '18px';
+                    banner.style.display = 'flex';
+                    banner.style['align-items'] = 'center';
+                    banner.className = "adequaBanner";
+                    
+                    function isElementInViewport(elem) {
+                        let x = elem.getBoundingClientRect().left;
+                        let y = elem.getBoundingClientRect().top;
+                        let ww = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+                        let hw = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
+                        let w = elem.clientWidth;
+                        let h = elem.clientHeight;
+                        return (
+                            (y < hw &&
+                             y + h > 0) &&
+                            (x < ww &&
+                             x + w > 0)
+                        );
+                    }
+                    
+                    var countAds = function(){setInterval(function() {
+                        var items = ${items}, blocked = ${blocked}, elem;
                         var allowedCount = 0, blockedCount = 0;
                         for(var item of items){
-                            elem = document.querySelector(item)
-                            if( elem != null) {
-                                window.getComputedStyle(elem,null).getPropertyValue("display") === 'none' ? blockedCount++ : allowedCount++;
+                            elements = document.querySelectorAll(item)
+                            if( elements.length !== 0) {
+                                elements.forEach(function(elem){
+                                    var bannerAlreadyDisplayed = false;
+                                    elem.childNodes.forEach(function(e){
+                                        if(e.isEqualNode(banner))
+                                            bannerAlreadyDisplayed = true;
+                                    });
+                                  
+                                    if(bannerAlreadyDisplayed){
+                                        if(elem.clientHeight <= 45) {
+                                            elem.childNodes.forEach(function(e){
+                                                if(e.isEqualNode(banner))
+                                                    e.remove();
+                                            });   
+                                        }
+                                        return;
+                                    }
+                                    
+                                    if(elem.clientHeight >= 45 && isElementInViewport(elem)) {
+                                        elem.style.position = 'relative';
+                                        elem.appendChild(banner.cloneNode(true));
+                                    }
+                                });
                             }
                         }
+                        var element = null;
+                        for(element of document.getElementsByClassName('adequaBanner')){
+                            var parent = element.parentElement;
+                            if(parent.clientHeight >= 45)
+                                if(window.getComputedStyle(element.parentElement,null).getPropertyValue("display") !== 'none') allowedCount++;
+                        }
+
+                        for(var item of blocked){ 
+                            elem = document.querySelector(item) 
+                            if( elem != null)
+                                if(window.getComputedStyle(elem,null).getPropertyValue("display") === 'none') blockedCount++;
+                        }
                         window.postMessage({direction: "adsNumber", message: {blockedCount, allowedCount}}, "*")
-                    };
-                    countAds();
+                    }, 1000)};
                     `;
-        if(items.length > 0)
+        if(response.specificCosmeticFilters.declarativeFilters.length > 0)
             vAPI.tabs.injectScript(sender.tab.id, {code});
 
         if(µBlock.partnerList.indexOf(hostname(sender.url)) !== -1){
@@ -1431,11 +1495,11 @@ var onMessage = function(request, sender, callback) {
             var code = `
             const ADinterval = setInterval(() => {
                 if(window.performance.getEntriesByType('navigation')[0].duration != 0) {
-                    countAds();
                     const loadTime = Math.round(window.performance.getEntriesByType('navigation')[0].duration);
                     const consultTime = window.performance.timing.responseStart;
                     window.postMessage({direction: "insert", message: {loadTime, consultTime}}, "*")
                     clearInterval(ADinterval);
+                    countAds();
                 }
             }, 200);`;
 

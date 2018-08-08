@@ -1274,6 +1274,8 @@ FilterContainer.prototype.retrieveDomainSelectors = function(
 
         // Add the adequa probe as an exception
         exceptionSet.add('.AD-Rotate');
+        exceptionSet.add('.adequa');
+        exceptionSet.add('.adequaBanner');
 
         for ( exception of this.genericDonthideSet ) {
             exceptionSet.add(exception);

@@ -32,7 +32,7 @@ let showChoiceScreen = function () {
       });
 
       //Check if one, at least, is selected
-      if(inputsCheckedValues.length === 0) {
+      if (inputsCheckedValues.length === 0) {
         let elem = dom.createElement('p');
         elem.appendChild(dom.createTextNode('Vous devez renseigner au moins un thème'));
         elem.style.color = '#f00';
@@ -47,7 +47,7 @@ let showChoiceScreen = function () {
         dom.body.insertBefore(elem, dom.getElementById('next-screen'));
 
         setTimeout(function () {
-          // dom.body.removeChild(elem);
+          dom.body.removeChild(elem);
         }, 3000);
 
         return;

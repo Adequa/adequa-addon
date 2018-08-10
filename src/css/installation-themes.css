@@ -11,6 +11,9 @@ header p {
 }
 
 ul {
+  max-height: 355px;
+  overflow-y: auto;
+
   list-style: none;
 }
 

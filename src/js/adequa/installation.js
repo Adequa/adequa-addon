@@ -18,7 +18,46 @@ let showPresentationScreen = function () {
 
 
 let showChoiceScreen = function () {
+  let requestThemes = function (dom) {
+    let req = new XMLHttpRequest();
+    req.onreadystatechange = function () {
+      if (this.readyState === XMLHttpRequest.DONE) {
+        if (this.status === 200) {
+          let themes = JSON.parse(this.responseText);
+          let themesNode = dom.getElementById('themes');
+
+          //Remove children nodes
+          while (themesNode.firstChild) {
+            themesNode.removeChild(themesNode.firstChild);
+          }
+
+          themes.forEach(function (theme) {
+            let liElem = dom.createElement('li');
+            let inputElem = dom.createElement('input');
+            let labelElem = dom.createElement('label');
+
+            inputElem.setAttribute('type', 'checkbox');
+            inputElem.setAttribute('value', theme.id);
+            inputElem.setAttribute('id', theme.id);
+            labelElem.setAttribute('for', theme.id);
+            labelElem.appendChild(dom.createTextNode(theme.name));
+
+            liElem.appendChild(inputElem);
+            liElem.appendChild(labelElem);
+
+            themesNode.appendChild(liElem);
+          });
+        }
+      }
+    };
+
+    req.open('get', 'http://localhost:3000/api/themes');
+    req.send(null);
+  };
+
   changeScreen('installation-themes.html', function (dom) {
+    requestThemes(dom);
+
     dom.getElementById('next-screen').addEventListener('click', function () {
       //Retrieve every inputs
       let inputs = Array.from(dom.getElementsByTagName('input'));
@@ -70,9 +109,21 @@ let showChoiceScreen = function () {
 
 
 let showChoiceNbAdsScreen = function () {
-  let nbMaxAdsPerDay = 15;
+  let nbMaxAdsPerDay = 25;
 
   changeScreen('installation-choice-nb-ads.html', function (dom) {
+    let req = new XMLHttpRequest();
+    req.onreadystatechange = function () {
+      if (this.readyState === XMLHttpRequest.DONE) {
+        if (this.status === 200) {
+          dom.getElementById('range-min').innerText = this.responseText;
+          dom.getElementsByTagName('input')[0].setAttribute('min', this.responseText);
+        }
+      }
+    };
+    req.open('get', 'http://localhost:3000/api/min-ads');
+    req.send(null);
+
     let onInput = function () {
       let value = this.value;
 

@@ -16,7 +16,7 @@ window.onload = function () {
       }
     }
   };
-  req.open('get', 'http://localhost:3000/api/whitelist-urls');
+  req.open('get', 'http://admin-equa.com/api/whitelist-urls');
   req.send(null);
 
 };

@@ -1098,7 +1098,7 @@
         //     fdata = [fdata, args[args.length - 1]];
 
         var f = FilterOrigin.matcherFactory(args[1]);
-        f.wrapped = filterFromCompiledData(fdata);
+        f.wrapped = filterFromCompiledData(fdata, args[args.length - 1]);
         return f;
     };
 
@@ -1147,7 +1147,7 @@
         //     fdata = [fdata, args[args.length - 1]];
 
         var f = new FilterDataHolder(args[1], args[2]);
-        f.wrapped = filterFromCompiledData(fdata);
+        f.wrapped = filterFromCompiledData(fdata, args[args.length - 1]);
         return f;
     };
 

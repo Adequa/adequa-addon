@@ -1399,7 +1399,7 @@ var onMessage = function(request, sender, callback) {
 
 
                             current.stats[sender.tab.id] = {
-                                nbAdsBlocked: tabStats.nbAdsBlocked || 0,
+                                nbAdsBlocked: pageStore.nbAdsBlocked,
                                 nbAdsAllowed: tabStats.nbAdsAllowed || 0,
                                 url: tabStats.url || "",
                                 isPartner: µBlock.partnerList.indexOf(hostname(sender.url)) !== -1,
@@ -1454,7 +1454,7 @@ var onMessage = function(request, sender, callback) {
 
             current.stats[sender.tab.id] = {
                 nbAdsAllowed: request.data.allowedCount,
-                nbAdsBlocked: request.data.blockedCount,
+                // nbAdsBlocked: request.data.blockedCount,
                 consulted_at: request.data.consultTime,
                 url: sender.url,
                 isPartner: µBlock.partnerList.indexOf(hostname(sender.url)) !== -1,

@@ -628,10 +628,7 @@ PageStore.prototype.filterRequest = function(context) {
     if ( cacheableResult ) {
         var entry = this.netFilteringCache.lookupResult(context);
         if ( entry !== undefined ) {
-            if(entry.result === 5 && !this.adsAllowed) {
-                this.nbAdsBlocked++;
-            }
-            else if(entry.result === 6) {
+            if(entry.result === 6) {
                 this.nbTrackersBlocked++;
             }
 
@@ -664,12 +661,7 @@ PageStore.prototype.filterRequest = function(context) {
 
         result = µb.staticNetFilteringEngine.matchString(context);
 
-        if(result === true)
-            result = 1;
-        if(result === 5 && !this.adsAllowed) {
-            this.nbAdsBlocked++;
-        }
-        else if(result === 6) {
+        if(result === 6) {
             this.nbTrackersBlocked++;
         }
 
@@ -684,6 +676,8 @@ PageStore.prototype.filterRequest = function(context) {
         this.netFilteringCache.rememberBlock(context, true);
     }
 
+    this.nbAdsBlocked = this.perLoadBlockedRequestCount - this.nbTrackersBlocked;
+
     // if(result === 5 && this.adsAllowed)
     //     result = 0;
 
@@ -691,6 +685,9 @@ PageStore.prototype.filterRequest = function(context) {
     //     result = 0;
 
     if(result >= 5)
+        result = 1;
+
+    if(result === true)
         result = 1;
 
     return result;

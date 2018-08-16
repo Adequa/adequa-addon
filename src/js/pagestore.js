@@ -636,9 +636,10 @@ PageStore.prototype.filterRequest = function(context) {
             }
 
             this.logData = entry.logData;
-            if(this.adsAllowed)
-                return 0;
-
+            // if(this.adsAllowed)
+            //     return 0;
+            if(entry.result >= 5)
+                entry.result = 1;
             return entry.result;
         }
     }
@@ -663,6 +664,8 @@ PageStore.prototype.filterRequest = function(context) {
 
         result = µb.staticNetFilteringEngine.matchString(context);
 
+        if(result === true)
+            result = 1;
         if(result === 5 && !this.adsAllowed) {
             this.nbAdsBlocked++;
         }
@@ -681,14 +684,11 @@ PageStore.prototype.filterRequest = function(context) {
         this.netFilteringCache.rememberBlock(context, true);
     }
 
-    if(result === 5 && this.adsAllowed)
-        result = 0;
+    // if(result === 5 && this.adsAllowed)
+    //     result = 0;
 
-    if(result === 8 && this.adsAllowed)
-        result = 0;
-
-    if(result === 8)
-        console.log(context)
+    // if(result === 8 && this.adsAllowed)
+    //     result = 0;
 
     if(result >= 5)
         result = 1;

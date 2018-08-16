@@ -530,85 +530,52 @@ var onMessage = function(request, sender, callback) {
             µb.logCosmeticFilters(tabId);
         }
 
-        var items = JSON.stringify(['.dfp_slot']);
+        var allowed = JSON.stringify(['.dfp_slot']);
         var blocked = JSON.stringify(response.specificCosmeticFilters.declarativeFilters);
         var code = `
-                    var banner = document.createElement('div');
-                    banner.innerHTML='<img style="margin: 4px 8px;" src=" data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAACXBIWXMAAAsSAAALEgHS3X78AAAA6UlEQVR42u3XOwrCQBQF0LcLsRUhiN+g4Ae/CIqFLsxFaG9lFcHeBdjaWIm9G9B5EOEaGEzAybXIhQspD8mbx0RE5Gb6IPUp8MDqB6As6SWwvYFBSoBDFJADRI8B0PiA6DIAmhYg2gyApgOIJgMg4Ry8EQ0GQNMHRI0B0AwBUWUANJOE223za4Bmbno3vcbo2gVAWDOQATLAXwE800KM5l0BkiyjlQvAyXT3pVtALFkzUATEgjWEHiBmrFOAiCnrGJYAMWbtgQogRqxFVI/cuAPGJsRr/4W1in3bv+E+/C6uezQ9235OU+8LBe8tvZ2tmhYAAAAASUVORK5CYII=" alt="logo adequa" /> Adequa'
-                    banner.style.position = 'absolute';
-                    banner.style.bottom = 0;
-                    banner.style.left = 0;
-                    banner.style.right = 0;
-                    banner.style.height = '40px';
-                    banner.style.width = '100%';
-                    banner.style.background = '#7089E0';
-                    banner.style['z-index'] = 9999;
-                    banner.style.color = 'white';
-                    banner.style['font-size'] = '18px';
-                    banner.style.display = 'flex';
-                    banner.style['align-items'] = 'center';
-                    banner.className = "adequaBanner";
-                    
-                    function isElementInViewport(elem) {
-                        let x = elem.getBoundingClientRect().left;
-                        let y = elem.getBoundingClientRect().top;
-                        let ww = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
-                        let hw = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
-                        let w = elem.clientWidth;
-                        let h = elem.clientHeight;
-                        return (
-                            (y < hw &&
-                             y + h > 0) &&
-                            (x < ww &&
-                             x + w > 0)
-                        );
-                    }
-                    
-                    var countAds = function(){setInterval(function() {
-                        var items = ${items}, blocked = ${blocked}, elem;
-                        var allowedCount = 0, blockedCount = 0;
-                        for(var item of items){
-                            elements = document.querySelectorAll(item)
-                            if( elements.length !== 0) {
-                                elements.forEach(function(elem){
-                                    var bannerAlreadyDisplayed = false;
-                                    elem.childNodes.forEach(function(e){
-                                        if(e.isEqualNode(banner))
-                                            bannerAlreadyDisplayed = true;
-                                    });
-                                  
-                                    if(bannerAlreadyDisplayed){
-                                        if(elem.clientHeight <= 45) {
-                                            elem.childNodes.forEach(function(e){
-                                                if(e.isEqualNode(banner))
-                                                    e.remove();
-                                            });   
-                                        }
-                                        return;
-                                    }
-                                    
-                                    if(elem.clientHeight >= 45 && isElementInViewport(elem)) {
-                                        elem.style.position = 'relative';
-                                        elem.appendChild(banner.cloneNode(true));
-                                    }
-                                });
+        function isElementInViewport(elem) {
+            let x = elem.getBoundingClientRect().left;
+            let y = elem.getBoundingClientRect().top;
+            let ww = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+            let hw = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
+            let w = elem.clientWidth;
+            let h = elem.clientHeight;
+            return (
+                (y < hw &&
+                    y + h > 0) &&
+                (x < ww &&
+                    x + w > 0)
+            );
+        }
+        
+        var countAds = function () {
+            setTimeout(function () {
+                var allowed = ${allowed}, blocked = ${blocked}, elements;
+                var allowedCount = 0, blockedCount = 0;
+                
+                for (var item of allowed) {
+                    elements = document.querySelectorAll(item);
+                    if (elements.length !== 0) {
+                        elements.forEach(function (elem) {
+                            if (elem.clientHeight >= 45 && isElementInViewport(elem)) {
+                                allowedCount++;
                             }
-                        }
-                        var element = null;
-                        for(element of document.getElementsByClassName('adequaBanner')){
-                            var parent = element.parentElement;
-                            if(parent.clientHeight >= 45)
-                                if(window.getComputedStyle(element.parentElement,null).getPropertyValue("display") !== 'none') allowedCount++;
-                        }
-
-                        for(var item of blocked){ 
-                            elem = document.querySelector(item) 
-                            if( elem != null)
-                                if(window.getComputedStyle(elem,null).getPropertyValue("display") === 'none') blockedCount++;
-                        }
-                        window.postMessage({direction: "adsNumber", message: {blockedCount, allowedCount}}, "*")
-                    }, 1000)};
-                    `;
+                            else
+                                blockedCount++;
+                        });
+                    }
+                }
+        
+        
+                for (var item of blocked) {
+                    elem = document.querySelector(item)
+                    if (elem != null)
+                        if (window.getComputedStyle(elem, null).getPropertyValue("display") === 'none') blockedCount++;
+                }
+        
+                window.postMessage({direction: "adsNumber", message: {blockedCount, allowedCount}}, "*")
+            }, 1000)
+        };`;
         if(response.specificCosmeticFilters.declarativeFilters.length > 0)
             vAPI.tabs.injectScript(sender.tab.id, {code});
 
@@ -1453,11 +1420,15 @@ var onMessage = function(request, sender, callback) {
                             };
 
                             id = vAPI.adequa.storageDB.insert('page_views', data);
+                            current.stats[sender.tab.id].dbId = id;
+
                             if (impression) {
                                 current.adsViewedToday = (current.adsViewedToday || 0) + tabStats.nbAdsAllowed;
                                 impression.page_view_id = id;
-                                for (var i = 0; i < tabStats.nbAdsAllowed; i++)
-                                    vAPI.adequa.storageDB.insert('ad_prints', impression);
+                                current.stats[sender.tab.id].impression = impression;
+                            }
+                            else {
+                                current.stats[sender.tab.id].impression = false;
                             }
                             vAPI.adequa.storageDB.commit();
 
@@ -1480,7 +1451,7 @@ var onMessage = function(request, sender, callback) {
                 && request.data.blockedCount <= current.stats[sender.tab.id].nbAdsBlocked
                 && request.data.allowedCount <= current.stats[sender.tab.id].nbAdsAllowed)
                 return;
-            console.log(request.data, current.stats[sender.tab.id], sender.url)
+
             current.stats[sender.tab.id] = {
                 nbAdsAllowed: request.data.allowedCount,
                 nbAdsBlocked: request.data.blockedCount,
@@ -1489,8 +1460,22 @@ var onMessage = function(request, sender, callback) {
                 isPartner: µBlock.partnerList.indexOf(hostname(sender.url)) !== -1,
             };
 
-            vAPI.adequa.current.setCurrent(current)
+            if(current.stats[sender.tab.id].impression) {
+                for (var i = 0; i < current.stats[sender.tab.id].nbAdsAllowed; i++)
+                    vAPI.adequa.storageDB.insert('ad_prints', current.stats[sender.tab.id].impression);
 
+                current.stats[sender.tab.id].impression = false;
+            }
+
+            vAPI.adequa.storageDB.update("page_views", {ID: current.stats[sender.tab.id].dbId}, function(row){
+                row.nb_ads_blocked = request.data.blockedCount;
+                return row;
+            });
+
+
+            vAPI.adequa.current.setCurrent(current);
+            µBlock.updateBadgeAsync(sender.tab.id)
+            return;
         case 'loaded':
             var code = `
             const ADinterval = setInterval(() => {
@@ -1499,7 +1484,6 @@ var onMessage = function(request, sender, callback) {
                     const consultTime = window.performance.timing.responseStart;
                     window.postMessage({direction: "insert", message: {loadTime, consultTime}}, "*")
                     clearInterval(ADinterval);
-                    countAds();
                 }
             }, 200);`;
 

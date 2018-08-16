@@ -972,6 +972,9 @@ vAPI.domCollapser = (function() {
                 }
             }
             process();
+            if(typeof countAds === "function"){
+                setTimeout(countAds, 5000);
+            }
         }
     };
 

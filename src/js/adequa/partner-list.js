@@ -13,9 +13,6 @@ var adequaPartnerList = (function(){
     var refreshList = function(callback){
         //TODO fetch list from server
         var raw = `
-        adequa.oo
-        lefigaro.fr
-        lemonde.fr
         `;
 
         var list = listParser(raw) || [];

@@ -697,7 +697,7 @@
                 blockType = list.availableFilterLists[key].group === "ads" ? 0 : list.availableFilterLists[key].group === "privacy" ? 1 : 3;
 
             if ( details.content === '' ) {
-                details.content = µb.compileFilters(rawContent, blockType);
+                details.content = µb.compileFilters(rawContent, blockType + 5);
                 µb.assets.put(compiledPath, details.content);
             }
             rawContent = undefined;
@@ -1180,7 +1180,7 @@
 
                         this.assets.put(
                             'compiled/' + details.assetKey,
-                            this.compileFilters(details.content, blockType)
+                            this.compileFilters(details.content, blockType + 5)
                         );
                     });
                 }

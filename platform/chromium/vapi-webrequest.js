@@ -55,10 +55,10 @@ vAPI.net.registerListeners = function() {
         other: true
     };
     // modern Chromium/WebExtensions: more types available.
-    if ( wrApi.ResourceType ) {
-        (function() {
-            for ( var typeKey in wrApi.ResourceType ) {
-                if ( wrApi.ResourceType.hasOwnProperty(typeKey) ) {
+    if (wrApi.ResourceType) {
+        (function () {
+            for (var typeKey in wrApi.ResourceType) {
+                if (wrApi.ResourceType.hasOwnProperty(typeKey)) {
                     validTypes[wrApi.ResourceType[typeKey]] = true;
                 }
             }
@@ -66,85 +66,85 @@ vAPI.net.registerListeners = function() {
     }
 
     var extToTypeMap = new Map([
-        ['eot','font'],['otf','font'],['svg','font'],['ttf','font'],['woff','font'],['woff2','font'],
-        ['mp3','media'],['mp4','media'],['webm','media'],
-        ['gif','image'],['ico','image'],['jpeg','image'],['jpg','image'],['png','image'],['webp','image']
+        ['eot', 'font'], ['otf', 'font'], ['svg', 'font'], ['ttf', 'font'], ['woff', 'font'], ['woff2', 'font'],
+        ['mp3', 'media'], ['mp4', 'media'], ['webm', 'media'],
+        ['gif', 'image'], ['ico', 'image'], ['jpeg', 'image'], ['jpg', 'image'], ['png', 'image'], ['webp', 'image']
     ]);
 
-    var denormalizeTypes = function(aa) {
-        if ( aa.length === 0 ) {
+    var denormalizeTypes = function (aa) {
+        if (aa.length === 0) {
             return Object.keys(validTypes);
         }
         var out = [];
         var i = aa.length,
             type,
             needOther = true;
-        while ( i-- ) {
+        while (i--) {
             type = aa[i];
-            if ( validTypes[type] ) {
+            if (validTypes[type]) {
                 out.push(type);
             }
-            if ( type === 'other' ) {
+            if (type === 'other') {
                 needOther = false;
             }
         }
-        if ( needOther ) {
+        if (needOther) {
             out.push('other');
         }
         return out;
     };
 
-    var headerValue = function(headers, name) {
+    var headerValue = function (headers, name) {
         var i = headers.length;
-        while ( i-- ) {
-            if ( headers[i].name.toLowerCase() === name ) {
+        while (i--) {
+            if (headers[i].name.toLowerCase() === name) {
                 return headers[i].value.trim();
             }
         }
         return '';
     };
 
-    var normalizeRequestDetails = function(details) {
+    var normalizeRequestDetails = function (details) {
         var type = details.type;
 
         // https://github.com/gorhill/uBlock/issues/1493
         // Chromium 49+/WebExtensions support a new request type: `ping`,
         // which is fired as a result of using `navigator.sendBeacon`.
-        if ( type === 'ping' ) {
+        if (type === 'ping') {
             details.type = 'beacon';
             return;
         }
 
-        if ( type === 'imageset' ) {
+        if (type === 'imageset') {
             details.type = 'image';
             return;
         }
 
         // The rest of the function code is to normalize type
-        if ( type !== 'other' ) {
+        if (type !== 'other') {
             return;
         }
 
         // Try to map known "extension" part of URL to request type.
         var path = µburi.pathFromURI(details.url),
             pos = path.indexOf('.', path.length - 6);
-        if ( pos !== -1 && (type = extToTypeMap.get(path.slice(pos + 1))) ) {
+        if (pos !== -1 && (type = extToTypeMap.get(path.slice(pos + 1)))) {
             details.type = type;
             return;
         }
 
         // Try to extract type from response headers if present.
-        if ( details.responseHeaders ) {
+        if (details.responseHeaders) {
             type = headerValue(details.responseHeaders, 'content-type');
-            if ( type.startsWith('font/') ) {
+            if (type.startsWith('font/')) {
                 details.type = 'font';
                 return;
             }
-            if ( type.startsWith('image/') ) {
+            if (type.startsWith('image/')) {
                 details.type = 'image';
                 return;
             }
-            if ( type.startsWith('audio/') || type.startsWith('video/') ) {
+            if (type.startsWith('audio/') || type.startsWith('video/')) {
                 details.type = 'media';
                 return;
             }
@@ -154,7 +154,7 @@ vAPI.net.registerListeners = function() {
         //   If no transposition possible, transpose to `object` as per
         //   Chromium bug 410382
         // https://code.google.com/p/chromium/issues/detail?id=410382
-        if ( is_v38_48 ) {
+        if (is_v38_48) {
             details.type = 'object';
         }
     };
@@ -168,19 +168,23 @@ vAPI.net.registerListeners = function() {
     //
     // Once uBO 1.11.1 and uBO-Extra 2.12 are widespread, the image-based
     // handling code can be removed.
-    var onBeforeWebsocketRequest = function(details) {
-        if ( (details.type !== 'image') &&
-             (details.method !== 'HEAD' || details.type !== 'xmlhttprequest')
+    var onBeforeWebsocketRequest = function (details) {
+        if ((details.type !== 'image') &&
+            (details.method !== 'HEAD' || details.type !== 'xmlhttprequest')
         ) {
             return;
         }
         var requestURL = details.url,
             matches = /[?&]u(?:rl)?=([^&]+)/.exec(requestURL);
-        if ( matches === null ) { return; }
+        if (matches === null) {
+            return;
+        }
         details.type = 'websocket';
         details.url = decodeURIComponent(matches[1]);
         var r = onBeforeRequestClient(details);
-        if ( r && r.cancel ) { return r; }
+        if (r && r.cancel) {
+            return r;
+        }
         // Redirect to the provided URL, or a 1x1 data: URI if none provided.
         matches = /[?&]r=([^&]+)/.exec(requestURL);
         return {
@@ -193,35 +197,40 @@ vAPI.net.registerListeners = function() {
     var onBeforeRequestClient = this.onBeforeRequest.callback;
     var onBeforeRequest = validTypes.websocket
         // modern Chromium/WebExtensions: type 'websocket' is supported
-        ? function(details) {
+        ? function (details) {
             normalizeRequestDetails(details);
             return onBeforeRequestClient(details);
         }
         // legacy Chromium
-        : function(details) {
+        : function (details) {
             // https://github.com/gorhill/uBlock/issues/1497
-            if ( details.url.endsWith('ubofix=f41665f3028c7fd10eecf573336216d3') ) {
+            if (details.url.endsWith('ubofix=f41665f3028c7fd10eecf573336216d3')) {
                 var r = onBeforeWebsocketRequest(details);
-                if ( r !== undefined ) { return r; }
+                if (r !== undefined) {
+                    return r;
+                }
             }
             normalizeRequestDetails(details);
             return onBeforeRequestClient(details);
         };
 
     // This is needed for Chromium 49-55.
-    var onBeforeSendHeaders = validTypes.csp_report
-        // modern Chromium/WebExtensions: type 'csp_report' is supported
-        ? null
-        // legacy Chromium
-        : function(details) {
-            if ( details.type !== 'ping' || details.method !== 'POST' ) { return; }
+    var onBeforeSendHeaders = function (details) {
+        if(!validTypes.csp_report) {
+            if (details.type !== 'ping' || details.method !== 'POST') {
+                return;
+            }
             var type = headerValue(details.requestHeaders, 'content-type');
-            if ( type === '' ) { return; }
-            if ( type.endsWith('/csp-report') ) {
+            if (type === '') {
+                return;
+            }
+            if (type.endsWith('/csp-report')) {
                 details.type = 'csp_report';
                 return onBeforeRequestClient(details);
             }
-        };
+        }
+    };
+
 
     var onHeadersReceivedClient = this.onHeadersReceived.callback,
         onHeadersReceivedClientTypes = this.onHeadersReceived.types.slice(0),

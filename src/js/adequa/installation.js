@@ -48,10 +48,25 @@ let showChoiceScreen = function () {
             themesNode.appendChild(liElem);
           });
         }
+        else {
+          let themesNode = dom.getElementById('themes');
+
+          //Remove children nodes
+          while (themesNode.firstChild) {
+            themesNode.removeChild(themesNode.firstChild);
+          }
+
+          let button = dom.createElement('button');
+          button.appendChild(dom.createTextNode('Recharger'));
+          button.addEventListener('click', function () {
+            requestThemes();
+          });
+          themesNode.appendChild(button);
+        }
       }
     };
 
-    req.open('get', 'http://localhost:3000/api/themes');
+    req.open('get', 'https://admin-equa.com/api/themes');
     req.send(null);
   };
 
@@ -121,7 +136,7 @@ let showChoiceNbAdsScreen = function () {
         }
       }
     };
-    req.open('get', 'http://localhost:3000/api/min-ads');
+    req.open('get', 'https://admin-equa.com/api/min-ads');
     req.send(null);
 
     let onInput = function () {

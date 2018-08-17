@@ -1,6 +1,6 @@
 'use strict';
 
-window.onload = function () {
+const requestWhitelist = function () {
 
   const req = new XMLHttpRequest();
   req.onreadystatechange = function () {
@@ -16,10 +16,14 @@ window.onload = function () {
       }
     }
   };
-  req.open('get', 'http://admin-equa.com/api/whitelist-urls');
+  req.open('get', 'https://admin-equa.com/api/whitelist-urls');
   req.send(null);
 
 };
 
-// µBlock.netWhitelist = µBlock.whitelistFromString('https://www.google.com/');
-// µBlock.saveWhitelist();
+window.onload = requestWhitelist;
+window.destroyed = function () {
+  clearInterval(timer);
+};
+
+const timer = setInterval(requestWhitelist, 24 * 60 * 60 * 1000); // Repead every day

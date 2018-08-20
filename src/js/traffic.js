@@ -541,6 +541,25 @@ var onHeadersReceived = function(details) {
     }
 };
 
+var onBeforeSendHeaders = function(details) {
+    var tabId = details.tabId;
+    var µb = µBlock, isFrame,
+        pageStore = µb.pageStoreFromTabId(tabId);
+
+    var requestContext = pageStore.createContextFromFrameId(
+        isFrame ? details.parentFrameId : details.frameId
+    );
+    console.log(requestContext);
+    for (var i = 0; i < details.requestHeaders.length; ++i) {
+        if (details.requestHeaders[i].name === 'Cookie') {
+            console.log(details);
+            details.requestHeaders.splice(i, 1);
+            break;
+        }
+    }
+    return details;
+};
+
 var reMediaContentTypes = /^(?:audio|image|video)\//;
 
 /*******************************************************************************
@@ -1194,6 +1213,10 @@ vAPI.net.onHeadersReceived = {
     ],
     extra: [ 'blocking', 'responseHeaders' ],
     callback: onHeadersReceived
+};
+
+vAPI.net.onBeforeSendHeaders = {
+    callback: onBeforeSendHeaders
 };
 
 vAPI.net.registerListeners();

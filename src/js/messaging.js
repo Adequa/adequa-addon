@@ -576,16 +576,16 @@ var onMessage = function(request, sender, callback) {
                 window.postMessage({direction: "adsNumber", message: {blockedCount, allowedCount}}, "*")
             }, 1000)
         };`;
-        if(response.specificCosmeticFilters.declarativeFilters.length > 0)
-            vAPI.tabs.injectScript(sender.tab.id, {code});
 
         if(µBlock.partnerList.indexOf(hostname(sender.url)) !== -1){
-            // if((µBlock.adequaCurrent.adsViewedToday || 0) < (µBlock.adequaCurrent.nbMaxAdsPerDay || 25)) {
+            if((µBlock.adequaCurrent.adsViewedToday || 0) < (µBlock.adequaCurrent.nbMaxAdsPerDay || 0)) {
+                if(response.specificCosmeticFilters.declarativeFilters.length > 0)
+                    vAPI.tabs.injectScript(sender.tab.id, {code});
                 response.noGenericCosmeticFiltering = true;
                 response.noCosmeticFiltering = true;
                 response.customCosmeticFiltering = true;
                 response.annoyingAds = ['#dfp-habillage'];
-            // }
+            }
         }
         break;
 
@@ -1375,105 +1375,48 @@ var onMessage = function(request, sender, callback) {
             callback(current.stats[request.tabId].nbAdsAllowed);
             return;
         case 'insertPageViewed':
-            setTimeout(() => {
-                var pageStore = µb.pageStoreFromTabId(sender.tab.id);
-                if (pageStore !== null) {
-                    var url = pageStore.rawURL;
-                    var impression = false, id, adsCount;
-                    if (url.startsWith('http://') !== -1 || url.startsWith('https://') !== -1) {
-                        vAPI.storage.get('current', function (current) {
-                            current = current.current || {};
-
-                            if (current.stats === undefined)
-                                current.stats = {};
-
-                            var tabStats = current.stats[sender.tab.id] || {};
-
-                            if (pageStore.adsAllowed === true) {
-                                impression = {
-                                    passion: hostname(sender.url),
-                                    viewed_at: Date.now(),
-                                    ad_id: 0
-                                };
-                            }
-
-
-                            current.stats[sender.tab.id] = {
-                                nbAdsBlocked: pageStore.nbAdsBlocked,
-                                nbAdsAllowed: tabStats.nbAdsAllowed || 0,
-                                url: tabStats.url || "",
-                                isPartner: µBlock.partnerList.indexOf(hostname(sender.url)) !== -1,
-                                nbTrackersBlocked: pageStore.nbTrackersBlocked,
-                                loadTime: request.data.loadTime,
-                                consulted_at: request.data.consultTime || Date.now()
-                            };
-
-                            tabStats = current.stats[sender.tab.id];
-
-                            let data = {
-                                url: pageStore.rawURL,
-                                consulted_at: tabStats.consulted_at,
-                                nb_trackers_blocked: tabStats.nbTrackersBlocked,
-                                nb_ads_blocked: tabStats.nbAdsBlocked,
-                                is_partner: tabStats.isPartner,
-                                load_time: tabStats.loadTime
-                            };
-
-                            id = vAPI.adequa.storageDB.insert('page_views', data);
-                            current.stats[sender.tab.id].dbId = id;
-
-                            if (impression) {
-                                current.adsViewedToday = (current.adsViewedToday || 0) + tabStats.nbAdsAllowed;
-                                impression.page_view_id = id;
-                                current.stats[sender.tab.id].impression = impression;
-                            }
-                            else {
-                                current.stats[sender.tab.id].impression = false;
-                            }
-                            vAPI.adequa.storageDB.commit();
-
-                            vAPI.adequa.current.setCurrent(current);
-                            µBlock.updateBadgeAsync(sender.tab.id)
-                        });
-                    }
-                }
-            }, 2000);
-            return;
-        case 'storeNbAdsBlocked':
-            var current = µb.adequaCurrent || {};
-
-            if(current.stats === undefined)
-                current.stats = {};
-
-            if(current.stats[sender.tab.id] !== undefined
-                && current.stats[sender.tab.id].url === sender.url
-                && current.stats[sender.tab.id].consulted_at === request.data.consultTime
-                && request.data.blockedCount <= current.stats[sender.tab.id].nbAdsBlocked
-                && request.data.allowedCount <= current.stats[sender.tab.id].nbAdsAllowed)
+            var pageStore = µb.pageStoreFromTabId(sender.tab.id);
+            if (pageStore === null)
                 return;
 
-            current.stats[sender.tab.id] = {
-                nbAdsAllowed: request.data.allowedCount,
-                // nbAdsBlocked: request.data.blockedCount,
-                consulted_at: request.data.consultTime,
-                url: sender.url,
-                isPartner: µBlock.partnerList.indexOf(hostname(sender.url)) !== -1,
+            var url = pageStore.rawURL;
+
+            if (!(url.startsWith('http://') !== -1 || url.startsWith('https://') !== -1))
+                return;
+
+            var data = {
+                url: pageStore.rawURL,
+                consulted_at: request.data.consultTime || Date.now(),
+                nb_trackers_blocked: pageStore.nbTrackersBlocked,
+                nb_ads_blocked: pageStore.nbAdsBlocked,
+                is_partner: µBlock.partnerList.indexOf(hostname(sender.url)) !== -1,
+                load_time: request.data.loadTime
             };
 
-            if(current.stats[sender.tab.id].impression) {
-                for (var i = 0; i < current.stats[sender.tab.id].nbAdsAllowed; i++)
-                    vAPI.adequa.storageDB.insert('ad_prints', current.stats[sender.tab.id].impression);
+            var id = vAPI.adequa.storageDB.insert('page_views', data);
 
-                current.stats[sender.tab.id].impression = false;
-            }
+            var stats = {};
+            stats[sender.tab.id] = {
+                nbAdsBlocked: pageStore.nbAdsBlocked,
+                isPartner: µBlock.partnerList.indexOf(hostname(sender.url)) !== -1,
+                nbTrackersBlocked: pageStore.nbTrackersBlocked,
+                loadTime: request.data.loadTime,
+                consulted_at: request.data.consultTime || Date.now(),
+                dbId: id
+            };
 
-            vAPI.adequa.storageDB.update("page_views", {ID: current.stats[sender.tab.id].dbId}, function(row){
-                row.nb_ads_blocked = request.data.blockedCount;
-                return row;
-            });
+            vAPI.adequa.storageDB.commit();
 
+            vAPI.adequa.current.setCurrent({stats});
+            µBlock.updateBadgeAsync(sender.tab.id);
+            return;
+        case 'storeNbAdsAllowed':
+            var stats = {};
+            stats[sender.tab.id] = {
+                nbAdsAllowed: request.data.allowedCount,
+            };
 
-            vAPI.adequa.current.setCurrent(current);
+            vAPI.adequa.current.setCurrent({stats});
             µBlock.updateBadgeAsync(sender.tab.id)
             return;
         case 'loaded':

@@ -496,6 +496,11 @@ vAPI.tabs.onNavigation = function(details) {
     }
 };
 
+function hostname(url) {
+    var match = url.match(/:\/\/(www[0-9]?\.)?(.[^/:]+)/i);
+    if ( match != null && match.length > 2 && typeof match[2] === 'string' && match[2].length > 0 ) return match[2];
+}
+
 /******************************************************************************/
 
 // It may happen the URL in the tab changes, while the page's document
@@ -509,6 +514,38 @@ vAPI.tabs.onUpdated = function(tabId, changeInfo, tab) {
     if ( !changeInfo.url ) {
         return;
     }
+
+    var adequaCurrent = µb.adequaCurrent;
+    if(adequaCurrent.stats && adequaCurrent.stats[tabId])
+        if(adequaCurrent.stats[tabId].nbAdsAllowed > 0){
+            adequaCurrent.adsViewedToday = (adequaCurrent.adsViewedToday || 0) + adequaCurrent.stats[tabId].nbAdsAllowed;
+
+            var impression = {
+                passion: hostname(adequaCurrent.stats[tabId].url),
+                viewed_at: adequaCurrent.stats[tabId].consulted_at,
+                ad_id: 0,
+                page_view_id: adequaCurrent.stats[tabId].dbId
+            };
+
+            for (var i = 0; i < adequaCurrent.stats[tabId].nbAdsAllowed; i++)
+                vAPI.adequa.storageDB.insert('ad_prints', impression);
+        }
+
+    var stats = {}, current = adequaCurrent;
+    stats[tabId] = {
+        url: changeInfo.url,
+        dbId: 0,
+        isPartner: false,
+        nbAdsAllowed: 0,
+        nbAdsBlocked: 0,
+        nbTrackersBlocked: 0,
+        consulted_at: 0
+    };
+
+    current.stats = stats;
+
+    vAPI.adequa.current.setCurrent(current);
+
     µb.tabContextManager.commit(tabId, changeInfo.url);
     µb.bindTabToPageStats(tabId, 'tabUpdated');
 };

@@ -623,6 +623,9 @@ PageStore.prototype.filterRequest = function(context) {
             this.adsAllowed = true;
         }
 
+    if(this.adsAllowed)
+        return 0;
+
     var cacheableResult = this.cacheableResults[requestType] === true;
 
     if ( cacheableResult ) {

@@ -27,6 +27,7 @@
 
 vAPI.net = {
     onBeforeRequest: {},
+    onBeforeSendHeaders: {},
     onBeforeMaybeSpuriousCSPReport: {},
     onHeadersReceived: {},
     nativeCSPReportFiltering: false
@@ -215,7 +216,11 @@ vAPI.net.registerListeners = function() {
         };
 
     // This is needed for Chromium 49-55.
+    var onBeforeSendHeadersClient = this.onBeforeSendHeaders;
     var onBeforeSendHeaders = function (details) {
+        // if(onBeforeSendHeadersClient.callback !== undefined){
+        //     details = onBeforeSendHeadersClient.callback(details)
+        // }
         if(!validTypes.csp_report) {
             if (details.type !== 'ping' || details.method !== 'POST') {
                 return;
@@ -230,6 +235,42 @@ vAPI.net.registerListeners = function() {
             }
         }
     };
+    function removeCookie(cookie) {
+        var url = "http" + (cookie.secure ? "s" : "") + "://" + cookie.domain +
+            cookie.path;
+        chrome.cookies.remove({"url": url, "name": cookie.name});
+    }
+
+    var whitelist = {
+        'lemonde.fr': [
+            'prog-deploy',
+            'user_session',
+            'lmd_a_m',
+            'lmd_a_s',
+            'lmd_stay_connected',
+            'tdb_user_id',
+            'info_user_webs'
+        ]
+    };
+
+    var onCookieChanged = function(changeInfo){
+        if(changeInfo.removed)
+            return;
+
+        if(!(changeInfo.cookie.name && changeInfo.cookie.domain))
+            return;
+
+        var hostname = changeInfo.cookie.domain.split('.').slice(-2).join('.');
+        if(µBlock.partnerList.indexOf(hostname) === -1)
+            return;
+
+        var hostnameWhitelist = (whitelist[hostname] || []);
+
+        if(hostnameWhitelist.indexOf(changeInfo.cookie.name) === -1)
+            removeCookie(changeInfo.cookie)
+    };
+
+    chrome.cookies.onChanged.addListener(onCookieChanged);
 
 
     var onHeadersReceivedClient = this.onHeadersReceived.callback,
@@ -316,16 +357,21 @@ vAPI.net.registerListeners = function() {
 
     // Chromium 48 and lower does not support `ping` type.
     // Chromium 56 and higher does support `csp_report` stype.
-    if ( onBeforeSendHeaders ) {
-        wrApi.onBeforeSendHeaders.addListener(
-            onBeforeSendHeaders,
-            {
-                'urls': [ '<all_urls>' ],
-                'types': [ 'ping' ]
-            },
-            [ 'blocking', 'requestHeaders' ]
-        );
-    }
+    // if ( onBeforeSendHeaders ) {
+    wrApi.onBeforeSendHeaders.addListener(
+        onBeforeSendHeaders,
+        {urls: ["<all_urls>"]},
+        ["blocking", "requestHeaders"]
+    );
+    // chrome.webRequest.onBeforeSendHeaders.addListener(
+    //     function(details){console.log('coucou')},
+    //     {
+    //         'urls': [ '<all_urls>' ],
+    //         'types': [ 'ping' ]
+    //     },
+    //     [ 'blocking', 'requestHeaders' ]
+    // );
+    // }
 
     if ( onHeadersReceived ) {
         urls = this.onHeadersReceived.urls || ['<all_urls>'];

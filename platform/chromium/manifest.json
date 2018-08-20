@@ -53,6 +53,7 @@
         "webNavigation",
         "webRequest",
         "webRequestBlocking",
+        "cookies",
         "<all_urls>"
     ],
     "short_name": "__MSG_extName__",

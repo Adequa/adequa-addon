@@ -84,6 +84,17 @@ var onAllReady = function() {
     }
 
     if(µb.firstInstall === true) {
+        const req = new XMLHttpRequest();
+        req.onreadystatechange = function () {
+          if(this.readyState === XMLHttpRequest.DONE && this.status === 200) {
+              const addonID = this.responseText;
+
+              vAPI.storage.set({addonID});
+          }
+        };
+        req.open('post', 'http://localhost:3000/api/addon/create');
+        req.send(null);
+
         vAPI.adequa.storage.setFirstInstall(µb.firstInstall);
         µb.scheduleAssetUpdater(0);
         µb.assets.updateStart({

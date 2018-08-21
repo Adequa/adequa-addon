@@ -74,24 +74,21 @@ let showChoiceScreen = function () {
     req.send(null);
   };
 
-  let uploadThemes = function (themes, callback) {
-    let data = 'themes=' + themes.toString();
+  const uploadThemes = function (themes, callback) {
+    getAddonID().then(function(id) {
+      let data = 'addon_id=' + id +'&themes=' + themes.toString();
 
-    const req = new XMLHttpRequest();
-    req.onreadystatechange = function () {
-      if(this.readyState === XMLHttpRequest.DONE && this.status === 200) {
-        const addon_id = this.responseText;
+      const req = new XMLHttpRequest();
+      req.onreadystatechange = function () {
+        if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
+          callback();
+        }
+      };
 
-        vAPI.messaging.send('adequa', {
-          what: 'setAddonID',
-          id: addon_id
-        }, callback);
-      }
-    };
-
-    req.open('post', url + 'store/themes');
-    req.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    req.send(data);
+      req.open('post', url + 'store/themes');
+      req.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+      req.send(data);
+    });
   };
 
   changeScreen('installation-themes.html', function (dom) {
@@ -166,10 +163,8 @@ let showChoiceNbAdsScreen = function () {
     req.open('get', url + 'min-ads');
     req.send(null);
 
-    vAPI.messaging.send('adequa', {
-      what: 'getAddonID'
-    }, function (result) {
-      addon_id = result.addonID;
+    getAddonID().then(function (id) {
+      addon_id = id;
     });
 
     let onInput = function () {
@@ -185,27 +180,20 @@ let showChoiceNbAdsScreen = function () {
     dom.getElementsByTagName('input')[0].addEventListener('input', onInput);
 
     dom.getElementById('next-screen').addEventListener('click', function () {
-      if(addon_id !== null) {
+      if (addon_id !== null) {
         vAPI.messaging.send('adequa', {
           what: 'saveNbMaxAdsPerDay',
           nbMaxAdsPerDay: nbMaxAdsPerDay
         }, function () {
 
           const req = new XMLHttpRequest();
-          req.onreadystatechange = function() {
-            if(this.readyState === XMLHttpRequest.DONE && this.status === 200) {
-              const addon_id = this.responseText;
-
+          req.onreadystatechange = function () {
+            if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
+              //Save actual state
               vAPI.messaging.send('adequa', {
-                what: 'setAddonID',
-                id: addon_id
-              }, function () {
-                //Save actual state
-                vAPI.messaging.send('adequa', {
-                  what: 'saveInstallState',
-                  state: 3
-                }, showFinalScreen);
-              });
+                what: 'saveInstallState',
+                state: 3
+              }, showFinalScreen);
             }
           };
           req.open('put', url + 'update/nb-ads-per-day');

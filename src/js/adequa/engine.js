@@ -17,15 +17,6 @@ let changeScreen = function (screen, onLoadCallback) {
   return iframe.nodes[0].contentWindow.document;
 };
 
-const setAddonID = function (addon_id) {
-  return new Promise(function (resolve) {
-    vAPI.messaging.send('adequa', {
-      what: 'setAddonID',
-      id: addon_id
-    }, resolve);
-  });
-};
-
 const getAddonID = function () {
   return new Promise(function (resolve) {
     vAPI.messaging.send('adequa', {

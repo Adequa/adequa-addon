@@ -76,6 +76,10 @@ vAPI.app.restart = function() {
     chrome.runtime.reload();
 };
 
+vAPI.app.setUninstallURL = function (url, callback) {
+    chrome.runtime.setUninstallURL(url, callback);
+};
+
 /******************************************************************************/
 /******************************************************************************/
 

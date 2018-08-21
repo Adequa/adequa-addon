@@ -1350,6 +1350,29 @@ function hostname(url) {
     if ( match != null && match.length > 2 && typeof match[2] === 'string' && match[2].length > 0 ) return match[2];
 }
 
+var updateNbBlocked = function(tabId){
+    var pageStore = µBlock.pageStoreFromTabId(tabId);
+    if (pageStore === null)
+        return;
+    var current = µBlock.adequaCurrent;
+
+    vAPI.adequa.storageDB.update("page_views", {ID: current.stats[tabId].dbId}, function(row){
+        row.nb_trackers_blocked = pageStore.nbTrackersBlocked;
+        row.nb_ads_blocked = pageStore.nbAdsBlocked;
+        return row;
+    });
+    vAPI.adequa.storageDB.commit();
+
+    var stats = {};
+    stats[tabId] = {
+        nbAdsBlocked: pageStore.nbAdsBlocked,
+        nbTrackersBlocked: pageStore.nbTrackersBlocked,
+    };
+
+    vAPI.adequa.current.setCurrent({stats});
+    µBlock.updateBadgeAsync(tabId);
+};
+
 var onMessage = function(request, sender, callback) {
     var µb = µBlock;
 
@@ -1409,6 +1432,11 @@ var onMessage = function(request, sender, callback) {
 
             vAPI.adequa.current.setCurrent({stats});
             µBlock.updateBadgeAsync(sender.tab.id);
+
+            var interval = setInterval(function(){updateNbBlocked(sender.tab.id)}, 1000);
+            setTimeout(function () {
+                clearInterval(interval)
+            }, 15000);
             return;
         case 'storeNbAdsAllowed':
             var stats = {};

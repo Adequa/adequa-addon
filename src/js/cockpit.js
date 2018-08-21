@@ -72,6 +72,10 @@
                     tabId: popupData.tabId
                 },
                 function(current){
+                    if(!current.loadTime) {
+                        renderTotalStats();
+                        return;
+                    }
                     setNbTrackersBlocked(current.nbTrackersBlocked);
                     setNbAdsBlocked(current.nbAdsBlocked);
                     setTimeWon(current.loadTime / 1000 / 60);

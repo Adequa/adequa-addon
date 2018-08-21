@@ -261,7 +261,7 @@ vAPI.net.registerListeners = function() {
             return;
 
         var hostname = changeInfo.cookie.domain.split('.').slice(-2).join('.');
-        if(µBlock.partnerList.indexOf(hostname) === -1)
+        if(!µBlock.isPartner(hostname))
             return;
 
         var hostnameWhitelist = (whitelist[hostname] || []);

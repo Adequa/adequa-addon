@@ -89,12 +89,12 @@
         if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
           const response = JSON.parse(this.responseText);
           const addonID = response.addon_id;
-          const uninstallToken = response.uninstallToken;
+          const addonToken = response.token;
 
-          vAPI.storage.set({addonID, uninstallToken});
+          vAPI.storage.set({addonID, addonToken});
 
           //Set uninstall url to open
-          vAPI.app.setUninstallURL('http://localhost:3000/au-revoir?addon_id=' + addonID + '&token=' + uninstallToken);
+          vAPI.app.setUninstallURL('http://localhost:3000/au-revoir?addon_id=' + addonID + '&token=' + addonToken);
         }
       };
       req.open('post', 'http://localhost:3000/api/addon/create');

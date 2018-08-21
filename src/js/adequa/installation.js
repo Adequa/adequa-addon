@@ -1,5 +1,9 @@
 'use strict';
 
+const env = 'prod';
+const url = env.match('dev') ? 'http://localhost:3000/api/' : 'https://admin-equa.com/api/';
+
+
 let showPresentationScreen = function () {
   changeScreen('installation-presentation.html', function (dom) {
 
@@ -66,8 +70,28 @@ let showChoiceScreen = function () {
       }
     };
 
-    req.open('get', 'https://admin-equa.com/api/themes');
+    req.open('get', url + 'themes');
     req.send(null);
+  };
+
+  let uploadThemes = function (themes, callback) {
+    let data = 'themes=' + themes.toString();
+
+    const req = new XMLHttpRequest();
+    req.onreadystatechange = function () {
+      if(this.readyState === XMLHttpRequest.DONE && this.status === 200) {
+        const addon_id = this.responseText;
+
+        vAPI.messaging.send('adequa', {
+          what: 'setAddonID',
+          id: addon_id
+        }, callback);
+      }
+    };
+
+    req.open('post', url + 'store/themes');
+    req.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    req.send(data);
   };
 
   changeScreen('installation-themes.html', function (dom) {
@@ -111,11 +135,14 @@ let showChoiceScreen = function () {
         what: 'savePassions',
         passions: inputsCheckedValues
       }, function () {
-        //Save actual state after saving passions
-        vAPI.messaging.send('adequa', {
-          what: 'saveInstallState',
-          state: 2,
-        }, showChoiceNbAdsScreen);
+
+        uploadThemes(inputsCheckedValues, function () {
+          //Save actual state after saving themes
+          vAPI.messaging.send('adequa', {
+            what: 'saveInstallState',
+            state: 2,
+          }, showChoiceNbAdsScreen);
+        });
 
       });
     });
@@ -124,7 +151,7 @@ let showChoiceScreen = function () {
 
 
 let showChoiceNbAdsScreen = function () {
-  let nbMaxAdsPerDay = 25;
+  let nbMaxAdsPerDay = 25, addon_id = null;
 
   changeScreen('installation-choice-nb-ads.html', function (dom) {
     let req = new XMLHttpRequest();
@@ -136,8 +163,14 @@ let showChoiceNbAdsScreen = function () {
         }
       }
     };
-    req.open('get', 'https://admin-equa.com/api/min-ads');
+    req.open('get', url + 'min-ads');
     req.send(null);
+
+    vAPI.messaging.send('adequa', {
+      what: 'getAddonID'
+    }, function (result) {
+      addon_id = result.addonID;
+    });
 
     let onInput = function () {
       let value = this.value;
@@ -152,18 +185,35 @@ let showChoiceNbAdsScreen = function () {
     dom.getElementsByTagName('input')[0].addEventListener('input', onInput);
 
     dom.getElementById('next-screen').addEventListener('click', function () {
-      vAPI.messaging.send('adequa', {
-        what: 'saveNbMaxAdsPerDay',
-        nbMaxAdsPerDay: nbMaxAdsPerDay
-      }, function () {
-
-        //Save actual state
+      if(addon_id !== null) {
         vAPI.messaging.send('adequa', {
-          what: 'saveInstallState',
-          state: 3
-        }, showFinalScreen);
+          what: 'saveNbMaxAdsPerDay',
+          nbMaxAdsPerDay: nbMaxAdsPerDay
+        }, function () {
 
-      });
+          const req = new XMLHttpRequest();
+          req.onreadystatechange = function() {
+            if(this.readyState === XMLHttpRequest.DONE && this.status === 200) {
+              const addon_id = this.responseText;
+
+              vAPI.messaging.send('adequa', {
+                what: 'setAddonID',
+                id: addon_id
+              }, function () {
+                //Save actual state
+                vAPI.messaging.send('adequa', {
+                  what: 'saveInstallState',
+                  state: 3
+                }, showFinalScreen);
+              });
+            }
+          };
+          req.open('put', url + 'update/nb-ads-per-day');
+          req.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+          req.send('addon_id=' + addon_id + '&nb_ads=' + nbMaxAdsPerDay);
+
+        });
+      }
     });
   });
 

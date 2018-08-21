@@ -1503,9 +1503,17 @@ var onMessage = function(request, sender, callback) {
             return;
 
         case 'fetchNbMaxAdsPerDay':
-            console.log('non');
             vAPI.storage.get('nbMaxAdsPerDay', callback);
             return;
+
+        case 'setAddonID':
+            vAPI.storage.set({addonID: request.id}, callback);
+            return;
+
+        case 'getAddonID':
+            vAPI.storage.get('addonID', callback);
+            return;
+
         default:
             break;
     }

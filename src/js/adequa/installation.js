@@ -1,7 +1,25 @@
 'use strict';
 
 const env = 'prod';
-const url = env.match('dev') ? 'http://localhost:3000/api/' : 'https://admin-equa.com/api/';
+const uri = env.match('dev') ? 'http://localhost:3000/api/' : 'https://admin-equa.com/api/';
+
+const ajax = function (method, url, body = null) {
+  return new Promise(function (resolve, reject) {
+    const req = new XMLHttpRequest();
+    req.onreadystatechange = function () {
+      if (this.readyState === XMLHttpRequest.DONE) {
+        if (this.status === 200)
+          resolve(this);
+        else
+          reject(this);
+      }
+    };
+
+    req.open(method, uri + url);
+    req.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+    req.send(body);
+  });
+};
 
 
 let showPresentationScreen = function () {
@@ -23,71 +41,56 @@ let showPresentationScreen = function () {
 
 let showChoiceScreen = function () {
   let requestThemes = function (dom) {
-    let req = new XMLHttpRequest();
-    req.onreadystatechange = function () {
-      if (this.readyState === XMLHttpRequest.DONE) {
-        if (this.status === 200) {
-          let themes = JSON.parse(this.responseText);
-          let themesNode = dom.getElementById('themes');
+    ajax('get', 'themes')
+      .then(function (data) {
+      let themes = JSON.parse(data.responseText);
+      let themesNode = dom.getElementById('themes');
 
-          //Remove children nodes
-          while (themesNode.firstChild) {
-            themesNode.removeChild(themesNode.firstChild);
-          }
-
-          themes.forEach(function (theme) {
-            let liElem = dom.createElement('li');
-            let inputElem = dom.createElement('input');
-            let labelElem = dom.createElement('label');
-
-            inputElem.setAttribute('type', 'checkbox');
-            inputElem.setAttribute('value', theme.id);
-            inputElem.setAttribute('id', theme.id);
-            labelElem.setAttribute('for', theme.id);
-            labelElem.appendChild(dom.createTextNode(theme.name));
-
-            liElem.appendChild(inputElem);
-            liElem.appendChild(labelElem);
-
-            themesNode.appendChild(liElem);
-          });
-        }
-        else {
-          let themesNode = dom.getElementById('themes');
-
-          //Remove children nodes
-          while (themesNode.firstChild) {
-            themesNode.removeChild(themesNode.firstChild);
-          }
-
-          let button = dom.createElement('button');
-          button.appendChild(dom.createTextNode('Recharger'));
-          button.addEventListener('click', function () {
-            requestThemes();
-          });
-          themesNode.appendChild(button);
-        }
+      //Remove children nodes
+      while (themesNode.firstChild) {
+        themesNode.removeChild(themesNode.firstChild);
       }
-    };
 
-    req.open('get', url + 'themes');
-    req.send(null);
+      themes.forEach(function (theme) {
+        let liElem = dom.createElement('li');
+        let inputElem = dom.createElement('input');
+        let labelElem = dom.createElement('label');
+
+        inputElem.setAttribute('type', 'checkbox');
+        inputElem.setAttribute('value', theme.id);
+        inputElem.setAttribute('id', theme.id);
+        labelElem.setAttribute('for', theme.id);
+        labelElem.appendChild(dom.createTextNode(theme.name));
+
+        liElem.appendChild(inputElem);
+        liElem.appendChild(labelElem);
+
+        themesNode.appendChild(liElem);
+      });
+    })
+      .catch(function () {
+      let themesNode = dom.getElementById('themes');
+
+      //Remove children nodes
+      while (themesNode.firstChild) {
+        themesNode.removeChild(themesNode.firstChild);
+      }
+
+      let button = dom.createElement('button');
+      button.appendChild(dom.createTextNode('Recharger'));
+      button.addEventListener('click', function () {
+        requestThemes();
+      });
+      themesNode.appendChild(button);
+    });
   };
 
   const uploadThemes = function (themes, callback) {
-    getAddonID().then(function(id) {
-      let data = 'addon_id=' + id +'&themes=' + themes.toString();
+    getAddonID().then(function (id) {
+      let data = 'addon_id=' + id + '&themes=' + themes.toString();
 
-      const req = new XMLHttpRequest();
-      req.onreadystatechange = function () {
-        if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
-          callback();
-        }
-      };
-
-      req.open('post', url + 'store/themes');
-      req.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-      req.send(data);
+      ajax('post', 'store/themes', data)
+        .then(callback);
     });
   };
 
@@ -151,17 +154,11 @@ let showChoiceNbAdsScreen = function () {
   let nbMaxAdsPerDay = 25, addon_id = null;
 
   changeScreen('installation-choice-nb-ads.html', function (dom) {
-    let req = new XMLHttpRequest();
-    req.onreadystatechange = function () {
-      if (this.readyState === XMLHttpRequest.DONE) {
-        if (this.status === 200) {
-          dom.getElementById('range-min').innerText = this.responseText;
-          dom.getElementsByTagName('input')[0].setAttribute('min', this.responseText);
-        }
-      }
-    };
-    req.open('get', url + 'min-ads');
-    req.send(null);
+    ajax('get', 'min-ads')
+      .then(function(data) {
+        dom.getElementById('range-min').innerText = data.responseText;
+        dom.getElementsByTagName('input')[0].setAttribute('min', data.responseText);
+      });
 
     getAddonID().then(function (id) {
       addon_id = id;
@@ -186,19 +183,15 @@ let showChoiceNbAdsScreen = function () {
           nbMaxAdsPerDay: nbMaxAdsPerDay
         }, function () {
 
-          const req = new XMLHttpRequest();
-          req.onreadystatechange = function () {
-            if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
+          const body = 'addon_id=' + addon_id + '&nb_ads=' + nbMaxAdsPerDay;
+          ajax('put', 'update/nb-ads-per-day', body)
+            .then(function () {
               //Save actual state
               vAPI.messaging.send('adequa', {
                 what: 'saveInstallState',
                 state: 3
               }, showFinalScreen);
-            }
-          };
-          req.open('put', url + 'update/nb-ads-per-day');
-          req.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-          req.send('addon_id=' + addon_id + '&nb_ads=' + nbMaxAdsPerDay);
+            });
 
         });
       }

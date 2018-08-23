@@ -16,6 +16,8 @@ rm -rf $DES
 mkdir $DES
 cp    ./assets/assets.json                                       $DES/
 cp    ./assets/exceptionrules.txt                                $DES/
+cp    ./assets/cookies.json                                      $DES/
+cp    ./assets/yoc.json                                          $DES/
 
 mkdir $DES/thirdparties
 cp -R ../uAssets/thirdparties/easylist-downloads.adblockplus.org $DES/thirdparties/

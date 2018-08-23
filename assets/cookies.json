@@ -1,0 +1,2620 @@
+[
+  {
+    "url": "http://match.rundsp.com/",
+    "name": "RUN_OPTOUT",
+    "value": "1",
+    "domain": "match.rundsp.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.rlcdn.com/",
+    "name": "optout-token",
+    "value": "1",
+    "domain": ".rlcdn.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.rlcdn.com/",
+    "name": "optout",
+    "value": "Opted-Out-of-LiveRamp-Cookies.-To-opt-in-simply-delete-this-cookie.",
+    "domain": ".rlcdn.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.ipromote.com/",
+    "name": "edaa",
+    "value": "1",
+    "domain": ".ipromote.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.ipromote.com/",
+    "name": "optout",
+    "value": "1",
+    "domain": ".ipromote.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://choice.microsoft.com/",
+    "name": "sticky",
+    "value": "no-match",
+    "domain": "choice.microsoft.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.visto1.net/",
+    "name": "ootok",
+    "value": "0",
+    "domain": ".visto1.net",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.amgdgt.com/",
+    "name": "OO-ST-135107988821114880",
+    "value": "nt",
+    "domain": ".amgdgt.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.amgdgt.com/",
+    "name": "OO-ST-679865538813362176",
+    "value": "nt",
+    "domain": ".amgdgt.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.everesttech.net/",
+    "name": "optout",
+    "value": "1",
+    "domain": ".everesttech.net",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.demdex.net/",
+    "name": "demdex",
+    "value": "NOTARGET",
+    "domain": ".demdex.net",
+    "storeId": "0"
+  },
+  {
+    "url": "http://d.adroll.com/",
+    "name": "__adroll",
+    "value": "OPT_OUT",
+    "domain": "d.adroll.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.acuityplatform.com/",
+    "name": "OptOutCookie",
+    "value": "true",
+    "domain": ".acuityplatform.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.33across.com/",
+    "name": "33x_nc",
+    "value": "33Across+Optout",
+    "domain": ".33across.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.tynt.com/",
+    "name": "tyntOptOut",
+    "value": "true",
+    "domain": ".tynt.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.nexac.com/",
+    "name": "na_id",
+    "value": "ignore",
+    "domain": ".nexac.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.turn.com/",
+    "name": "optOut",
+    "value": "1",
+    "domain": ".turn.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.amgdgt.com/",
+    "name": "OO",
+    "value": "OptOut",
+    "domain": ".amgdgt.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.adnxs.com/",
+    "name": "uuid2",
+    "value": "-1",
+    "domain": ".adnxs.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.apolloprogram.io/",
+    "name": "auid",
+    "value": "optout",
+    "domain": ".apolloprogram.io",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.amgdgt.com/",
+    "name": "OO-ST-2467972595799031808",
+    "value": "oo",
+    "domain": ".amgdgt.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.amgdgt.com/",
+    "name": "OO-ST--4959307614665048064",
+    "value": "oo",
+    "domain": ".amgdgt.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.pippio.com/",
+    "name": "optout",
+    "value": "*",
+    "domain": ".pippio.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://network.bazaarvoice.com/",
+    "name": "NoCookie",
+    "value": "true",
+    "domain": "network.bazaarvoice.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.network.bazaarvoice.com/",
+    "name": "NoCookie",
+    "value": "true",
+    "domain": ".network.bazaarvoice.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://network.bazaarvoice.com/",
+    "name": "NoCookieEU",
+    "value": "true",
+    "domain": "network.bazaarvoice.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.network.bazaarvoice.com/",
+    "name": "NoCookieEU",
+    "value": "true",
+    "domain": ".network.bazaarvoice.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.bidr.io/",
+    "name": "bito",
+    "value": "optout",
+    "domain": ".bidr.io",
+    "storeId": "0"
+  },
+  {
+    "url": "http://network-eu.bazaarvoice.com/",
+    "name": "NoCookie",
+    "value": "true",
+    "domain": "network-eu.bazaarvoice.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.network-eu.bazaarvoice.com/",
+    "name": "NoCookie",
+    "value": "true",
+    "domain": ".network-eu.bazaarvoice.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.cdnwidget.com/",
+    "name": "bxgraphOptOut",
+    "value": "1",
+    "domain": ".cdnwidget.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.ccgateway.net/",
+    "name": "ccoptout",
+    "value": "1",
+    "domain": ".ccgateway.net",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.clickagy.com/",
+    "name": "coo",
+    "value": "1",
+    "domain": ".clickagy.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.clinch.co/",
+    "name": "clinch-optout",
+    "value": "true",
+    "domain": ".clinch.co",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.dotomi.com/",
+    "name": "DotomiStatus",
+    "value": "OPTOUT",
+    "domain": ".dotomi.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.criteo.com/",
+    "name": "optout",
+    "value": "1",
+    "domain": ".criteo.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.fastclick.net/",
+    "name": "fastclick",
+    "value": "optout",
+    "domain": ".fastclick.net",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.w55c.net/",
+    "name": "optout",
+    "value": "1",
+    "domain": ".w55c.net",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.pro-market.net/",
+    "name": "optout",
+    "value": "0+0+0",
+    "domain": ".pro-market.net",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.doubleclick.net/",
+    "name": "id",
+    "value": "OPT_OUT",
+    "domain": ".doubleclick.net",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.doubleclick.net/",
+    "name": "_drt_",
+    "value": "OPT_OUT",
+    "domain": ".doubleclick.net",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.crsspxl.com/",
+    "name": "OPTOUT",
+    "value": "1",
+    "domain": ".crsspxl.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.crsspxl.com/",
+    "name": "uid",
+    "value": "-1",
+    "domain": ".crsspxl.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.crsspxl.com/",
+    "name": "uuid",
+    "value": "OPTOUT",
+    "domain": ".crsspxl.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.hlserve.com/",
+    "name": "oo",
+    "value": "1",
+    "domain": ".hlserve.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.tag.clrstm.com/",
+    "name": "tuuid_new",
+    "value": "opt-out",
+    "domain": ".tag.clrstm.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.exelator.com/",
+    "name": "DNP",
+    "value": "1\"\"",
+    "domain": ".exelator.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.emxdgt.com/",
+    "name": "opt-out",
+    "value": "emxoptout",
+    "domain": ".emxdgt.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.adsrvr.org/",
+    "name": "TDID",
+    "value": "00000000-0000-0000-0000-000000000000",
+    "domain": ".adsrvr.org",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.adsrvr.org/",
+    "name": "TTDOptOut",
+    "value": "1",
+    "domain": ".adsrvr.org",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.eyeota.net/",
+    "name": "mako_uid",
+    "value": "opt-out",
+    "domain": ".eyeota.net",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.adsymptotic.com/",
+    "name": "U",
+    "value": "optout00000000000000000000000000",
+    "domain": ".adsymptotic.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.adsymptotic.com/",
+    "name": "OT",
+    "value": "1",
+    "domain": ".adsymptotic.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.gumgum.com/",
+    "name": "optout",
+    "value": "1",
+    "domain": ".gumgum.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.eyeviewads.com/",
+    "name": "__ev_uid",
+    "value": "0",
+    "domain": ".eyeviewads.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.tribalfusion.com/",
+    "name": "ANON_ID",
+    "value": "OptOut",
+    "domain": ".tribalfusion.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.netmng.com/",
+    "name": "EVO5_OPT",
+    "value": "1",
+    "domain": ".netmng.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.flashtalking.com/",
+    "name": "flashtalkingad1",
+    "value": "optout=1\"\"",
+    "domain": ".flashtalking.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://ad.wsod.com/",
+    "name": "u",
+    "value": "OPT_OUT",
+    "domain": "ad.wsod.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.wsod.com/",
+    "name": "ub",
+    "value": "OPT_OUT",
+    "domain": ".wsod.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.kargo.com/",
+    "name": "ktcid",
+    "value": "optout",
+    "domain": ".kargo.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.kargo.com/",
+    "name": "ktctid",
+    "value": "optout",
+    "domain": ".kargo.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.casalemedia.com/",
+    "name": "CMO",
+    "value": "2",
+    "domain": ".casalemedia.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.krxd.net/",
+    "name": "_kuid_",
+    "value": "OPTOUT",
+    "domain": ".krxd.net",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.innovid.com/",
+    "name": "uuid",
+    "value": "-2",
+    "domain": ".innovid.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.intentmedia.net/",
+    "name": "intentmedia_user_id",
+    "value": "OptOut",
+    "domain": ".intentmedia.net",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.intentmedia.net/",
+    "name": "im_puid",
+    "value": "",
+    "domain": ".intentmedia.net",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.intentmedia.net/",
+    "name": "im_ca_web_user_id",
+    "value": "",
+    "domain": ".intentmedia.net",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.crwdcntrl.net/",
+    "name": "_cc_cc",
+    "value": "optout",
+    "domain": ".crwdcntrl.net",
+    "storeId": "0"
+  },
+  {
+    "url": "http://domdex.com/",
+    "name": "optout",
+    "value": "1",
+    "domain": "domdex.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.mybuys.com/",
+    "name": "mbc",
+    "value": "optout",
+    "domain": ".mybuys.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.veruta.com/",
+    "name": "optout",
+    "value": "1",
+    "domain": ".veruta.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.veruta.com/",
+    "name": "cmid",
+    "value": "",
+    "domain": ".veruta.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.veruta.com/",
+    "name": "mbd",
+    "value": "",
+    "domain": ".veruta.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.postrelease.com/",
+    "name": "opt_out",
+    "value": "1",
+    "domain": ".postrelease.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.bam-x.com/",
+    "name": "BAMX_Opt_Out",
+    "value": "OPT_OUT",
+    "domain": ".bam-x.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.mediaiqdigital.com/",
+    "name": "opt-out",
+    "value": "1",
+    "domain": ".mediaiqdigital.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.microsoft.com/",
+    "name": "TOptOut",
+    "value": "1",
+    "domain": ".microsoft.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.netseer.com/",
+    "name": "netseer_optout",
+    "value": "optout",
+    "domain": ".netseer.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.msn.com/",
+    "name": "TOptOut",
+    "value": "1",
+    "domain": ".msn.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.mmtro.com/",
+    "name": "RUID",
+    "value": "00000000-0000-0000-0000-000000000000",
+    "domain": ".mmtro.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.bing.com/",
+    "name": "TOptOut",
+    "value": "1",
+    "domain": ".bing.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.agkn.com/",
+    "name": "aa",
+    "value": "opt-out",
+    "domain": ".agkn.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.live.com/",
+    "name": "TOptOut",
+    "value": "1",
+    "domain": ".live.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.zemanta.com/",
+    "name": "zoptout",
+    "value": "true",
+    "domain": ".zemanta.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.outbrain.com/",
+    "name": "opout",
+    "value": "true",
+    "domain": ".outbrain.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.media.net/",
+    "name": "mnet_optout",
+    "value": "1",
+    "domain": ".media.net",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.contextweb.com/",
+    "name": "CWOptOutCookie",
+    "value": "1",
+    "domain": ".contextweb.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.parrable.com/",
+    "name": "opt-out",
+    "value": "true",
+    "domain": ".parrable.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.owneriq.net/",
+    "name": "optout",
+    "value": "optout",
+    "domain": ".owneriq.net",
+    "storeId": "0"
+  },
+  {
+    "url": "http://www.tentaculos.net/",
+    "name": "_PM_OPTOUT",
+    "value": "1",
+    "domain": "www.tentaculos.net",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.pubmatic.com/",
+    "name": "optout",
+    "value": "true",
+    "domain": ".pubmatic.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.quantserve.com/",
+    "name": "qoo",
+    "value": "OPT_OUT",
+    "domain": ".quantserve.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.bluecava.com/",
+    "name": "daa-opt-out",
+    "value": "1",
+    "domain": ".bluecava.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.mediaforge.com/",
+    "name": "opt-out",
+    "value": "opt-out",
+    "domain": ".mediaforge.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.nxtck.com/",
+    "name": "rt_status",
+    "value": "opt_out",
+    "domain": ".nxtck.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.linksynergy.com/",
+    "name": "opt-out",
+    "value": "opt-out",
+    "domain": ".linksynergy.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.retargetly.com/",
+    "name": "out",
+    "value": "1",
+    "domain": ".retargetly.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.burstnet.com/",
+    "name": "optout",
+    "value": "y",
+    "domain": ".burstnet.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.1rx.io/",
+    "name": "optout",
+    "value": "y",
+    "domain": ".1rx.io",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.rubiconproject.com/",
+    "name": "trp_optout",
+    "value": "true",
+    "domain": ".rubiconproject.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.gwallet.com/",
+    "name": "ra1_oo",
+    "value": "1",
+    "domain": ".gwallet.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.yumenetworks.com/",
+    "name": "ymoo",
+    "value": "true",
+    "domain": ".yumenetworks.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.po.st/",
+    "name": "post_optout",
+    "value": "1",
+    "domain": ".po.st",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.rfihub.com/",
+    "name": "oo",
+    "value": "opt_out",
+    "domain": ".rfihub.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.sharethis.com/",
+    "name": "st_optout",
+    "value": "true",
+    "domain": ".sharethis.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.simpli.fi/",
+    "name": "opted_out",
+    "value": "true",
+    "domain": ".simpli.fi",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.samba.tv/",
+    "name": "samba_dnt",
+    "value": "1",
+    "domain": ".samba.tv",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.taboola.com/",
+    "name": "DNT",
+    "value": "1",
+    "domain": ".taboola.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.serving-sys.com/",
+    "name": "ebOptOut",
+    "value": "TRUE",
+    "domain": ".serving-sys.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.tapad.com/",
+    "name": "TapAd_TS",
+    "value": "0",
+    "domain": ".tapad.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.tapad.com/",
+    "name": "TapAd_DID",
+    "value": "OptedOut",
+    "domain": ".tapad.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.tapad.com/",
+    "name": "ID",
+    "value": "OPT_OUT",
+    "domain": ".tapad.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.steelhousemedia.com/",
+    "name": "opt_out",
+    "value": "1",
+    "domain": ".steelhousemedia.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.thrtle.com/",
+    "name": "optout",
+    "value": "1",
+    "domain": ".thrtle.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.vmmpxl.com/",
+    "name": "VMM_ID_J12",
+    "value": "optout",
+    "domain": ".vmmpxl.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.undertone.com/",
+    "name": "UTOPTOUT",
+    "value": "OPTOUT",
+    "domain": ".undertone.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.adviva.net/",
+    "name": "ADVIVA",
+    "value": "NOTRACK",
+    "domain": ".adviva.net",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.adlegend.com/",
+    "name": "ID",
+    "value": "OPT_OUT",
+    "domain": ".adlegend.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.specificclick.net/",
+    "name": "ADVIVA",
+    "value": "NOTRACK",
+    "domain": ".specificclick.net",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.specificmedia.com/",
+    "name": "ADVIVA",
+    "value": "NOTRACK",
+    "domain": ".specificmedia.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.intellitxt.com/",
+    "name": "VM_OO",
+    "value": "1",
+    "domain": ".intellitxt.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.vindicosuite.com/",
+    "name": "ADVIVA",
+    "value": "NOTRACK",
+    "domain": ".vindicosuite.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.tidaltv.com/",
+    "name": "opt-out",
+    "value": "true",
+    "domain": ".tidaltv.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.visto1.net/",
+    "name": "optout",
+    "value": "1",
+    "domain": ".visto1.net",
+    "storeId": "0"
+  },
+  {
+    "url": "http://t.visto1.net/",
+    "name": "ootok",
+    "value": "0",
+    "domain": "t.visto1.net",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.weborama.com/",
+    "name": "optout",
+    "value": "1",
+    "domain": ".weborama.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.nexage.com/",
+    "name": "ACID",
+    "value": "optout!",
+    "domain": ".nexage.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.adtech.de/",
+    "name": "JEB2",
+    "value": "NOID",
+    "domain": ".adtech.de",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.adtech.de/",
+    "name": "OptOut",
+    "value": "we will not set any more cookies",
+    "domain": ".adtech.de",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.atwola.com/",
+    "name": "atdses",
+    "value": "O",
+    "domain": ".atwola.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.adap.tv/",
+    "name": "optout",
+    "value": "true",
+    "domain": ".adap.tv",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.adtechjp.com/",
+    "name": "JEB2",
+    "value": "NOID",
+    "domain": ".adtechjp.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.adtechjp.com/",
+    "name": "OptOut",
+    "value": "we will not set any more cookies",
+    "domain": ".adtechjp.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.adtechus.com/",
+    "name": "JEB2",
+    "value": "NOID",
+    "domain": ".adtechus.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.adtechus.com/",
+    "name": "OptOut",
+    "value": "we will not set any more cookies",
+    "domain": ".adtechus.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.yieldmo.com/",
+    "name": "OPTOUT",
+    "value": "1",
+    "domain": ".yieldmo.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.advertising.com/",
+    "name": "ACID",
+    "value": "optout!",
+    "domain": ".advertising.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.tubemogul.com/",
+    "name": "_tmid",
+    "value": "opted+out",
+    "domain": ".tubemogul.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://tagger.opecloud.com/",
+    "name": "yocToken",
+    "value": "1",
+    "domain": "tagger.opecloud.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.adnxs.com/",
+    "name": "token1209",
+    "value": "1",
+    "domain": ".adnxs.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.adnxs.com/",
+    "name": "token2028",
+    "value": "1",
+    "domain": ".adnxs.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.adnxs.com/",
+    "name": "token564",
+    "value": "1",
+    "domain": ".adnxs.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.adnxs.com/",
+    "name": "token1234",
+    "value": "1",
+    "domain": ".adnxs.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.yieldoptimizer.com/",
+    "name": "om_edaa_token",
+    "value": "1",
+    "domain": ".yieldoptimizer.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.ctnsnet.com/",
+    "name": "opt_token",
+    "value": "1",
+    "domain": ".ctnsnet.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.gumgum.com/",
+    "name": "yoctoken",
+    "value": "1",
+    "domain": ".gumgum.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://api.bounceexchange.com/",
+    "name": "yoc_token",
+    "value": "1",
+    "domain": "api.bounceexchange.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://ads.programattik.com/",
+    "name": "yoc_token",
+    "value": "1",
+    "domain": "ads.programattik.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.leiki.com/",
+    "name": "Leiki_edaatoken",
+    "value": "1",
+    "domain": ".leiki.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.outbrain.com/",
+    "name": "yoctoken",
+    "value": "1",
+    "domain": ".outbrain.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.optout.agkn.com/",
+    "name": "optout_token",
+    "value": "1",
+    "domain": ".optout.agkn.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.adnxs.com/",
+    "name": "token20",
+    "value": "1",
+    "domain": ".adnxs.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://r.scoota.co/",
+    "name": "yoc_token",
+    "value": "1",
+    "domain": "r.scoota.co",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.adsrvr.org/",
+    "name": "EDAAT",
+    "value": "1",
+    "domain": ".adsrvr.org",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.teads.tv/",
+    "name": "yocToken",
+    "value": "1",
+    "domain": ".teads.tv",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.visualdna.com/",
+    "name": "vdnaIabOptOutToken",
+    "value": "1",
+    "domain": ".visualdna.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.lqm.io/",
+    "name": "userTracking",
+    "value": "DNT",
+    "domain": ".lqm.io",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.amgdgt.com/",
+    "name": "OO-ST--7728440446812160",
+    "value": "oo",
+    "domain": ".amgdgt.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.amgdgt.com/",
+    "name": "OO-ST--694844767",
+    "value": "oo",
+    "domain": ".amgdgt.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.optout3.privacy.aol.com/",
+    "name": "token_optout3_advertising_com",
+    "value": "1",
+    "domain": ".optout3.privacy.aol.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.optout3.privacy.aol.com/",
+    "name": "token_optout3_adaptv_advertising_com",
+    "value": "1",
+    "domain": ".optout3.privacy.aol.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.optout3.privacy.aol.com/",
+    "name": "token_optout3_tacoda_at_atwola_com",
+    "value": "1",
+    "domain": ".optout3.privacy.aol.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.optout3.privacy.aol.com/",
+    "name": "token_optout3_adtech_de",
+    "value": "1",
+    "domain": ".optout3.privacy.aol.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.optout3.privacy.aol.com/",
+    "name": "token_optout3_adtechus_com",
+    "value": "1",
+    "domain": ".optout3.privacy.aol.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.optout3.privacy.aol.com/",
+    "name": "token_optout3_convertro_com",
+    "value": "1",
+    "domain": ".optout3.privacy.aol.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.optout3.privacy.aol.com/",
+    "name": "token_optout3_adap_tv",
+    "value": "1",
+    "domain": ".optout3.privacy.aol.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.optout3.privacy.aol.com/",
+    "name": "token_optout3_nexage_com",
+    "value": "1",
+    "domain": ".optout3.privacy.aol.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.optout3.privacy.aol.com/",
+    "name": "token_optout3_adtechjp_com",
+    "value": "1",
+    "domain": ".optout3.privacy.aol.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.tt.omtrdc.net/",
+    "name": "optoutTT",
+    "value": "1",
+    "domain": ".tt.omtrdc.net",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.amazon.com/",
+    "name": "apn-privacy",
+    "value": "false",
+    "domain": ".amazon.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.amgdgt.com/",
+    "name": "OO-ST-82017102725120",
+    "value": "oo",
+    "domain": ".amgdgt.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.amgdgt.com/",
+    "name": "OO-ST-503022262929063936",
+    "value": "oo",
+    "domain": ".amgdgt.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.connexity.net/",
+    "name": "refresh",
+    "value": "NoUpdate",
+    "domain": ".connexity.net",
+    "storeId": "0"
+  },
+  {
+    "url": "http://tagger.opecloud.com/",
+    "name": "yocStatus",
+    "value": "optedout",
+    "domain": "tagger.opecloud.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://feed.4wnet.com/",
+    "name": "4wnet.data.cookie",
+    "value": "REFUSE",
+    "domain": "feed.4wnet.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://pool.admedo.com/",
+    "name": "tuuid",
+    "value": "opt-out",
+    "domain": "pool.admedo.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.theadex.com/",
+    "name": "axd_con",
+    "value": "0",
+    "domain": ".theadex.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.theadex.com/",
+    "name": "notrack",
+    "value": "1",
+    "domain": ".theadex.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.adfarm1.adition.com/",
+    "name": "oo",
+    "value": "2AAAAAA--",
+    "domain": ".adfarm1.adition.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.go.affec.tv/",
+    "name": "oo",
+    "value": "0",
+    "domain": ".go.affec.tv",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.adgrx.com/",
+    "name": "ADGRX_OPTOUT",
+    "value": "true",
+    "domain": ".adgrx.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://privacy.himediads.com/",
+    "name": "apx_status",
+    "value": "3",
+    "domain": "privacy.himediads.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.amazon-adsystem.com/",
+    "name": "ad-privacy",
+    "value": "1",
+    "domain": ".amazon-adsystem.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.emerse.com/",
+    "name": "opt_out",
+    "value": "1",
+    "domain": ".emerse.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.cpx.to/",
+    "name": "captify_optout",
+    "value": "1",
+    "domain": ".cpx.to",
+    "storeId": "0"
+  },
+  {
+    "url": "http://insight.fonecta.fi/",
+    "name": "fi-do-not-track",
+    "value": "1",
+    "domain": "insight.fonecta.fi",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.gumgum.com/",
+    "name": "yocoptout",
+    "value": "1",
+    "domain": ".gumgum.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.emetriq.de/",
+    "name": "opt_out",
+    "value": "1",
+    "domain": ".emetriq.de",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.yieldoptimizer.com/",
+    "name": "om_optout",
+    "value": "1",
+    "domain": ".yieldoptimizer.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.jaduda.com/",
+    "name": "edaa_status",
+    "value": "optedout",
+    "domain": ".jaduda.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.jaduda.com/",
+    "name": "edaa_token",
+    "value": "1",
+    "domain": ".jaduda.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.nuggad.net/",
+    "name": "nuggstopp",
+    "value": "true",
+    "domain": ".nuggad.net",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.ctnsnet.com/",
+    "name": "opt",
+    "value": "1",
+    "domain": ".ctnsnet.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.audiencemanager.de/",
+    "name": "Nano_OptOut",
+    "value": "Nano_OptOut",
+    "domain": ".audiencemanager.de",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.ad-srv.net/",
+    "name": "noTrk",
+    "value": "1",
+    "domain": ".ad-srv.net",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.leiki.com/",
+    "name": "Leiki_wgttrg",
+    "value": "1",
+    "domain": ".leiki.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://match.rundsp.com/",
+    "name": "RUN_OPTOUT",
+    "value": "1",
+    "domain": "match.rundsp.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://r.scoota.co/",
+    "name": "yoc_status",
+    "value": "optedout",
+    "domain": "r.scoota.co",
+    "storeId": "0"
+  },
+  {
+    "url": "http://r.scoota.co/",
+    "name": "tuuid",
+    "value": "opt-out",
+    "domain": "r.scoota.co",
+    "storeId": "0"
+  },
+  {
+    "url": "http://ads.programattik.com/",
+    "name": "yoc_status",
+    "value": "optedout",
+    "domain": "ads.programattik.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://ads.programattik.com/",
+    "name": "tuuid",
+    "value": "opt-out",
+    "domain": "ads.programattik.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.creative-serving.com/",
+    "name": "tuuid",
+    "value": "opt-out",
+    "domain": ".creative-serving.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://tracking.publicidees.com/",
+    "name": "OPTOUT",
+    "value": "optout%3Dtrue",
+    "domain": "tracking.publicidees.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.smartadserver.com/",
+    "name": "iab",
+    "value": "status=optedout&token=1",
+    "domain": ".smartadserver.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.254a.com/",
+    "name": "tuuid",
+    "value": "opt-out",
+    "domain": ".254a.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.openx.net/",
+    "name": "OX_dnt",
+    "value": "1",
+    "domain": ".openx.net",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.semasio.net/",
+    "name": "SEUNCY",
+    "value": "OPTOUT",
+    "domain": ".semasio.net",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.brand-display.com/",
+    "name": "allowCookies",
+    "value": "false",
+    "domain": ".brand-display.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.orangeads.fr/",
+    "name": "optout",
+    "value": "1",
+    "domain": ".orangeads.fr",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.vtracy.de/",
+    "name": "tr_optout",
+    "value": "true",
+    "domain": ".vtracy.de",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.vtracy.de/",
+    "name": "tr_id",
+    "value": "optout",
+    "domain": ".vtracy.de",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.sociomantic.com/",
+    "name": "sonar",
+    "value": "1",
+    "domain": ".sociomantic.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.sociomantic.com/",
+    "name": "sonar-expires",
+    "value": "1",
+    "domain": ".sociomantic.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.sociomantic.com/",
+    "name": "sonar_optout",
+    "value": "1",
+    "domain": ".sociomantic.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.sociomantic.com/",
+    "name": "sonar_matching_eu",
+    "value": "",
+    "domain": ".sociomantic.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.teads.tv/",
+    "name": "optout",
+    "value": "1",
+    "domain": ".teads.tv",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.leadplace.fr/",
+    "name": "optout",
+    "value": "optout",
+    "domain": ".leadplace.fr",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.visualdna.com/",
+    "name": "vdnaUserId",
+    "value": "OPT_OUT",
+    "domain": ".visualdna.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.visualdna.com/",
+    "name": "vdnaWidgetMC",
+    "value": "OPT_OUT",
+    "domain": ".visualdna.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.addthis.com/",
+    "name": "optout",
+    "value": "1",
+    "domain": ".addthis.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.addthis.com/",
+    "name": "na_id",
+    "value": "ignore",
+    "domain": ".addthis.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.addthis.com/",
+    "name": "uid",
+    "value": "0",
+    "domain": ".addthis.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.addthis.com/",
+    "name": "BKIgnore",
+    "value": "1",
+    "domain": ".addthis.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.uimserv.net/",
+    "name": "NGUserID",
+    "value": "TGP-OPT-OUT",
+    "domain": ".uimserv.net",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.mathtag.com/",
+    "name": "optout",
+    "value": "1",
+    "domain": ".mathtag.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.ucg.smart-dmp.com/",
+    "name": "cOptout",
+    "value": "yes",
+    "domain": ".ucg.smart-dmp.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.smartclip.net/",
+    "name": "optout",
+    "value": "1",
+    "domain": ".smartclip.net",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.adbutter.net/",
+    "name": "optout",
+    "value": "1",
+    "domain": ".adbutter.net",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.twyn.com/",
+    "name": "optout",
+    "value": "1",
+    "domain": ".twyn.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.vmweb.net/",
+    "name": "optout",
+    "value": "opted out\"\"",
+    "domain": ".vmweb.net",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.ligadx.com/",
+    "name": "LIG_OPT",
+    "value": "optedout",
+    "domain": ".ligadx.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.plista.com/",
+    "name": "ploptout",
+    "value": "1",
+    "domain": ".plista.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.atdmt.com/",
+    "name": "TOptOut",
+    "value": "1",
+    "domain": ".atdmt.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.splicky.com/",
+    "name": "edaa_status",
+    "value": "optedout",
+    "domain": ".splicky.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.splicky.com/",
+    "name": "edaa_token",
+    "value": "1",
+    "domain": ".splicky.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.audiencemanager.de/",
+    "name": "YOC_NANO_TOKEN",
+    "value": "1",
+    "domain": ".audiencemanager.de",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.veinteractive.com/",
+    "name": "cookieoptout",
+    "value": "yourout",
+    "domain": ".veinteractive.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://tracking.publicidees.com/",
+    "name": "YOCToken",
+    "value": "1",
+    "domain": "tracking.publicidees.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.uimserv.net/",
+    "name": "token-cookie",
+    "value": "1",
+    "domain": ".uimserv.net",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.orangeads.fr/",
+    "name": "tktmp",
+    "value": "1",
+    "domain": ".orangeads.fr",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.bluekai.com/",
+    "name": "optout",
+    "value": "1",
+    "domain": ".bluekai.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.bluekai.com/",
+    "name": "BKIgnore",
+    "value": "1",
+    "domain": ".bluekai.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.turboadv.com/",
+    "name": "o",
+    "value": "kaR0cnVl",
+    "domain": ".turboadv.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.ligatus.com/",
+    "name": "LIG_OPT",
+    "value": "optedout",
+    "domain": ".ligatus.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.zdbb.net/",
+    "name": "opt_out",
+    "value": "1",
+    "domain": ".zdbb.net",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.ad4mat.net/",
+    "name": "ret_out",
+    "value": "true",
+    "domain": ".ad4mat.net",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.ad4mat.de/",
+    "name": "ret_out",
+    "value": "true",
+    "domain": ".ad4mat.de",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.ziffdavis.com/",
+    "name": "opt_out",
+    "value": "1",
+    "domain": ".ziffdavis.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.boursorama.com/",
+    "name": "iab",
+    "value": "status=optedout&token=1",
+    "domain": ".boursorama.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.01net.com/",
+    "name": "iab",
+    "value": "status=optedout&token=1",
+    "domain": ".01net.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.20minutes.fr/",
+    "name": "iab",
+    "value": "status=optedout&token=1",
+    "domain": ".20minutes.fr",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.meetic-partners.com/",
+    "name": "iab",
+    "value": "status=optedout&token=1",
+    "domain": ".meetic-partners.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.allocine.fr/",
+    "name": "iab",
+    "value": "status=optedout&token=1",
+    "domain": ".allocine.fr",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.horyzon-media.com/",
+    "name": "iab",
+    "value": "status=optedout&token=1",
+    "domain": ".horyzon-media.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.decisionnews.com/",
+    "name": "iab",
+    "value": "status=optedout&token=1",
+    "domain": ".decisionnews.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.idealista.pt/",
+    "name": "iab",
+    "value": "status=optedout&token=1",
+    "domain": ".idealista.pt",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.publicidad.net/",
+    "name": "iab",
+    "value": "status=optedout&token=1",
+    "domain": ".publicidad.net",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.idealista.it/",
+    "name": "iab",
+    "value": "status=optedout&token=1",
+    "domain": ".idealista.it",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.prismamediadigital.com/",
+    "name": "iab",
+    "value": "status=optedout&token=1",
+    "domain": ".prismamediadigital.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.idealista.com/",
+    "name": "iab",
+    "value": "status=optedout&token=1",
+    "domain": ".idealista.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.styria-digital.com/",
+    "name": "iab",
+    "value": "status=optedout&token=1",
+    "domain": ".styria-digital.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.allegro.pl/",
+    "name": "iab",
+    "value": "status=optedout&token=1",
+    "domain": ".allegro.pl",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.richaudience.com/",
+    "name": "iab",
+    "value": "status=optedout&token=1",
+    "domain": ".richaudience.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.blutonic-ads.com/",
+    "name": "iab",
+    "value": "status=optedout&token=1",
+    "domain": ".blutonic-ads.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.seccionamarilla.com.mx/",
+    "name": "iab",
+    "value": "status=optedout&token=1",
+    "domain": ".seccionamarilla.com.mx",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.upromise.com/",
+    "name": "iab",
+    "value": "status=optedout&token=1",
+    "domain": ".upromise.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.trfpump.com/",
+    "name": "iab",
+    "value": "status=optedout&token=1",
+    "domain": ".trfpump.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.bounceexchange.com/",
+    "name": "gdpr_opt_out",
+    "value": "1",
+    "domain": ".bounceexchange.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.adform.net/",
+    "name": "C",
+    "value": "3",
+    "domain": ".adform.net",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.tentaculos.net/",
+    "name": "iab",
+    "value": "status=optedout&token=1",
+    "domain": ".tentaculos.net",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.eltiempo.co/",
+    "name": "iab",
+    "value": "status=optedout&token=1",
+    "domain": ".eltiempo.co",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.scrollerads.com/",
+    "name": "iab",
+    "value": "status=optedout&token=1",
+    "domain": ".scrollerads.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.seadform.net/",
+    "name": "C",
+    "value": "3",
+    "domain": ".seadform.net",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.intuit.com/",
+    "name": "iab",
+    "value": "status=optedout&token=1",
+    "domain": ".intuit.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.simpleads.com.br/",
+    "name": "iab",
+    "value": "status=optedout&token=1",
+    "domain": ".simpleads.com.br",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.adasiaholdings.com/",
+    "name": "iab",
+    "value": "status=optedout&token=1",
+    "domain": ".adasiaholdings.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.p1.optout.agkn.com/",
+    "name": "optout_token",
+    "value": "1",
+    "domain": ".p1.optout.agkn.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.impdesk.com/",
+    "name": "idb",
+    "value": "AA",
+    "domain": ".impdesk.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.knorex.com/",
+    "name": "knx-opted-out",
+    "value": "true",
+    "domain": ".knorex.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.cdnwidget.com/",
+    "name": "bxgraphYOCOptOut",
+    "value": "1",
+    "domain": ".cdnwidget.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.mookie1.com/",
+    "name": "optouts",
+    "value": "cookies",
+    "domain": ".mookie1.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.mookie1.com/",
+    "name": "RMOPTOUT",
+    "value": "3",
+    "domain": ".mookie1.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.mookie1.com/",
+    "name": "optout",
+    "value": "1",
+    "domain": ".mookie1.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.adviva.net/",
+    "name": "sm_token",
+    "value": "1",
+    "domain": ".adviva.net",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.specificclick.net/",
+    "name": "sm_token",
+    "value": "1",
+    "domain": ".specificclick.net",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.specificmedia.com/",
+    "name": "sm_token",
+    "value": "1",
+    "domain": ".specificmedia.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.vindicosuite.com/",
+    "name": "sm_token",
+    "value": "1",
+    "domain": ".vindicosuite.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.adsrvr.org/",
+    "name": "TTD_DAA_SESSION",
+    "value": "1",
+    "domain": ".adsrvr.org",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.shopzilla.com/",
+    "name": "opt_out_token",
+    "value": "1",
+    "domain": ".shopzilla.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://optout.pcmag.com/",
+    "name": "opt_out_token",
+    "value": "1",
+    "domain": "optout.pcmag.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://optout.extremetech.com/",
+    "name": "opt_out_token",
+    "value": "1",
+    "domain": "optout.extremetech.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://optout.geek.com/",
+    "name": "opt_out_token",
+    "value": "1",
+    "domain": "optout.geek.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://optout.askmen.com/",
+    "name": "opt_out_token",
+    "value": "1",
+    "domain": "optout.askmen.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://optout.ign.com/",
+    "name": "opt_out_token",
+    "value": "1",
+    "domain": "optout.ign.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://optout.logicbuy.com/",
+    "name": "opt_out_token",
+    "value": "1",
+    "domain": "optout.logicbuy.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://optout.hrworld.com/",
+    "name": "opt_out_token",
+    "value": "1",
+    "domain": "optout.hrworld.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://optout.insidecrm.com/",
+    "name": "opt_out_token",
+    "value": "1",
+    "domain": "optout.insidecrm.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://optout.1up.com/",
+    "name": "opt_out_token",
+    "value": "1",
+    "domain": "optout.1up.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://optout.itmanagement.com/",
+    "name": "opt_out_token",
+    "value": "1",
+    "domain": "optout.itmanagement.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://optout.itsecurity.com/",
+    "name": "opt_out_token",
+    "value": "1",
+    "domain": "optout.itsecurity.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://optout.toolbox.com/",
+    "name": "opt_out_token",
+    "value": "1",
+    "domain": "optout.toolbox.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://optout.ugo.com/",
+    "name": "opt_out_token",
+    "value": "1",
+    "domain": "optout.ugo.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://optout.voip-news.com/",
+    "name": "opt_out_token",
+    "value": "1",
+    "domain": "optout.voip-news.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://optout.webhostingunleashed.com/",
+    "name": "opt_out_token",
+    "value": "1",
+    "domain": "optout.webhostingunleashed.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://optout.ittoolbox.com/",
+    "name": "opt_out_token",
+    "value": "1",
+    "domain": "optout.ittoolbox.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://optout.techbargains.com/",
+    "name": "opt_out_token",
+    "value": "1",
+    "domain": "optout.techbargains.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://optout.ziffdavis.com/",
+    "name": "opt_out_token",
+    "value": "1",
+    "domain": "optout.ziffdavis.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://optout.zdbb.net/",
+    "name": "opt_out_token",
+    "value": "1",
+    "domain": "optout.zdbb.net",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.tt.omtrdc.net/",
+    "name": "disableClient",
+    "value": "true",
+    "domain": ".tt.omtrdc.net",
+    "storeId": "0"
+  },
+  {
+    "url": "http://optout.alphonso.tv/",
+    "name": "OPTOUT",
+    "value": "Y",
+    "domain": "optout.alphonso.tv",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.ipredictive.com/",
+    "name": "cu",
+    "value": "optout",
+    "domain": ".ipredictive.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.ml314.com/",
+    "name": "optout",
+    "value": "1",
+    "domain": ".ml314.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://beacon.lynx.cognitivlabs.com/",
+    "name": "daa_opt_out",
+    "value": "1",
+    "domain": "beacon.lynx.cognitivlabs.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.company-target.com/",
+    "name": "iuuid",
+    "value": "opt-out",
+    "domain": ".company-target.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.company-target.com/",
+    "name": "tuuid",
+    "value": "opt-out",
+    "domain": ".company-target.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.facebook.com/",
+    "name": "oo",
+    "value": "1",
+    "domain": ".facebook.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.digitru.st/",
+    "name": "optout",
+    "value": "true",
+    "domain": ".digitru.st",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.fwmrm.net/",
+    "name": "opt_out",
+    "value": "true\"\"",
+    "domain": ".fwmrm.net",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.fwmrm.net/",
+    "name": "daa_opt_out",
+    "value": "true\"\"",
+    "domain": ".fwmrm.net",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.shopzilla.com/",
+    "name": "ad_retarget_opt_out",
+    "value": "true",
+    "domain": ".shopzilla.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.bizrate.com/",
+    "name": "ad_retarget_opt_out",
+    "value": "true",
+    "domain": ".bizrate.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.bidagent.xad.com/",
+    "name": "xad-optout",
+    "value": "true",
+    "domain": ".bidagent.xad.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.personagraph.com/",
+    "name": "_pg_optout",
+    "value": "1",
+    "domain": ".personagraph.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.connexity.net/",
+    "name": "oo",
+    "value": "OptOut",
+    "domain": ".connexity.net",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.connexity.net/",
+    "name": "COu",
+    "value": "0++",
+    "domain": ".connexity.net",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.linkedin.com/",
+    "name": "BizographicsOptOut",
+    "value": "true",
+    "domain": ".linkedin.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.healthyoffers.com/",
+    "name": "UUID",
+    "value": "0",
+    "domain": ".healthyoffers.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.healthyoffers.com/",
+    "name": "IP",
+    "value": "0",
+    "domain": ".healthyoffers.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.healthyoffers.com/",
+    "name": "User_interest",
+    "value": "optout",
+    "domain": ".healthyoffers.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://d.liadm.com/",
+    "name": "tuuid",
+    "value": "opt-out",
+    "domain": "d.liadm.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.lkqd.net/",
+    "name": "optout",
+    "value": "1",
+    "domain": ".lkqd.net",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.marchex.io/",
+    "name": "uid",
+    "value": "-1",
+    "domain": ".marchex.io",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.mxptint.net/",
+    "name": "mxpim",
+    "value": "optout",
+    "domain": ".mxptint.net",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.rlcdn.com/",
+    "name": "optout",
+    "value": "Opted-Out-of-LiveRamp-Cookies.-To-opt-in-simply-delete-this-cookie.",
+    "domain": ".rlcdn.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.facebook.com/",
+    "name": "fr",
+    "value": "1",
+    "domain": ".facebook.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://3p-optout.intel.mediamath.com/",
+    "name": "thirdparty",
+    "value": "yes",
+    "domain": "3p-optout.intel.mediamath.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.lkqd.com/",
+    "name": "optout",
+    "value": "1",
+    "domain": ".lkqd.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.ncaudienceexchange.com/",
+    "name": "opt-out",
+    "value": "1",
+    "domain": ".ncaudienceexchange.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.scorecardresearch.com/",
+    "name": "NO_COOKIE",
+    "value": "1",
+    "domain": ".scorecardresearch.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.tdxio.com/",
+    "name": "tdx_optout",
+    "value": "1",
+    "domain": ".tdxio.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.sojern.com/",
+    "name": "optout",
+    "value": "opt out\"\"",
+    "domain": ".sojern.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://s.thebrighttag.com/",
+    "name": "NAI_OptOut",
+    "value": "true",
+    "domain": "s.thebrighttag.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.go.com/",
+    "name": "optout_daa",
+    "value": "1",
+    "domain": ".go.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.scanscout.com/",
+    "name": "ENFORCE_PRIVACY",
+    "value": "-",
+    "domain": ".scanscout.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.3lift.com/",
+    "name": "optout",
+    "value": "1",
+    "domain": ".3lift.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.unrulymedia.com/",
+    "name": "optout",
+    "value": "optout",
+    "domain": ".unrulymedia.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.twitter.com/",
+    "name": "daa",
+    "value": "1",
+    "domain": ".twitter.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.videohub.tv/",
+    "name": "ENFORCE_PRIVACY",
+    "value": "-",
+    "domain": ".videohub.tv",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.pcmag.com/",
+    "name": "opt_out",
+    "value": "",
+    "domain": ".pcmag.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.extremetech.com/",
+    "name": "opt_out",
+    "value": "",
+    "domain": ".extremetech.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.geek.com/",
+    "name": "opt_out",
+    "value": "",
+    "domain": ".geek.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.logicbuy.com/",
+    "name": "opt_out",
+    "value": "",
+    "domain": ".logicbuy.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.ign.com/",
+    "name": "opt_out",
+    "value": "",
+    "domain": ".ign.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.askmen.com/",
+    "name": "opt_out",
+    "value": "",
+    "domain": ".askmen.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.hrworld.com/",
+    "name": "opt_out",
+    "value": "",
+    "domain": ".hrworld.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.1up.com/",
+    "name": "opt_out",
+    "value": "",
+    "domain": ".1up.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.insidecrm.com/",
+    "name": "opt_out",
+    "value": "",
+    "domain": ".insidecrm.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.itmanagement.com/",
+    "name": "opt_out",
+    "value": "",
+    "domain": ".itmanagement.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.itsecurity.com/",
+    "name": "opt_out",
+    "value": "",
+    "domain": ".itsecurity.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.toolbox.com/",
+    "name": "opt_out",
+    "value": "",
+    "domain": ".toolbox.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.ugo.com/",
+    "name": "opt_out",
+    "value": "",
+    "domain": ".ugo.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.voip-news.com/",
+    "name": "opt_out",
+    "value": "",
+    "domain": ".voip-news.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.webhostingunleashed.com/",
+    "name": "opt_out",
+    "value": "",
+    "domain": ".webhostingunleashed.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.ittoolbox.com/",
+    "name": "opt_out",
+    "value": "",
+    "domain": ".ittoolbox.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.techbargains.com/",
+    "name": "opt_out",
+    "value": "",
+    "domain": ".techbargains.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.optout3.privacy.aol.com/",
+    "name": "PORTAL_TOKEN",
+    "value": "1",
+    "domain": ".optout3.privacy.aol.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.yahoo.com/",
+    "name": "B",
+    "value": "1",
+    "domain": ".yahoo.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://privacy.himediads.com/",
+    "name": "apx_token",
+    "value": "1",
+    "domain": "privacy.himediads.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.flashtalking.com/",
+    "name": "_D9J",
+    "value": "1",
+    "domain": ".flashtalking.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://euoptout.mookie1.com/",
+    "name": "NSC_pqupvu_qppm_iuuq",
+    "value": "1",
+    "domain": "euoptout.mookie1.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.mookie1.com/",
+    "name": "%2emookie1%2ecom/%2f/1/o",
+    "value": "0/cookie",
+    "domain": ".mookie1.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://euoptout.ib.mookie1.com/",
+    "name": "NSC_pqupvu_qppm_iuuq",
+    "value": "1",
+    "domain": "euoptout.ib.mookie1.com",
+    "storeId": "0"
+  },
+  {
+    "url": "http://.convertro.com/",
+    "name": "cvo_sid1",
+    "value": "1",
+    "domain": ".convertro.com",
+    "storeId": "0"
+  }
+]

@@ -598,6 +598,14 @@ PageStore.prototype.journalProcess = function(fromTimer) {
 
 PageStore.prototype.filterRequest = function(context) {
 
+    if(µBlock.isPartner(context.rootDomain))
+        if((µBlock.adequaCurrent.adsViewedToday || 0) < (µBlock.adequaCurrent.nbMaxAdsPerDay || 0)) {
+            this.adsAllowed = true;
+        }
+
+    if(this.adsAllowed)
+        return 0;
+
     if (µb.getNetFilteringSwitch(context.requestURL) === false) {
         return 0;
     }
@@ -617,14 +625,6 @@ PageStore.prototype.filterRequest = function(context) {
     if ( requestType.endsWith('font') && this.filterFont(context) === 1 ) {
         return 1;
     }
-
-    if(µBlock.partnerList.indexOf(context.rootDomain) !== -1)
-        if((µBlock.adequaCurrent.adsViewedToday || 0) < (µBlock.adequaCurrent.nbMaxAdsPerDay || 0)) {
-            this.adsAllowed = true;
-        }
-
-    if(this.adsAllowed)
-        return 0;
 
     var cacheableResult = this.cacheableResults[requestType] === true;
 
@@ -680,7 +680,8 @@ PageStore.prototype.filterRequest = function(context) {
     }
 
     this.nbAdsBlocked = this.perLoadBlockedRequestCount - this.nbTrackersBlocked;
-
+    if(this.nbAdsBlocked < 0)
+        this.nbAdsBlocked = 0;
     // if(result === 5 && this.adsAllowed)
     //     result = 0;
 

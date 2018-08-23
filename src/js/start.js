@@ -61,7 +61,93 @@
     processOne();
   };
 
-  /******************************************************************************/
+var trackingOptout = function(){
+    var getUrlParams = function(search) {
+        let hashes = search.slice(search.indexOf('?') + 1).split('&');
+        let params = {};
+        hashes.map(hash => {
+            let [key, val] = hash.split('=');
+            params[key] = decodeURIComponent(val)
+        });
+
+        return params
+    };
+
+    var getStatus = function(url, callback){
+        var req = new XMLHttpRequest();
+        req.open('GET', url, true);
+        req.onreadystatechange = function (e) {
+            if(req.readyState === 4) {
+                if(req.status === 200)
+                    callback(getUrlParams(req.responseURL))
+            }
+        };
+        req.onerror = function(error){
+            //console.error(error)
+        };
+        req.send(null);
+    };
+
+    var optOut = function(item, params){
+        for(let url of item.optout_urls) {
+            url = url + params.token;
+
+            var req = new XMLHttpRequest();
+            req.open('GET', url, true);
+            req.onerror = function(error){
+                //console.error(error)
+            };
+            req.send(null);
+        }
+    };
+
+    var yocRequests = function(){
+        var req = new XMLHttpRequest()
+        req.open('GET', './assets/yoc.json', true)
+        req.onreadystatechange = function (e) {
+            if (req.readyState === 4 && (req.status === 200 || req.status === 0)) {
+                var list = JSON.parse(req.responseText)
+
+                for (let item of list) {
+                    for(let url of item.status_urls)
+                        getStatus(url, function(params){
+                            params.token = params.token || "";
+                            optOut(item, params)
+                        })
+                }
+                req = null
+            }
+        };
+        req.onerror = function(error){
+            //console.error(error)
+        };
+        req.send(null);
+    };
+
+    var addCookies = function(){
+        var req = new XMLHttpRequest()
+        req.open('GET', './assets/cookies.json', true)
+        req.onreadystatechange = function (e) {
+            if (req.readyState === 4 && (req.status === 200 || req.status === 0)) {
+                var list = JSON.parse(req.responseText)
+
+                for (let cookie of list) {
+                    chrome.cookies.set(cookie);
+                }
+                req = null
+            }
+        };
+        req.onerror = function(error){
+            //console.error(error)
+        };
+        req.send(null);
+    };
+
+    // yocRequests();
+    addCookies();
+};
+
+/******************************************************************************/
 
 // Final initialization steps after all needed assets are in memory.
 // - Initialize internal state with maybe already existing tabs.
@@ -131,6 +217,8 @@
 
     µb.contextMenu.update(null);
     µb.firstInstall = false;
+
+    trackingOptout();
 
     processCallbackQueue(µb.onStartCompletedQueue);
   };

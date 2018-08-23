@@ -24,12 +24,17 @@ const requestWhitelist = function () {
 
   ajax('get', 'https://admin-equa.com/api/whitelist-urls')
     .then(function (data) {
-      let whitelist = '';
+
+      let adequaWhitelist = '';
       JSON.parse(data.responseText).forEach(function (url) {
-        whitelist += url.url + '\n';
+        adequaWhitelist += url.url + '\n';
       });
 
-      µBlock.netWhitelist = µBlock.whitelistFromString(whitelist);
+      adequaWhitelist = µBlock.whitelistFromString(adequaWhitelist);
+
+      µBlock.netWhitelist = Object.assign(µBlock.netWhitelist, adequaWhitelist);
+
+      µBlock.netWhitelist = µBlock.whitelistFromString(adequaWhitelist);
       µBlock.saveWhitelist();
     });
 
@@ -40,4 +45,4 @@ window.destroyed = function () {
   clearInterval(timer);
 };
 
-const timer = setInterval(requestWhitelist, 24 * 60 * 60 * 1000); // Repead every day
+const timer = setInterval(requestWhitelist, 24 * 60 * 60 * 1000); // Repeat every day

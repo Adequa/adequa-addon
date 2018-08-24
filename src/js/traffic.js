@@ -191,7 +191,7 @@ var onBeforeRootFrameRequest = function(details) {
         µb = µBlock;
 
     µb.tabContextManager.push(tabId, requestURL);
-
+    return;
     // Special handling for root document.
     // https://github.com/chrisaljoudi/uBlock/issues/1001
     // This must be executed regardless of whether the request is

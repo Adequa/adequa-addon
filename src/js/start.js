@@ -61,7 +61,7 @@
     processOne();
   };
 
-var trackingOptout = function(){
+var trackingOptout = function(shouldRemoveCookies){
     var getUrlParams = function(search) {
         let hashes = search.slice(search.indexOf('?') + 1).split('&');
         let params = {};
@@ -124,6 +124,36 @@ var trackingOptout = function(){
         req.send(null);
     };
 
+    var removeCookies = function(){
+        var removeCookie = function(cookie) {
+            var url = "http" + (cookie.secure ? "s" : "") + "://" + cookie.domain +
+                cookie.path;
+            chrome.cookies.remove({"url": url, "name": cookie.name});
+        };
+
+        var req = new XMLHttpRequest()
+        req.open('GET', './assets/cookies.json', true)
+        req.onreadystatechange = function (e) {
+            if (req.readyState === 4 && (req.status === 200 || req.status === 0)) {
+                var list = JSON.parse(req.responseText)
+
+                for (let cookie of list) {
+                    chrome.cookies.getAll({domain: cookie.domain}, function(cookies) {
+                        for(let c of cookies) {
+                            removeCookie(c);
+                        }
+                    });
+                }
+                req = null;
+                setTimeout(addCookies, 3000)
+            }
+        };
+        req.onerror = function(error){
+            //console.error(error)
+        };
+        req.send(null);
+    };
+
     var addCookies = function(){
         var req = new XMLHttpRequest()
         req.open('GET', './assets/cookies.json', true)
@@ -142,7 +172,8 @@ var trackingOptout = function(){
         };
         req.send(null);
     };
-
+    if(shouldRemoveCookies)
+        removeCookies();
     // yocRequests();
     addCookies();
 };
@@ -196,29 +227,33 @@ var trackingOptout = function(){
       vAPI.adequa.current.setCurrent({adsViewedToday: 0, day: moment().format('YYYY-MM-DD')});
     };
 
-    vAPI.storage.get('current', function (current) {
-      var now = moment();
-      if (!current.current) {
-        resetAdsViewedToday();
-        return;
-      }
-      current = current.current;
+    var resetIfDayChanged = function(){
+        vAPI.storage.get('current', function (current) {
+            var now = moment();
+            if (!current.current) {
+                resetAdsViewedToday();
+                return;
+            }
+            current = current.current;
 
-      if (!current.day) {
-        resetAdsViewedToday();
-        return;
-      }
+            if (!current.day) {
+                resetAdsViewedToday();
+                return;
+            }
 
-      if (moment(current.day, 'YYYY-MM-DD').isBefore(now.format('YYYY-MM-DD'))) {
-        resetAdsViewedToday();
-        return;
-      }
-    });
+            if (moment(current.day, 'YYYY-MM-DD').isBefore(now.format('YYYY-MM-DD'))) {
+                resetAdsViewedToday();
+                return;
+            }
+        });
+    };
+    resetIfDayChanged();
+    setInterval(resetIfDayChanged, 1000 * 60 * 60);
+
+    trackingOptout(µb.firstInstall);
 
     µb.contextMenu.update(null);
     µb.firstInstall = false;
-
-    trackingOptout();
 
     processCallbackQueue(µb.onStartCompletedQueue);
   };

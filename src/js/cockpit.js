@@ -72,10 +72,11 @@
                     tabId: popupData.tabId
                 },
                 function(current){
-                    if(!current.loadTime) {
-                        renderTotalStats();
-                        return;
-                    }
+                    // if(!current.loadTime) {
+                    //     renderTotalStats();
+                    //     statsSwitch.checked = false;
+                    //     return;
+                    // }
                     setNbTrackersBlocked(current.nbTrackersBlocked);
                     setNbAdsBlocked(current.nbAdsBlocked);
                     setTimeWon(current.loadTime / 1000 / 60);
@@ -90,13 +91,12 @@
                     tabId: popupData.tabId
                 },
                 function(adsViewedOnPage) {
-                    console.log(adsViewedOnPage)
                     setAdsViewedOnPage(adsViewedOnPage);
 
                     messaging.send('adequa', {what: 'fetchTotalNumberAdsViewed'}, function(adsViewed){
                         adsViewed = adsViewed + adsViewedOnPage;
                         var totalAdsNumber = uDom('#total-ad-number').nodes[0];
-                        totalAdsNumber.innerText = adsViewed + ''
+                        totalAdsNumber.innerText = adsViewed + '';
                         setGenerated(adsViewed);
                     });
                     messaging.send('adequa', {what: 'fetchAdsViewedStats'}, function(adsViewed){

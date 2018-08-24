@@ -21,11 +21,13 @@
       -webkit-user-select: none;
     vertical-align: middle;
     }
+.adequa-popup {
+    padding: 4px 4px 0 4px;
+}
 body {
     background-color: white;
     color: black;
     font: 14px sans-serif;
-    padding: 4px 4px 0 4px;
     }
 textarea {
     font-size: 90%;

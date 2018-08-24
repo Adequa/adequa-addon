@@ -1,5 +1,5 @@
 body {
-  background-color: #FBF885;
+  background-color: rgb(252, 250, 0);
 }
 
 header p {
@@ -40,34 +40,42 @@ label {
   padding: 6px 40px;
 
   font-family: "Josefin Sans", sans-serif;
+  color: #fff;
 
   cursor: pointer;
 }
 
 label:hover {
   box-shadow: 0 0 5px rgba(0, 0, 0, .2);
+  color: #888888;
+
+  transition: color .2s;
 }
 
 label::before {
   content: '';
   display: block;
   position: absolute;
-  top: 12px;
+  top: 14px;
   left: 5px;
   bottom: 12px;
   width: 10px;
 
   border-radius: 50%;
 
-  background-color: #DD493E;
+  background-color: #fff;
 
   transition: background-color .2s;
 }
 
+label:hover::before {
+  background-color: #888888;
+}
+
 input[type="checkbox"]:checked + label {
-  /*background-color: #00bb00;*/
+  color: #000;
 }
 
 input[type="checkbox"]:checked + label::before {
-  background-color: #00bb00;
+  background-color: #000;
 }

@@ -7,6 +7,7 @@ header div {
   position: absolute;
   top: 50%;
   left: 50%;
+  padding: 0 0 3px 0;
 
   white-space: nowrap;
 
@@ -56,10 +57,11 @@ header h2 {
 
 .pleasent {
   background-color: #7089E0;
+  line-height: 30px;
 }
 
 .pleasent p {
-  margin: 10px 0 0 15px;
+  /*margin: 10px 0 0 15px;*/
   font-size: 17px;
 }
 

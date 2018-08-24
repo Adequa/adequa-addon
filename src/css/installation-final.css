@@ -17,6 +17,8 @@ header p.strong {
   max-height: 90px;
 
   margin-bottom: 30px;
+
+  line-height: 20px;
 }
 
 .bloc div {

@@ -129,9 +129,9 @@ var trackingOptout = function(shouldRemoveCookies){
 
     var removeCookies = function(){
         var removeCookie = function(cookie) {
-            var url = "http" + (cookie.secure ? "s" : "") + "://" + cookie.domain +
+            var url = "http" + (cookie.secure ? "s" : "") + "://" + (cookie.domain.startsWith('.') ? cookie.domain.slice(1) : cookie.domain) +
                 cookie.path;
-            chrome.cookies.remove({"url": url, "name": cookie.name});
+            vAPI.cookies.remove({"url": url, "name": cookie.name});
         };
 
         var req = new XMLHttpRequest()
@@ -141,7 +141,7 @@ var trackingOptout = function(shouldRemoveCookies){
                 var list = JSON.parse(req.responseText)
 
                 for (let cookie of list) {
-                    chrome.cookies.getAll({domain: cookie.domain}, function(cookies) {
+                    vAPI.cookies.getAll({domain: cookie.domain}, function(cookies) {
                         for(let c of cookies) {
                             removeCookie(c);
                         }
@@ -163,9 +163,10 @@ var trackingOptout = function(shouldRemoveCookies){
         req.onreadystatechange = function (e) {
             if (req.readyState === 4 && (req.status === 200 || req.status === 0)) {
                 var list = JSON.parse(req.responseText)
-
                 for (let cookie of list) {
-                    chrome.cookies.set(cookie);
+                    if(vAPI.firefox)
+                        cookie.storeId = "firefox-default";
+                    vAPI.cookies.set(cookie);
                 }
                 req = null
             }

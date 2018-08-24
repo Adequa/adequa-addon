@@ -25,6 +25,9 @@
 
 /******************************************************************************/
 
+vAPI.cookies = browser.cookies;
+vAPI.firefox = true;
+
 vAPI.net = {
     onBeforeRequest: {},
     onBeforeMaybeSpuriousCSPReport: {},
@@ -45,7 +48,7 @@ vAPI.net.registerListeners = function() {
     // https://bugzilla.mozilla.org/show_bug.cgi?id=945240
     var mustPunycode = false;
     (function() {
-        if ( 
+        if (
             typeof browser === 'object' &&
             browser !== null &&
             browser.runtime instanceof Object &&
@@ -134,6 +137,43 @@ vAPI.net.registerListeners = function() {
             return;
         }
     };
+
+    function removeCookie(cookie) {
+        var url = "http" + (cookie.secure ? "s" : "") + "://" + (cookie.domain.startsWith('.') ? cookie.domain.slice(1) : cookie.domain) +
+            cookie.path;
+        vAPI.cookies.remove({"url": url, "name": cookie.name});
+    }
+
+    var whitelist = {
+        'lemonde.fr': [
+            'prog-deploy',
+            'user_session',
+            'lmd_a_m',
+            'lmd_a_s',
+            'lmd_stay_connected',
+            'tdb_user_id',
+            'info_user_webs'
+        ]
+    };
+
+    var onCookieChanged = function(changeInfo){
+        if(changeInfo.removed)
+            return;
+
+        if(!(changeInfo.cookie.name && changeInfo.cookie.domain))
+            return;
+
+        var hostname = changeInfo.cookie.domain.split('.').slice(-2).join('.');
+        if(!µBlock.isPartner(hostname))
+            return;
+
+        var hostnameWhitelist = (whitelist[hostname] || []);
+
+        if(hostnameWhitelist.indexOf(changeInfo.cookie.name) === -1)
+            removeCookie(changeInfo.cookie)
+    };
+
+    vAPI.cookies.onChanged.addListener(onCookieChanged);
 
     var onBeforeRequestClient = this.onBeforeRequest.callback;
     var onBeforeRequest = function(details) {

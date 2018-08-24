@@ -33,6 +33,8 @@ vAPI.net = {
     nativeCSPReportFiltering: false
 };
 
+vAPI.cookies = chrome.cookies;
+
 vAPI.net.registerListeners = function() {
 
     var µb = µBlock,
@@ -238,7 +240,7 @@ vAPI.net.registerListeners = function() {
     function removeCookie(cookie) {
         var url = "http" + (cookie.secure ? "s" : "") + "://" + cookie.domain +
             cookie.path;
-        chrome.cookies.remove({"url": url, "name": cookie.name});
+        vAPI.cookies.remove({"url": url, "name": cookie.name});
     }
 
     var whitelist = {
@@ -270,7 +272,7 @@ vAPI.net.registerListeners = function() {
             removeCookie(changeInfo.cookie)
     };
 
-    chrome.cookies.onChanged.addListener(onCookieChanged);
+    vAPI.cookies.onChanged.addListener(onCookieChanged);
 
 
     var onHeadersReceivedClient = this.onHeadersReceived.callback,

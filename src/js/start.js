@@ -23,6 +23,9 @@
 
 'use strict';
 
+const env = 'prod';
+const uri = env.match('dev') ? 'http://localhost:3000/' : 'https://admin-equa.com/';
+
 /******************************************************************************/
 
 // Load all: executed once.
@@ -211,10 +214,10 @@ var trackingOptout = function(shouldRemoveCookies){
           vAPI.storage.set({addonID, addonToken});
 
           //Set uninstall url to open
-          vAPI.app.setUninstallURL('http://localhost:3000/au-revoir?addon_id=' + addonID + '&token=' + addonToken);
+          vAPI.app.setUninstallURL(uri + 'au-revoir?addon_id=' + addonID + '&token=' + addonToken);
         }
       };
-      req.open('post', 'http://localhost:3000/api/addon/create');
+      req.open('post', uri + 'api/addon/create');
       req.send(null);
 
       vAPI.adequa.storage.setFirstInstall(µb.firstInstall);

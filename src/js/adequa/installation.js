@@ -116,7 +116,6 @@ let showChoiceScreen = function () {
         elem.style.color = '#f00';
         elem.style.position = 'absolute';
         elem.style.top = '80px';
-        elem.style.backgroundColor = 'rgba(0, 0, 0, .2)';
         elem.style.padding = '5px';
         elem.style.zIndex = '9999';
         elem.style.fontWeight = 'bold';
@@ -126,7 +125,7 @@ let showChoiceScreen = function () {
 
         setTimeout(function () {
           dom.body.removeChild(elem);
-        }, 3000);
+        }, 5000);
 
         return;
       }

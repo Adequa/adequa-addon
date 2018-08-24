@@ -530,7 +530,7 @@ var onMessage = function(request, sender, callback) {
             µb.logCosmeticFilters(tabId);
         }
 
-        var allowed = JSON.stringify(['.dfp_slot']);
+        var allowed = JSON.stringify(['.Dfp__Slot', '#lig_lemonde_desk_home_infeed_1', '#lig_lemonde_desk_home_infeed_2', '.dfp_slot', '#lig_lemonde_home_infeed_1', '#lig_lemonde_home_infeed_2', '#lig_lemonde_home_infeed_3']);
         var blocked = JSON.stringify(response.specificCosmeticFilters.declarativeFilters);
         var code = `
         function isElementInViewport(elem) {
@@ -558,7 +558,11 @@ var onMessage = function(request, sender, callback) {
                     if (elements.length !== 0) {
                         elements.forEach(function (elem) {
                             if (elem.clientHeight >= 45 && isElementInViewport(elem)) {
-                                allowedCount++;
+                                var iframe = elem.querySelector('iframe');
+                                if(iframe && iframe.contentDocument.body.clientHeight === 0)
+                                    blockedCount++;
+                                else
+                                    allowedCount++;
                             }
                             else
                                 blockedCount++;
@@ -584,7 +588,7 @@ var onMessage = function(request, sender, callback) {
                 response.noGenericCosmeticFiltering = true;
                 response.noCosmeticFiltering = true;
                 response.customCosmeticFiltering = true;
-                response.annoyingAds = ['#dfp-habillage'];
+                response.annoyingAds = ['#dfp-habillage', '#habillage'];
             }
         }
         break;

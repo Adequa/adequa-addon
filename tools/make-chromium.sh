@@ -5,9 +5,9 @@
 echo "*** uBlock0.chromium: Creating web store package"
 echo "*** uBlock0.chromium: Copying files"
 
-cd adequa-js
-make build
-cd -
+#cd adequa-js
+#make build
+#cd -
 
 DES=dist/build/uBlock0.chromium
 rm -rf $DES

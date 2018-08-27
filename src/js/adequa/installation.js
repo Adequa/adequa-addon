@@ -167,8 +167,8 @@ let showChoiceNbAdsScreen = function () {
       let value = this.value;
 
       nbMaxAdsPerDay = value;
-      dom.getElementsByClassName('ads-per-day')[0].innerHTML = `${value} pubs/jour`;
-      dom.getElementsByClassName('year')[0].innerHTML = `${(value * 1.8).toFixed(2)}€/an`;
+      dom.getElementsByClassName('ads-per-day')[0].innerText = `${value} pubs/jour`;
+      dom.getElementsByClassName('year')[0].innerText = `${(value * 1.8).toFixed(2)}€/an`;
     };
 
     dom.getElementsByTagName('input')[0].addEventListener('input', onInput);

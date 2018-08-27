@@ -1,7 +1,8 @@
 {
    "applications":{
       "gecko":{
-         "strict_min_version":"52.0"
+         "strict_min_version":"52.0",
+         "id": "adfilter@adequa.me"
       }
    },
    "author":"__MSG_authorName__",
@@ -31,7 +32,7 @@
    "content_scripts": [
       {
          "matches": ["http://*/*", "https://*/*"],
-         "js": ["/js/vapi.js", "/js/vapi-client.js", "/js/contentscript.js", "/web_accessible_resources/adequa.js"],
+         "js": ["/js/vapi.js", "/js/vapi-client.js", "/js/contentscript.js"],
          "run_at": "document_start",
          "all_frames": true
       },

@@ -18,7 +18,7 @@
       });
 
       content.getElementsByTagName('input')[0].addEventListener('input', function () {
-        content.getElementsByClassName('label-range')[0].innerHTML
+        content.getElementsByClassName('label-range')[0].innerText
           = 'Nombre de pubs maximum par jour : ' + this.value;
       });
     };

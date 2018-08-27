@@ -32,23 +32,23 @@
 
         const setNbTrackersBlocked = function (nbTrackersBlocked){
             if(trackersBlockedElement !== undefined)
-                trackersBlockedElement.innerHTML = nbTrackersBlocked || 0
+                trackersBlockedElement.innerText = nbTrackersBlocked || 0
         };
         const setNbAdsBlocked = function (nbAdsBlocked){
             if(adsBlockedElement !== undefined)
-                adsBlockedElement.innerHTML = nbAdsBlocked || 0
+                adsBlockedElement.innerText = nbAdsBlocked || 0
         };
         const setTimeWon = function (timeWon){
             if(timeWonElement !== undefined)
-                timeWonElement.innerHTML = (timeWon || 0).toFixed(2) + ' mins'
+                timeWonElement.innerText = (timeWon || 0).toFixed(2) + ' mins'
         };
         const setGenerated = function (adsCount){
             if(generatedElement !== undefined)
-                generatedElement.innerHTML = ((adsCount || 0) * 0.005).toFixed(2) + '€'
+                generatedElement.innerText = ((adsCount || 0) * 0.005).toFixed(2) + '€'
         };
         const setAdsViewedOnPage = function (adsViewed){
             if(adPrintsElement !== undefined)
-                adPrintsElement.innerHTML = adsViewed || 0
+                adPrintsElement.innerText = adsViewed || 0
         };
 
         const renderTotalStats = function(){

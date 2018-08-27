@@ -38,7 +38,6 @@ mv /tmp/contentscript.js $DES/js/contentscript.js
 rm $DES/js/vapi-usercss.js
 
 # Webext-specific
-rm $DES/img/icon_128.png
 rm $DES/options_ui.html
 rm $DES/js/options_ui.js
 

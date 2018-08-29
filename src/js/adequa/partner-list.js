@@ -2,12 +2,16 @@
 
 var adequaPartnerList = (function(){
 
-    var listParser = function(raw){
-        var list = raw.trim().split('\n').map(function(x){
-            return x.trim()
-        });
+    const env = 'prod';
+    const uri = env.match('dev') ? 'http://localhost:3000/api/' : 'https://admin-equa.com/api/';
 
-        return list
+    var listParser = function(list){
+        var newlist = [];
+
+        for (var item in list)
+            newlist.push(item)
+
+        return newlist
     };
 
     var refreshList = function(callback){
@@ -15,16 +19,18 @@ var adequaPartnerList = (function(){
         req.onreadystatechange = function () {
             if (this.readyState === XMLHttpRequest.DONE) {
                 if (this.status === 200) {
-                    var list = JSON.parse(this.responseText);
+                    var partners = JSON.parse(this.responseText);
+                    var list = listParser(partners);
                     vAPI.storage.set({'partnerList': {list, timestamp: Date.now()}});
                     µBlock.partnerList = list;
+                    µBlock.partners = partners;
 
                     if(typeof callback === "function")
                         callback(list)
                 }
             }
         };
-        req.open('get', 'https://admin-equa.com/api/partners');
+        req.open('get', uri + 'query-selectors');
         req.send(null);
 
         // var raw = `

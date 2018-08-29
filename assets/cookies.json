@@ -2345,13 +2345,6 @@
     "storeId": "0"
   },
   {
-    "url": "http://facebook.com/",
-    "name": "fr",
-    "value": "1",
-    "domain": ".facebook.com",
-    "storeId": "0"
-  },
-  {
     "url": "http://3p-optout.intel.mediamath.com/",
     "name": "thirdparty",
     "value": "yes",

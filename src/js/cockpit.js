@@ -12,6 +12,7 @@
         let timeWonElement = uDom('#time_won').nodes[0];
         let generatedElement = uDom('#generated').nodes[0];
         let adPrintsElement = uDom('#ad-on-page').nodes[0];
+        let settingsButton = uDom('#settings').nodes[0];
 
         const renderNetFilteringSwitch = function () {
             if(toggleButton == null)
@@ -165,6 +166,10 @@
             toggleButton.addEventListener('click', toggleNetFilteringSwitch);
         if(statsSwitch != undefined)
             statsSwitch.addEventListener('change', toggleStatsDisplayed);
+        if(settingsButton)
+            settingsButton.addEventListener('click', function(){
+                location.href = "/popup-settings.html";
+            })
     };
     render();
 })();

@@ -529,57 +529,73 @@ var onMessage = function(request, sender, callback) {
         if ( request.isRootFrame && µb.logger.isEnabled() ) {
             µb.logCosmeticFilters(tabId);
         }
-
-        var allowed = JSON.stringify(['.Dfp__Slot', '#lig_lemonde_desk_home_infeed_1', '#lig_lemonde_desk_home_infeed_2', '.dfp_slot', '#lig_lemonde_home_infeed_1', '#lig_lemonde_home_infeed_2', '#lig_lemonde_home_infeed_3']);
+        if(µBlock.partners) {
+            var allowed = JSON.stringify((µBlock.partners[hostname(sender.url)] || {}).allowed);
+        }
         var blocked = JSON.stringify(response.specificCosmeticFilters.declarativeFilters);
         var code = `
-        function isElementInViewport(elem) {
-            let x = elem.getBoundingClientRect().left;
-            let y = elem.getBoundingClientRect().top;
-            let ww = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
-            let hw = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
-            let w = elem.clientWidth;
-            let h = elem.clientHeight;
-            return (
-                (y < hw &&
-                    y + h > 0) &&
-                (x < ww &&
-                    x + w > 0)
-            );
+function isElementInViewport(elem) {
+    let x = elem.getBoundingClientRect().left;
+    let y = elem.getBoundingClientRect().top;
+    let ww = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+    let hw = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
+    let w = elem.clientWidth;
+    let h = elem.clientHeight;
+    return (
+        (y < hw &&
+            y + h > 0) &&
+        (x < ww &&
+            x + w > 0)
+    );
+}
+
+window.allowedAds = [];
+
+var countAds = function () {
+    setTimeout(function () {
+        var allowed = ${ allowed }, blocked = ${ blocked }, elements;
+        var blockedCount = 0;
+
+        var addAd = function(ad){
+            for(let item of window.allowedAds)
+                if(item.isSameNode(ad))
+                    return;
+            window.allowedAds.push(ad);
         }
-        
-        var countAds = function () {
-            setTimeout(function () {
-                var allowed = ${allowed}, blocked = ${blocked}, elements;
-                var allowedCount = 0, blockedCount = 0;
-                
-                for (var item of allowed) {
-                    elements = document.querySelectorAll(item);
-                    if (elements.length !== 0) {
-                        elements.forEach(function (elem) {
-                            if (elem.clientHeight >= 45 && isElementInViewport(elem)) {
-                                var iframe = elem.querySelector('iframe');
-                                if(iframe && iframe.contentDocument.body.clientHeight === 0)
-                                    blockedCount++;
-                                else
-                                    allowedCount++;
-                            }
-                            else
+
+        for (var item of allowed) {
+            elements = document.querySelectorAll(item);
+            if (elements.length !== 0) {
+                elements.forEach(function (elem) {
+                    if (elem.clientHeight >= 45 && isElementInViewport(elem)) {
+                        var iframe = elem.querySelector('iframe');
+                        if(iframe){
+                            var doc = (iframe.contentWindow || iframe.contentDocument);
+                            if (doc.document) doc = doc.document;
+                            if (doc && doc.body.clientHeight === 0)
                                 blockedCount++;
-                        });
+                            else
+                                addAd(elem);
+                        }
+                        else
+                            addAd(elem);
                     }
-                }
-        
-        
-                for (var item of blocked) {
-                    elem = document.querySelector(item)
-                    if (elem != null)
-                        if (window.getComputedStyle(elem, null).getPropertyValue("display") === 'none') blockedCount++;
-                }
-        
-                window.postMessage({direction: "adsNumber", message: {blockedCount, allowedCount}}, "*")
-            }, 1000)
-        };`;
+                    else
+                        blockedCount++;
+                });
+            }
+        }
+
+
+        for (var item of blocked) {
+            elem = document.querySelector(item)
+            if (elem != null)
+                if (window.getComputedStyle(elem, null).getPropertyValue("display") === 'none') blockedCount++;
+        }
+
+        window.postMessage({ direction: "adsNumber", message: { blockedCount, allowedCount: window.allowedAds.length } }, "*")
+    }, 1000)
+};`;
 
         if(µBlock.partnerList.indexOf(hostname(sender.url)) !== -1){
             if((µBlock.adequaCurrent.adsViewedToday || 0) < (µBlock.adequaCurrent.nbMaxAdsPerDay || 0)) {
@@ -588,7 +604,8 @@ var onMessage = function(request, sender, callback) {
                 response.noGenericCosmeticFiltering = true;
                 response.noCosmeticFiltering = true;
                 response.customCosmeticFiltering = true;
-                response.annoyingAds = ['#dfp-habillage', '#habillage'];
+                if(µBlock.partners)
+                    response.annoyingAds = (µBlock.partners[hostname(sender.url)] || {}).blocked;
             }
         }
         break;
@@ -1360,12 +1377,14 @@ var updateNbBlocked = function(tabId){
         return;
     var current = µBlock.adequaCurrent;
 
-    vAPI.adequa.storageDB.update("page_views", {ID: current.stats[tabId].dbId}, function(row){
-        row.nb_trackers_blocked = pageStore.nbTrackersBlocked;
-        row.nb_ads_blocked = pageStore.nbAdsBlocked;
-        return row;
-    });
-    vAPI.adequa.storageDB.commit();
+    if(current.stats && current.stats[tabId]) {
+        vAPI.adequa.storageDB.update("page_views", {ID: current.stats[tabId].dbId}, function (row) {
+            row.nb_trackers_blocked = pageStore.nbTrackersBlocked;
+            row.nb_ads_blocked = pageStore.nbAdsBlocked;
+            return row;
+        });
+        vAPI.adequa.storageDB.commit();
+    }
 
     var stats = {};
     stats[tabId] = {
@@ -1509,6 +1528,12 @@ var onMessage = function(request, sender, callback) {
                 callback(currentStats)
             });
             return;
+        case 'getCurrent':
+            vAPI.storage.get('current', function(current){
+                current = current.current || {};
+                callback(current)
+            });
+            return;
         case 'isFirstInstall':
             vAPI.adequa.storage.isFirstInstall(function (firstInstall) {
                 callback(firstInstall);
@@ -1528,6 +1553,13 @@ var onMessage = function(request, sender, callback) {
 
         case 'savePassions':
             vAPI.adequa.storage.savePassions(request.passions, callback);
+            return;
+
+        case 'getPassions':
+            vAPI.storage.get('passions', function(passions) {
+                passions = passions.passions || {};
+                callback(passions);
+            });
             return;
 
         case 'saveNbMaxAdsPerDay':

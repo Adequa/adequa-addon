@@ -1,67 +1,45 @@
 *, *::before, *::after {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
 }
 
-body {
-  width: 300px;
-  min-height: 400px;
+.left .range-container {
+    position: absolute;
+    left: 100%;
+    width: 240px;
+    text-align: left;
+    transform: rotate(-90deg) translate(-90%, -50%);
+    transform-origin: top left;
 }
 
-header {
-  display: flex;
-  align-items: center;
-  height: 40px;
-  padding: 10px;
-
-  border-bottom: 1px solid #000;
-  box-shadow: 0 0 4px #ccc;
+li {
+    font-size: 1em;
 }
 
-header a {
-  position: relative;
-  display: block;
-  width: 20px;
-  height: 20px;
-  margin-right: 10px;
-
-  cursor: pointer;
+label {
+    padding: 8px 0 4px 40px;
 }
 
-header a span {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-
-  display: block;
-  width: 16px;
-  height: 2px;
-
-  background-color: #000;
-  transform: translate(-50%, -50%);
+label::before {
+    height: 10px;
 }
 
-header a span::before, header a span::after {
-  content: '';
-  display: block;
-  width: 10px;
-  height: 2px;
-
-  background-color: #000;
-  transform-origin: left center;
-  transform: rotate(-45deg) translate(0px, 1px);
+.bold {
+    font-weight: bold;
 }
 
-header a span::after {
-  transform: rotate(45deg) translate(-1px, -2px);
+#chose-theme {
+    width: 75%;
+    height: 75%;
+    display: flex;
+    flex-direction: column
 }
 
-.container {
-  padding: 15px;
-}
-
-.container input {
-  width: 100%;
-  margin-top: 10px;
+#chose-adsperday {
+    width: 25%;
+    height: 70%;
+    align-self: flex-end;
+    display: flex;
+    flex-direction: column
 }

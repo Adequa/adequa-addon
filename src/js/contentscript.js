@@ -1313,6 +1313,23 @@ vAPI.domSurveyor = (function() {
 
         window.addEventListener("message", onMessage);
 
+        var scrollTimer = -1;
+
+        var onScroll = function() {
+            if (scrollTimer !== -1)
+                clearTimeout(scrollTimer);
+
+            scrollTimer = window.setTimeout(onScrollFinished, 500);
+        };
+
+        var onScrollFinished = function() {
+            if(typeof countAds === "function"){
+                setTimeout(countAds, 2000);
+            }
+        };
+
+        window.addEventListener("scroll", onScroll);
+
         if ( vAPI.domWatcher instanceof Object ) {
             vAPI.domWatcher.start();
         }

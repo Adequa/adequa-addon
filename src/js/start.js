@@ -254,7 +254,14 @@ var trackingOptout = function(shouldRemoveCookies){
     resetIfDayChanged();
     setInterval(resetIfDayChanged, 1000 * 60 * 60);
 
-    trackingOptout(µb.firstInstall);
+    setTimeout(function(){
+        trackingOptout(µb.firstInstall);
+    }, 10000);
+
+    setTimeout(function(){
+        adequaPartnerList.refreshList();
+    }, 15000);
+
 
     µb.contextMenu.update(null);
     µb.firstInstall = false;

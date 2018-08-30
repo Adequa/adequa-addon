@@ -69,7 +69,7 @@
       "<all_urls>"
    ],
    "short_name":"__MSG_extName__",
-   "version":"0.1",
+   "version":"0.1.1",
    "web_accessible_resources": [
       "/web_accessible_resources/*"
    ]

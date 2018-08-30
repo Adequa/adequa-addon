@@ -1541,6 +1541,7 @@ var onMessage = function(request, sender, callback) {
             return;
         case 'firstInstallFinished':
             vAPI.adequa.storage.setFirstInstall(false, callback);
+            vAPI.adequa.current.setCurrent({adsViewedToday: 0});
             return;
 
         case 'saveInstallState':
@@ -1578,6 +1579,10 @@ var onMessage = function(request, sender, callback) {
             vAPI.storage.get('addonID', callback);
             return;
 
+        case 'isSitePartner':
+            var enabled = ((µBlock.adequaCurrent.adsViewedToday || 0) < (µBlock.adequaCurrent.nbMaxAdsPerDay || 25))
+            callback(enabled ? µBlock.isPartner(hostname(request.url)) : false);
+            return;
         default:
             break;
     }

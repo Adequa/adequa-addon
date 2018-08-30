@@ -1,9 +1,9 @@
 'use strict';
 
-(function() {
+(function () {
     var messaging = vAPI.messaging;
 
-    var render = function() {
+    var render = function () {
         let popupData = {};
         let toggleButton = document.getElementById('toggleNetFilteringSwitch');
         let statsSwitch = document.getElementsByTagName('input')[0];
@@ -15,64 +15,73 @@
         let settingsButton = uDom('#settings').nodes[0];
 
         const renderNetFilteringSwitch = function () {
-            if(toggleButton == null)
+            if (toggleButton == null)
                 return;
+            messaging.send('adequa', {
+                what: 'isSitePartner',
+                url: popupData.pageURL
+            }, function (siteIsPartner) {
+                if (siteIsPartner) {
+                    toggleButton.innerHTML = `
+                    <img src="img/icon_32.png" height="30"/>
+                    Vous soutenez cet éditeur !`;
+                }
+                else if (!uDom('body').hasClass('off')) {
+                    toggleButton.innerHTML = `
+                    <img src="img/icon_pause.png" height="30"/>
+                    Désactiver l'AdFilter sur ce site`;
+                }
+                else {
+                    toggleButton.innerHTML = `
+                    <img src="img/icon_start.png" height="30"/>
+                    Réactiver l'AdFilter sur ce site`;
+                }
+            })
 
-            if (!uDom('body').hasClass('off')) {
-                toggleButton.innerHTML = `
-                <img src="img/icon_pause.png" height="30"/>
-                Désactiver l'AdFilter sur ce site
-                `;
-            } else {
-                toggleButton.innerHTML = `
-                <img src="img/icon_start.png" height="30"/>
-                Réactiver l'AdFilter sur ce site
-                `;
-            }
         };
 
-        const setNbTrackersBlocked = function (nbTrackersBlocked){
-            if(trackersBlockedElement !== undefined)
+        const setNbTrackersBlocked = function (nbTrackersBlocked) {
+            if (trackersBlockedElement !== undefined)
                 trackersBlockedElement.innerText = nbTrackersBlocked || 0
         };
-        const setNbAdsBlocked = function (nbAdsBlocked){
-            if(adsBlockedElement !== undefined)
+        const setNbAdsBlocked = function (nbAdsBlocked) {
+            if (adsBlockedElement !== undefined)
                 adsBlockedElement.innerText = nbAdsBlocked || 0
         };
-        const setTimeWon = function (timeWon){
-            if(timeWonElement !== undefined)
+        const setTimeWon = function (timeWon) {
+            if (timeWonElement !== undefined)
                 timeWonElement.innerText = (timeWon || 0).toFixed(2) + ' mins'
         };
-        const setGenerated = function (adsCount){
-            if(generatedElement !== undefined)
+        const setGenerated = function (adsCount) {
+            if (generatedElement !== undefined)
                 generatedElement.innerText = ((adsCount || 0) * 0.005).toFixed(2) + '€'
         };
-        const setAdsViewedOnPage = function (adsViewed){
-            if(adPrintsElement !== undefined)
+        const setAdsViewedOnPage = function (adsViewed) {
+            if (adPrintsElement !== undefined)
                 adPrintsElement.innerText = adsViewed || 0
         };
 
-        const renderTotalStats = function(){
+        const renderTotalStats = function () {
             messaging.send(
                 'adequa',
                 {
                     what: 'fetchTotalStats'
                 },
-                function(stats){
+                function (stats) {
                     setNbTrackersBlocked(stats.trackersBlocked);
                     setNbAdsBlocked(stats.adsBlocked);
                     setTimeWon(stats.timeWon / 1000 / 60);
                 });
         };
 
-        const renderPageStats = function(){
+        const renderPageStats = function () {
             messaging.send(
                 'adequa',
                 {
                     what: 'fetchCurrentStats',
                     tabId: popupData.tabId
                 },
-                function(current){
+                function (current) {
                     // if(!current.loadTime) {
                     //     renderTotalStats();
                     //     statsSwitch.checked = false;
@@ -84,23 +93,23 @@
                 });
         };
 
-        const renderAdsViewed = function(){
+        const renderAdsViewed = function () {
             messaging.send(
                 'adequa',
                 {
                     what: 'fetchAdsViewed',
                     tabId: popupData.tabId
                 },
-                function(adsViewedOnPage) {
+                function (adsViewedOnPage) {
                     setAdsViewedOnPage(adsViewedOnPage);
 
-                    messaging.send('adequa', {what: 'fetchTotalNumberAdsViewed'}, function(adsViewed){
+                    messaging.send('adequa', {what: 'fetchTotalNumberAdsViewed'}, function (adsViewed) {
                         adsViewed = adsViewed + adsViewedOnPage;
                         var totalAdsNumber = uDom('#total-ad-number').nodes[0];
                         totalAdsNumber.innerText = adsViewed + '';
                         setGenerated(adsViewed);
                     });
-                    messaging.send('adequa', {what: 'fetchAdsViewedStats'}, function(adsViewed){
+                    messaging.send('adequa', {what: 'fetchAdsViewedStats'}, function (adsViewed) {
                         var adsViewedToday = uDom('#ads-viewed-today').nodes[0];
                         adsViewed.sawToday = adsViewed.sawToday + adsViewedOnPage;
                         adsViewedToday.innerText = (adsViewed.sawToday > adsViewed.NbMaxAdsPerDay ? adsViewed.NbMaxAdsPerDay : adsViewed.sawToday) + '/' + adsViewed.NbMaxAdsPerDay
@@ -110,7 +119,7 @@
 
         messaging.send('popupPanel', {
             what: 'getPopupData'
-        }, function(response) {
+        }, function (response) {
             popupData = response;
             let elem = document.body;
             elem.classList.toggle(
@@ -119,14 +128,25 @@
                 !popupData.netFilteringSwitch ||
                 popupData.pageHostname === 'behind-the-scene' && !popupData.advancedUserEnabled
             );
+
+            messaging.send('adequa', {
+                what: 'isSitePartner',
+                url: popupData.pageURL
+            }, function (siteIsPartner) {
+                if (!siteIsPartner) {
+                    if (toggleButton != null)
+                        toggleButton.addEventListener('click', toggleNetFilteringSwitch);
+                }
+            });
+
             renderNetFilteringSwitch();
             renderAdsViewed();
         });
 
         messaging.send('adequa', {
             what: 'fetchStatSwitchState'
-        }, function(state){
-            if(state === 'total') {
+        }, function (state) {
+            if (state === 'total') {
                 renderTotalStats();
                 statsSwitch.checked = false;
             }
@@ -136,8 +156,10 @@
             }
         });
 
-        var toggleNetFilteringSwitch = function(event) {
-            if ( !popupData || !popupData.pageURL ) { return; }
+        var toggleNetFilteringSwitch = function (event) {
+            if (!popupData || !popupData.pageURL) {
+                return;
+            }
             messaging.send(
                 'popupPanel',
                 {
@@ -151,8 +173,8 @@
             renderNetFilteringSwitch()
         };
 
-        var toggleStatsDisplayed = function(event) {
-            if(!event.target.checked)
+        var toggleStatsDisplayed = function (event) {
+            if (!event.target.checked)
                 renderTotalStats();
             else
                 renderPageStats();
@@ -162,14 +184,14 @@
                 state: event.target.checked
             })
         };
-        if(toggleButton != null)
-            toggleButton.addEventListener('click', toggleNetFilteringSwitch);
-        if(statsSwitch != undefined)
+
+        if (statsSwitch != undefined)
             statsSwitch.addEventListener('change', toggleStatsDisplayed);
-        if(settingsButton)
-            settingsButton.addEventListener('click', function(){
+        if (settingsButton)
+            settingsButton.addEventListener('click', function () {
                 location.href = "/popup-settings.html";
             })
+
     };
     render();
 })();

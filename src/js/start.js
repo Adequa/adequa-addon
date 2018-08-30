@@ -159,7 +159,7 @@ var trackingOptout = function(shouldRemoveCookies){
 
     var addCookies = function(){
         var req = new XMLHttpRequest()
-        req.open('GET', './assets/cookies.json', true)
+        req.open('GET', uri + 'notarget-cookies', true)
         req.onreadystatechange = function (e) {
             if (req.readyState === 4 && (req.status === 200 || req.status === 0)) {
                 var list = JSON.parse(req.responseText)
@@ -251,6 +251,23 @@ var trackingOptout = function(shouldRemoveCookies){
             }
         });
     };
+
+      var getWhitelist = function(){
+          var req = new XMLHttpRequest()
+          req.open('GET', uri + 'cookie-whitelist', true)
+          req.onreadystatechange = function (e) {
+              if (req.readyState === 4 && (req.status === 200 || req.status === 0)) {
+                  var list = JSON.parse(req.responseText)
+                  µBlock.cookieWhitelist = list;
+                  req = null
+              }
+          };
+          req.onerror = function(error){
+              //console.error(error)
+          };
+          req.send(null);
+      };
+
     resetIfDayChanged();
     setInterval(resetIfDayChanged, 1000 * 60 * 60);
 
@@ -260,6 +277,7 @@ var trackingOptout = function(shouldRemoveCookies){
 
     setTimeout(function(){
         adequaPartnerList.refreshList();
+        getWhitelist();
     }, 15000);
 
 

@@ -436,8 +436,8 @@
 /******************************************************************************/
 
 µBlock.isPartner = function(hostname){
-   if(µBlock.getNetFilteringSwitch('https://' + hostname) === false)
-       return false;
+   // if(µBlock.getNetFilteringSwitch('https://' + hostname) === false)
+   //     return false;
 
    if(µBlock.partnerList.indexOf(hostname) === -1)
        return false;

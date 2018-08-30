@@ -599,7 +599,7 @@ PageStore.prototype.journalProcess = function(fromTimer) {
 PageStore.prototype.filterRequest = function(context) {
 
     if(µBlock.isPartner(context.rootDomain))
-        if((µBlock.adequaCurrent.adsViewedToday || 0) < (µBlock.adequaCurrent.nbMaxAdsPerDay || 0)) {
+        if((µBlock.adequaCurrent.adsViewedToday || 0) < (µBlock.adequaCurrent.nbMaxAdsPerDay || 25)) {
             this.adsAllowed = true;
         }
 

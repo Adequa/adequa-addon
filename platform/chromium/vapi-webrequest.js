@@ -237,23 +237,12 @@ vAPI.net.registerListeners = function() {
             }
         }
     };
+
     function removeCookie(cookie) {
         var url = "http" + (cookie.secure ? "s" : "") + "://" + cookie.domain +
             cookie.path;
         vAPI.cookies.remove({"url": url, "name": cookie.name});
     }
-
-    var whitelist = {
-        'lemonde.fr': [
-            'prog-deploy',
-            'user_session',
-            'lmd_a_m',
-            'lmd_a_s',
-            'lmd_stay_connected',
-            'tdb_user_id',
-            'info_user_webs'
-        ]
-    };
 
     var onCookieChanged = function(changeInfo){
         if(changeInfo.removed)
@@ -266,7 +255,7 @@ vAPI.net.registerListeners = function() {
         if(!µBlock.isPartner(hostname))
             return;
 
-        var hostnameWhitelist = (whitelist[hostname] || []);
+        var hostnameWhitelist = ((µBlock.cookieWhitelist || {})[hostname] || []);
 
         if(hostnameWhitelist.indexOf(changeInfo.cookie.name) === -1)
             removeCookie(changeInfo.cookie)

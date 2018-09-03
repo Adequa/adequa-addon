@@ -9,7 +9,7 @@ echo "*** uBlock0.chromium: Copying files"
 #make build
 #cd -
 
-DES=dist/build/uBlock0.chromium
+DES=dist/build/Chrome
 rm -rf $DES
 mkdir -p $DES
 

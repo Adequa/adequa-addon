@@ -50,7 +50,6 @@ function mergeDeep(...objects) {
 
             var current = mergeDeep(oldCurrent, newCurrent);
             µBlock.adequaCurrent = current;
-
             vAPI.storage.set({'current': current})
         });
     };

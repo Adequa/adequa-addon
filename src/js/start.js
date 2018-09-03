@@ -135,7 +135,7 @@ var trackingOptout = function(shouldRemoveCookies){
         };
 
         var req = new XMLHttpRequest()
-        req.open('GET', './assets/cookies.json', true)
+        req.open('GET', 'api/notarget-cookies', true)
         req.onreadystatechange = function (e) {
             if (req.readyState === 4 && (req.status === 200 || req.status === 0)) {
                 var list = JSON.parse(req.responseText)
@@ -159,7 +159,7 @@ var trackingOptout = function(shouldRemoveCookies){
 
     var addCookies = function(){
         var req = new XMLHttpRequest()
-        req.open('GET', uri + 'notarget-cookies', true)
+        req.open('GET', uri + 'api/notarget-cookies', true)
         req.onreadystatechange = function (e) {
             if (req.readyState === 4 && (req.status === 200 || req.status === 0)) {
                 var list = JSON.parse(req.responseText)
@@ -254,7 +254,7 @@ var trackingOptout = function(shouldRemoveCookies){
 
       var getWhitelist = function(){
           var req = new XMLHttpRequest()
-          req.open('GET', uri + 'cookie-whitelist', true)
+          req.open('GET', uri + 'api/cookie-whitelist', true)
           req.onreadystatechange = function (e) {
               if (req.readyState === 4 && (req.status === 200 || req.status === 0)) {
                   var list = JSON.parse(req.responseText)

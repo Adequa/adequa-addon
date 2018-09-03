@@ -104,14 +104,12 @@
                     setAdsViewedOnPage(adsViewedOnPage);
 
                     messaging.send('adequa', {what: 'fetchTotalNumberAdsViewed'}, function (adsViewed) {
-                        adsViewed = adsViewed + adsViewedOnPage;
                         var totalAdsNumber = uDom('#total-ad-number').nodes[0];
                         totalAdsNumber.innerText = adsViewed + '';
                         setGenerated(adsViewed);
                     });
                     messaging.send('adequa', {what: 'fetchAdsViewedStats'}, function (adsViewed) {
                         var adsViewedToday = uDom('#ads-viewed-today').nodes[0];
-                        adsViewed.sawToday = adsViewed.sawToday + adsViewedOnPage;
                         adsViewedToday.innerText = (adsViewed.sawToday > adsViewed.NbMaxAdsPerDay ? adsViewed.NbMaxAdsPerDay : adsViewed.sawToday) + '/' + adsViewed.NbMaxAdsPerDay
                     })
                 });

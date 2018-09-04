@@ -921,7 +921,10 @@ vAPI.tabs.registerListeners();
 })();
 
 /******************************************************************************/
-
+    function hostname(url) {
+        var match = url.match(/:\/\/(www[0-9]?\.)?(.[^/:]+)/i);
+        if ( match != null && match.length > 2 && typeof match[2] === 'string' && match[2].length > 0 ) return match[2];
+    }
 
 µb.updateBadgeAsync = (function() {
     var tabIdToTimer = new Map();
@@ -945,7 +948,20 @@ vAPI.tabs.registerListeners();
             badge = (tabStats.nbAdsBlocked || 0) + (tabStats.nbTrackersBlocked || 0) + '';
         }
 
-        vAPI.setIcon(tabId, state ? 'on' : 'off', badge);
+        var stats = (µBlock.adequaCurrent || {}).stats || {};
+        var tabStats = stats[tabId];
+        var isPartner = false;
+
+        if(tabStats) {
+            if(µBlock.isPartner(hostname(tabStats.url))){
+                isPartner = true;
+            }
+        }
+
+        if(isPartner && ((µBlock.adequaCurrent.adsViewedToday || 0) < (µBlock.adequaCurrent.nbMaxAdsPerDay || 25)))
+            vAPI.setIcon(tabId, 'partner', '');
+        else
+            vAPI.setIcon(tabId, state ? 'on' : 'off', badge);
     };
 
     return function(tabId) {

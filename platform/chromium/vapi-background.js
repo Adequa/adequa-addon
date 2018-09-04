@@ -672,7 +672,11 @@ vAPI.setIcon = (function() {
         {
             '19': 'img/browsericons/icon19.png',
             '38': 'img/browsericons/icon38.png'
-        }
+        },
+        {
+            '19': 'img/browsericons/icon19-partner.png',
+            '38': 'img/browsericons/icon38-partner.png'
+        },
     ];
 
     var onTabReady = function(tab, status, badge) {
@@ -681,7 +685,7 @@ vAPI.setIcon = (function() {
         if ( browserAction.setIcon !== undefined ) {
             browserAction.setIcon({
                 tabId: tab.id,
-                path: iconPaths[status === 'on' ? 1 : 0]
+                path: iconPaths[status === 'on' ? 1 : status === 'partner' ? 2 : 0]
             });
             browserAction.setBadgeText({
                 tabId: tab.id,

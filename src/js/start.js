@@ -257,7 +257,7 @@ var trackingOptout = function(shouldRemoveCookies){
           req.open('GET', uri + 'api/cookie-whitelist', true)
           req.onreadystatechange = function (e) {
               if (req.readyState === 4 && (req.status === 200 || req.status === 0)) {
-                  var list = JSON.parse(req.responseText)
+                  var list = JSON.parse(req.responseText);
                   µBlock.cookieWhitelist = list;
                   req = null
               }

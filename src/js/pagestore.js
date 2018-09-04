@@ -600,11 +600,8 @@ PageStore.prototype.filterRequest = function(context) {
 
     if(µBlock.isPartner(context.rootDomain))
         if((µBlock.adequaCurrent.adsViewedToday || 0) < (µBlock.adequaCurrent.nbMaxAdsPerDay || 25)) {
-            this.adsAllowed = true;
+            return 0;
         }
-
-    if(this.adsAllowed)
-        return 0;
 
     if (µb.getNetFilteringSwitch(context.requestURL) === false) {
         return 0;
@@ -636,8 +633,7 @@ PageStore.prototype.filterRequest = function(context) {
             }
 
             this.logData = entry.logData;
-            // if(this.adsAllowed)
-            //     return 0;
+
             if(entry.result >= 5)
                 entry.result = 1;
             return entry.result;
@@ -682,11 +678,6 @@ PageStore.prototype.filterRequest = function(context) {
     this.nbAdsBlocked = this.perLoadBlockedRequestCount - this.nbTrackersBlocked;
     if(this.nbAdsBlocked < 0)
         this.nbAdsBlocked = 0;
-    // if(result === 5 && this.adsAllowed)
-    //     result = 0;
-
-    // if(result === 8 && this.adsAllowed)
-    //     result = 0;
 
     if(result >= 5)
         result = 1;

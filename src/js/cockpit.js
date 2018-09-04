@@ -29,12 +29,12 @@
                 else if (!uDom('body').hasClass('off')) {
                     toggleButton.innerHTML = `
                     <img src="img/icon_pause.png" height="30"/>
-                    Désactiver l'AdFilter sur ce site`;
+                    Désactiver l'AdOpter sur ce site`;
                 }
                 else {
                     toggleButton.innerHTML = `
                     <img src="img/icon_start.png" height="30"/>
-                    Réactiver l'AdFilter sur ce site`;
+                    Réactiver l'AdOpter sur ce site`;
                 }
             })
 

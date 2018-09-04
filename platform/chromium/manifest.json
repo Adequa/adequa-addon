@@ -40,7 +40,7 @@
     "incognito": "split",
     "minimum_chrome_version": "45.0",
     "optional_permissions": [ "file:///*" ],
-    "options_page": "dashboard.html",
+    "options_page": "adequa-dashboard.html",
     "options_ui": {
         "page": "options_ui.html"
     },

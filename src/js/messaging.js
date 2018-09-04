@@ -590,21 +590,14 @@ var countAds = function () {
             }
         }
 
-
-        for (var item of blocked) {
-            elem = document.querySelector(item)
-            if (elem != null)
-                if (window.getComputedStyle(elem, null).getPropertyValue("display") === 'none') blockedCount++;
-        }
-
         window.postMessage({ direction: "adsNumber", message: { blockedCount, allowedCount: window.allowedAds.length } }, "*")
     }, 1000)
 };`;
-
         if(µBlock.isPartner(hostname(sender.url))){
             if((µBlock.adequaCurrent.adsViewedToday || 0) < (µBlock.adequaCurrent.nbMaxAdsPerDay || 25)) {
-                if(response.specificCosmeticFilters.declarativeFilters.length > 0)
-                    vAPI.tabs.injectScript(sender.tab.id, {code});
+                // if(response.specificCosmeticFilters.declarativeFilters.length > 0)
+                    if(allowed && allowed.length > 0)
+                        vAPI.tabs.injectScript(sender.tab.id, {code});
                 response.noGenericCosmeticFiltering = true;
                 response.noCosmeticFiltering = true;
                 response.customCosmeticFiltering = true;
@@ -1435,14 +1428,33 @@ var onMessage = function(request, sender, callback) {
                 return;
 
             var data = {
+                url: pageStore.rawURL || '',
                 consulted_at: request.data.consultTime || Date.now(),
-                nb_trackers_blocked: pageStore.nbTrackersBlocked,
-                nb_ads_blocked: pageStore.nbAdsBlocked,
+                nb_trackers_blocked: pageStore.nbTrackersBlocked || 0,
+                nb_ads_blocked: pageStore.nbAdsBlocked || 0,
                 is_partner: µBlock.isPartner(hostname(sender.url)),
-                load_time: request.data.loadTime
+                load_time: request.data.loadTime || 0
             };
+            var alreadyExist = vAPI.adequa.storageDB.queryAll('page_views', {query: {
+                url: pageStore.rawURL,
+                consulted_at: request.data.consultTime
+            }});
 
-            var id = vAPI.adequa.storageDB.insert('page_views', data);
+            var id;
+            if(alreadyExist.length > 0){
+                id = alreadyExist[0].ID;
+
+                vAPI.adequa.storageDB.update('page_views', {ID: id}, function(row) {
+                    row.nb_trackers_blocked = data.nb_trackers_blocked;
+                    row.nb_ads_blocked = data.nb_ads_blocked;
+
+                    return row;
+                });
+            }
+
+            else
+                id = vAPI.adequa.storageDB.insert('page_views', data);
+
             vAPI.adequa.storageDB.commit();
 
             var stats = {};
@@ -1453,11 +1465,9 @@ var onMessage = function(request, sender, callback) {
                 isPartner: µBlock.isPartner(hostname(sender.url)),
                 nbTrackersBlocked: pageStore.nbTrackersBlocked,
                 loadTime: request.data.loadTime,
-                consulted_at: request.data.consultTime || Date.now(),
+                consulted_at: request.data.consultTime,
                 dbId: id
             };
-
-            // µBlock.adequaCurrent.stats = stats;
 
             vAPI.adequa.current.setCurrent({stats});
 
@@ -1484,10 +1494,8 @@ var onMessage = function(request, sender, callback) {
 
             if((adequaCurrent.adsViewedToday + diff) > adequaCurrent.nbMaxAdsPerDay)
                 diff = (adequaCurrent.nbMaxAdsPerDay || 25) - adequaCurrent.adsViewedToday;
-
             adequaCurrent.stats[sender.tab.id].nbAdsAllowed = (adequaCurrent.stats[sender.tab.id].nbAdsAllowed || 0) + diff;
             adequaCurrent.adsViewedToday = (adequaCurrent.adsViewedToday || 0) + diff;
-            µBlock.adequaCurrent = adequaCurrent;
 
             var impression = {
                 passion: hostname(adequaCurrent.stats[sender.tab.id].url),
@@ -1522,6 +1530,10 @@ var onMessage = function(request, sender, callback) {
             var viewedToday = µBlock.adequaCurrent.adsViewedToday;
             var maxPerDay = µBlock.adequaCurrent.nbMaxAdsPerDay;
             callback({sawToday: viewedToday, NbMaxAdsPerDay: maxPerDay});
+            return;
+        case 'fetchAllPageViewed':
+            var page_views = vAPI.adequa.storageDB.queryAll('page_views');
+            callback(page_views);
             return;
         case 'checkIfPartner':
             var current = {stats:{}};

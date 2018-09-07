@@ -1533,7 +1533,19 @@ var onMessage = function(request, sender, callback) {
             return;
         case 'fetchAllPageViewed':
             var page_views = vAPI.adequa.storageDB.queryAll('page_views');
-            callback(page_views);
+            var allPageData = [];
+
+            for(let page of page_views){
+                var ads = vAPI.adequa.storageDB.queryAll('ad_prints', {
+                    query: {
+                        page_view_id: page.ID
+                    }
+                });
+
+                page.ads_allowed = ads.length;
+                allPageData[page.ID] = page;
+            }
+            callback(allPageData);
             return;
         case 'checkIfPartner':
             var current = {stats:{}};

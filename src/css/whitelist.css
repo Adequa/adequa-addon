@@ -1,11 +1,12 @@
-div > p:first-child {
-    margin-top: 0;
+html {
+    height: 100vh;
+    overflow: hidden;
     }
-div > p:last-child {
-    margin-bottom: 0;
+body {
+    overflow: hidden;
     }
 #whitelist {
-    height: 60vh;
+    height: 75vh;
     text-align: left;
     width: 100%;
     }

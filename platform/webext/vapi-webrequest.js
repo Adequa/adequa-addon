@@ -1,7 +1,7 @@
 /*******************************************************************************
 
     uBlock Origin - a browser extension to block requests.
-    Copyright (C) 2017-2018 Raymond Hill
+    Copyright (C) 2018 Raymond Hill
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -25,46 +25,25 @@
 
 /******************************************************************************/
 
-vAPI.cookies = browser.cookies;
-vAPI.firefox = true;
-
 vAPI.net = {
     onBeforeRequest: {},
     onBeforeMaybeSpuriousCSPReport: {},
     onHeadersReceived: {},
     nativeCSPReportFiltering: true,
-    webRequest: browser.webRequest,
+    webRequest: chrome.webRequest,
     canFilterResponseBody:
-        typeof browser.webRequest === 'object' &&
-        typeof browser.webRequest.filterResponseData === 'function'
+        typeof chrome.webRequest === 'object' &&
+        typeof chrome.webRequest.filterResponseData === 'function'
 };
 
 /******************************************************************************/
 
 vAPI.net.registerListeners = function() {
 
-    // https://github.com/gorhill/uBlock/issues/2950
-    // Firefox 55 does not normalize URLs to ASCII, uBO must do this itself.
-    // https://bugzilla.mozilla.org/show_bug.cgi?id=945240
-    var mustPunycode = false;
-    (function() {
-        if (
-            typeof browser === 'object' &&
-            browser !== null &&
-            browser.runtime instanceof Object &&
-            typeof browser.runtime.getBrowserInfo === 'function'
-        ) {
-            browser.runtime.getBrowserInfo().then(info => {
-                mustPunycode = info.name === 'Firefox' &&
-                               /^5[0-6]\./.test(info.version);
-            });
-        }
-    })();
-
-    var wrApi = browser.webRequest;
+    let wrApi = chrome.webRequest;
 
     // legacy Chromium understands only these network request types.
-    var validTypes = new Set([
+    let validTypes = new Set([
         'image',
         'main_frame',
         'object',
@@ -83,14 +62,14 @@ vAPI.net.registerListeners = function() {
         }
     }
 
-    var denormalizeTypes = function(aa) {
+    let denormalizeTypes = function(aa) {
         if ( aa.length === 0 ) {
             return Array.from(validTypes);
         }
-        var out = new Set(),
+        let out = new Set(),
             i = aa.length;
         while ( i-- ) {
-            var type = aa[i];
+            let type = aa[i];
             if ( validTypes.has(type) ) {
                 out.add(type);
             }
@@ -101,82 +80,36 @@ vAPI.net.registerListeners = function() {
         return Array.from(out);
     };
 
-    var punycode = self.punycode;
-    var reAsciiHostname  = /^https?:\/\/[0-9a-z_.:@-]+[/?#]/;
-    var reNetworkURI = /^(?:ftps?|https?|wss?)/;
-    var parsedURL = new URL('about:blank');
-
-    var normalizeRequestDetails = function(details) {
-        if (
-            details.tabId === vAPI.noTabId &&
-            reNetworkURI.test(details.documentUrl)
-        ) {
-            details.tabId = vAPI.anyTabId;
+    let normalizeRequestDetails = function(details) {
+        if ( details.tabId === vAPI.noTabId ) {
+            // Chromium uses `initiator` property.
+            if (
+                details.documentUrl === undefined &&
+                typeof details.initiator === 'string'
+            ) {
+                details.documentUrl = details.initiator;
+            }
+            if ( typeof details.documentUrl === 'string' ) {
+                details.tabId = vAPI.anyTabId;
+            }
         }
-
-        if ( mustPunycode && !reAsciiHostname.test(details.url) ) {
-            parsedURL.href = details.url;
-            details.url = details.url.replace(
-                parsedURL.hostname,
-                punycode.toASCII(parsedURL.hostname)
-            );
-        }
-
-        var type = details.type;
 
         // https://github.com/gorhill/uBlock/issues/1493
         // Chromium 49+/WebExtensions support a new request type: `ping`,
         // which is fired as a result of using `navigator.sendBeacon`.
-        if ( type === 'ping' ) {
+        if ( details.type === 'ping' ) {
             details.type = 'beacon';
             return;
         }
 
-        if ( type === 'imageset' ) {
+        if ( details.type === 'imageset' ) {
             details.type = 'image';
             return;
         }
     };
 
-    function removeCookie(cookie) {
-        var url = "http" + (cookie.secure ? "s" : "") + "://" + (cookie.domain.startsWith('.') ? cookie.domain.slice(1) : cookie.domain) +
-            cookie.path;
-        vAPI.cookies.remove({"url": url, "name": cookie.name});
-    }
-
-    var whitelist = {
-        'lemonde.fr': [
-            'prog-deploy',
-            'user_session',
-            'lmd_a_m',
-            'lmd_a_s',
-            'lmd_stay_connected',
-            'tdb_user_id',
-            'info_user_webs'
-        ]
-    };
-
-    var onCookieChanged = function(changeInfo){
-        if(changeInfo.removed)
-            return;
-
-        if(!(changeInfo.cookie.name && changeInfo.cookie.domain))
-            return;
-
-        var hostname = changeInfo.cookie.domain.split('.').slice(-2).join('.');
-        if(!µBlock.isPartner(hostname))
-            return;
-
-        var hostnameWhitelist = (whitelist[hostname] || []);
-
-        if(hostnameWhitelist.indexOf(changeInfo.cookie.name) === -1)
-            removeCookie(changeInfo.cookie)
-    };
-
-    vAPI.cookies.onChanged.addListener(onCookieChanged);
-
-    var onBeforeRequestClient = this.onBeforeRequest.callback;
-    var onBeforeRequest = function(details) {
+    let onBeforeRequestClient = this.onBeforeRequest.callback;
+    let onBeforeRequest = function(details) {
         normalizeRequestDetails(details);
         return onBeforeRequestClient(details);
     };
@@ -215,10 +148,10 @@ vAPI.net.registerListeners = function() {
         );
     }
 
-    var onHeadersReceivedClient = this.onHeadersReceived.callback,
+    let onHeadersReceivedClient = this.onHeadersReceived.callback,
         onHeadersReceivedClientTypes = this.onHeadersReceived.types.slice(0),
         onHeadersReceivedTypes = denormalizeTypes(onHeadersReceivedClientTypes);
-    var onHeadersReceived = function(details) {
+    let onHeadersReceived = function(details) {
         normalizeRequestDetails(details);
         if (
             onHeadersReceivedClientTypes.length !== 0 &&

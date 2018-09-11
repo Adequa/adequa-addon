@@ -1,14 +1,13 @@
-div > p:first-child {
-    margin-top: 0;
+html {
+    height: 100vh;
+    overflow: hidden;
     }
-div > p:last-child {
-    margin-bottom: 0;
+body {
+    overflow: hidden;
     }
-textarea {
-    box-sizing: border-box;
-    height: 60vh;
+#advancedSettings {
+    border-top: 1px solid #ddd;
+    height: 75vh;
     text-align: left;
-    white-space: pre;
     width: 100%;
-    word-wrap: normal;
     }

@@ -1,7 +1,7 @@
 /*******************************************************************************
 
     uBlock Origin - a browser extension to block requests.
-    Copyright (C) 2014-2018 Raymond Hill
+    Copyright (C) 2014-present Raymond Hill
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -59,6 +59,7 @@ var onMessage = function(request, sender, callback) {
         // https://github.com/chrisaljoudi/uBlock/issues/417
         µb.assets.get(request.url, { dontCache: true }, callback);
         return;
+
     case 'listsFromNetFilter':
         µb.staticFilteringReverseLookup.fromNetFilter(
             request.compiledFilter,
@@ -68,11 +69,7 @@ var onMessage = function(request, sender, callback) {
         return;
 
     case 'listsFromCosmeticFilter':
-        µb.staticFilteringReverseLookup.fromCosmeticFilter(
-            request.hostname,
-            request.rawFilter,
-            callback
-        );
+        µb.staticFilteringReverseLookup.fromCosmeticFilter(request, callback);
         return;
 
     case 'reloadAllFilters':
@@ -87,10 +84,7 @@ var onMessage = function(request, sender, callback) {
         break;
     }
 
-    // The concatenation with the empty string ensure that the resulting value
-    // is a string. This is important since tab id values are assumed to be
-    // of string type.
-    var tabId = sender && sender.tab ? '' + sender.tab.id : 0;
+    var tabId = sender && sender.tab ? sender.tab.id : 0;
 
     // Sync
     var response;
@@ -106,10 +100,6 @@ var onMessage = function(request, sender, callback) {
 
     case 'cosmeticFiltersInjected':
         µb.cosmeticFilteringEngine.addToSelectorCache(request);
-        // Net-based cosmetic filters are of no interest for logging purpose.
-        if ( µb.logger.isEnabled() && request.type !== 'net' ) {
-            µb.logCosmeticFilters(tabId);
-        }
         break;
 
     case 'createUserFilter':
@@ -126,7 +116,10 @@ var onMessage = function(request, sender, callback) {
         break;
 
     case 'getAppData':
-        response = {name: vAPI.app.name, version: vAPI.app.version};
+        response = {
+            name: chrome.runtime.getManifest().name,
+            version: vAPI.app.version
+        };
         break;
 
     case 'getDomainNames':
@@ -286,9 +279,10 @@ var getFirewallRules = function(srcHostname, desHostnames) {
 /******************************************************************************/
 
 var popupDataFromTabId = function(tabId, tabTitle) {
-    var tabContext = µb.tabContextManager.mustLookup(tabId),
+    let tabContext = µb.tabContextManager.mustLookup(tabId),
         rootHostname = tabContext.rootHostname;
-    var r = {
+
+    let r = {
         advancedUserEnabled: µb.userSettings.advancedUserEnabled,
         appName: vAPI.app.name,
         appVersion: vAPI.app.version,
@@ -312,7 +306,7 @@ var popupDataFromTabId = function(tabId, tabTitle) {
         tooltipsDisabled: µb.userSettings.tooltipsDisabled
     };
 
-    var pageStore = µb.pageStoreFromTabId(tabId);
+    let pageStore = µb.pageStoreFromTabId(tabId);
     if ( pageStore ) {
         // https://github.com/gorhill/uBlock/issues/2105
         //   Be sure to always include the current page's hostname -- it might
@@ -332,23 +326,30 @@ var popupDataFromTabId = function(tabId, tabTitle) {
         r.contentLastModified = pageStore.contentLastModified;
         r.firewallRules = getFirewallRules(rootHostname, r.hostnameDict);
         r.canElementPicker = µb.URI.isNetworkURI(r.rawURL);
-        r.noPopups = µb.hnSwitches.evaluateZ('no-popups', rootHostname);
+        r.noPopups = µb.sessionSwitches.evaluateZ('no-popups', rootHostname);
         r.popupBlockedCount = pageStore.popupBlockedCount;
-        r.noCosmeticFiltering = µb.hnSwitches.evaluateZ('no-cosmetic-filtering', rootHostname);
-        r.noLargeMedia = µb.hnSwitches.evaluateZ('no-large-media', rootHostname);
+        r.noCosmeticFiltering = µb.sessionSwitches.evaluateZ('no-cosmetic-filtering', rootHostname);
+        r.noLargeMedia = µb.sessionSwitches.evaluateZ('no-large-media', rootHostname);
         r.largeMediaCount = pageStore.largeMediaCount;
-        r.noRemoteFonts = µb.hnSwitches.evaluateZ('no-remote-fonts', rootHostname);
+        r.noRemoteFonts = µb.sessionSwitches.evaluateZ('no-remote-fonts', rootHostname);
         r.remoteFontCount = pageStore.remoteFontCount;
+        r.noScripting = µb.sessionSwitches.evaluateZ('no-scripting', rootHostname);
     } else {
         r.hostnameDict = {};
         r.firewallRules = getFirewallRules();
     }
-    r.matrixIsDirty = !µb.sessionFirewall.hasSameRules(
+
+    r.matrixIsDirty = µb.sessionFirewall.hasSameRules(
         µb.permanentFirewall,
         rootHostname,
         r.hostnameDict
-    );
-
+    ) === false;
+    if ( r.matrixIsDirty === false ) {
+        r.matrixIsDirty = µb.sessionSwitches.hasSameRules(
+            µb.permanentSwitches,
+            rootHostname
+        ) === false;
+    }
     return r;
 };
 
@@ -379,14 +380,6 @@ var onMessage = function(request, sender, callback) {
 
     // Async
     switch ( request.what ) {
-    case 'getPopupLazyData':
-        pageStore = µb.pageStoreFromTabId(request.tabId);
-        if ( pageStore !== null ) {
-            pageStore.hiddenElementCount = 0;
-            µb.scriptlets.injectDeep(request.tabId, 'cosmetic-survey');
-        }
-        return;
-
     case 'getPopupData':
         popupDataFromRequest(request, callback);
         return;
@@ -399,6 +392,19 @@ var onMessage = function(request, sender, callback) {
     var response;
 
     switch ( request.what ) {
+    case 'getPopupLazyData':
+        pageStore = µb.pageStoreFromTabId(request.tabId);
+        if ( pageStore !== null ) {
+            pageStore.hiddenElementCount = 0;
+            pageStore.scriptCount = 0;
+            vAPI.tabs.injectScript(request.tabId, {
+                allFrames: true,
+                file: '/js/scriptlets/dom-survey.js',
+                runAt: 'document_end'
+            });
+        }
+        break;
+
     case 'hasPopupContentChanged':
         pageStore = µb.pageStoreFromTabId(request.tabId);
         var lastModified = pageStore ? pageStore.contentLastModified : 0;
@@ -411,18 +417,41 @@ var onMessage = function(request, sender, callback) {
             request.srcHostname,
             request.desHostnames
         );
+        µb.sessionSwitches.copyRules(
+            µb.permanentSwitches,
+            request.srcHostname
+        );
         // https://github.com/gorhill/uBlock/issues/188
-        µb.cosmeticFilteringEngine.removeFromSelectorCache(request.srcHostname, 'net');
+        µb.cosmeticFilteringEngine.removeFromSelectorCache(
+            request.srcHostname,
+            'net'
+        );
         response = popupDataFromTabId(request.tabId);
         break;
 
     case 'saveFirewallRules':
-        µb.permanentFirewall.copyRules(
-            µb.sessionFirewall,
-            request.srcHostname,
-            request.desHostnames
-        );
-        µb.savePermanentFirewallRules();
+        if (
+            µb.permanentFirewall.copyRules(
+                µb.sessionFirewall,
+                request.srcHostname,
+                request.desHostnames
+            )
+        ) {
+            µb.savePermanentFirewallRules();
+        }
+        if (
+            µb.permanentSwitches.copyRules(
+                µb.sessionSwitches,
+                request.srcHostname
+            )
+        ) {
+            µb.saveHostnameSwitches();
+        }
+        break;
+
+    case 'toggleHostnameSwitch':
+        µb.toggleHostnameSwitch(request);
+        response = popupDataFromTabId(request.tabId);
         break;
 
     case 'toggleFirewallRule':
@@ -434,7 +463,7 @@ var onMessage = function(request, sender, callback) {
         pageStore = µb.pageStoreFromTabId(request.tabId);
         if ( pageStore ) {
             pageStore.toggleNetFilteringSwitch(request.url, request.scope, request.state);
-            µb.updateBadgeAsync(request.tabId);
+            µb.updateToolbarIcon(request.tabId, 0x03);
         }
         break;
 
@@ -495,6 +524,23 @@ var onMessage = function(request, sender, callback) {
             pageStore.getBlockedResources(request, response);
         }
         break;
+
+    case 'shouldRenderNoscriptTags':
+        if ( pageStore === null ) { break; }
+        let tabContext = µb.tabContextManager.lookup(tabId);
+        if ( tabContext === null ) { break; }
+        if ( pageStore.filterScripting(tabContext.rootHostname, undefined) ) {
+            vAPI.tabs.injectScript(
+                tabId,
+                {
+                    file: '/js/scriptlets/noscript-spoof.js',
+                    frameId: frameId,
+                    runAt: 'document_end'
+                }
+            );
+        }
+        break;
+
     case 'retrieveContentScriptParameters':
         if (
             pageStore === null ||
@@ -515,95 +561,12 @@ var onMessage = function(request, sender, callback) {
         request.domain = µb.URI.domainFromHostname(request.hostname);
         request.entity = µb.URI.entityFromDomain(request.domain);
         response.specificCosmeticFilters =
-            µb.cosmeticFilteringEngine.retrieveDomainSelectors(request, response);
-        // If response body filtering is supported, than the scriptlets have
-        // already been injected.
-        if (
-            µb.canFilterResponseBody === false ||
-            µb.hiddenSettings.streamScriptInjectFilters !== true ||
-            µb.textEncode === undefined ||
-            µb.textEncode.normalizeCharset(request.charset) === undefined
-        ) {
+            µb.cosmeticFilteringEngine.retrieveSpecificSelectors(request, response);
+        if ( µb.canInjectScriptletsNow === false ) {
             response.scriptlets = µb.scriptletFilteringEngine.retrieve(request);
         }
-        if ( request.isRootFrame && µb.logger.isEnabled() ) {
-            µb.logCosmeticFilters(tabId);
-        }
-        if(µBlock.partners) {
-            var allowed = JSON.stringify((µBlock.partners[hostname(sender.url)] || {}).allowed);
-        }
-        var blocked = JSON.stringify(response.specificCosmeticFilters.declarativeFilters);
-        var code = `
-function isElementInViewport(elem) {
-    let x = elem.getBoundingClientRect().left;
-    let y = elem.getBoundingClientRect().top;
-    let ww = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
-    let hw = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
-    let w = elem.clientWidth;
-    let h = elem.clientHeight;
-    return (
-        (y < hw &&
-            y + h > 0) &&
-        (x < ww &&
-            x + w > 0)
-    );
-}
-
-window.allowedAds = [];
-
-var countAds = function () {
-    setTimeout(function () {
-        var allowed = ${ allowed }, blocked = ${ blocked }, elements;
-        var blockedCount = 0;
-
-        var addAd = function(ad){
-            for(let item of window.allowedAds)
-                if(item.isSameNode(ad))
-                    return;
-            window.allowedAds.push(ad);
-        }
-
-        for (var item of allowed) {
-            elements = document.querySelectorAll(item);
-            if (elements.length !== 0) {
-                elements.forEach(function (elem) {
-                    if (elem.clientHeight >= 45 && isElementInViewport(elem)) {
-                        var iframe = elem.querySelector('iframe');
-                        if(iframe){
-                            try {
-                                var doc = (iframe.contentWindow || iframe.contentDocument);
-                                if (doc.document) doc = doc.document;
-                                if (doc && doc.documentElement.scrollHeight <= 40)
-                                    blockedCount++;
-                                else
-                                    addAd(elem);
-                            } catch(e) {
-                                blockedCount++;
-                            }
-                        }
-                        else
-                            addAd(elem);
-                    }
-                    else
-                        blockedCount++;
-                });
-            }
-        }
-
-        window.postMessage({ direction: "adsNumber", message: { blockedCount, allowedCount: window.allowedAds.length } }, "*")
-    }, 1000)
-};`;
-        if(µBlock.isPartner(hostname(sender.url))){
-            if((µBlock.adequaCurrent.adsViewedToday || 0) < (µBlock.adequaCurrent.nbMaxAdsPerDay || 25)) {
-                // if(response.specificCosmeticFilters.declarativeFilters.length > 0)
-                    if(allowed && allowed.length > 0)
-                        vAPI.tabs.injectScript(sender.tab.id, {code});
-                response.noGenericCosmeticFiltering = true;
-                response.noCosmeticFiltering = true;
-                response.customCosmeticFiltering = true;
-                if(µBlock.partners)
-                    response.annoyingAds = (µBlock.partners[hostname(sender.url)] || {}).blocked;
-            }
+        if ( response.noCosmeticFiltering !== true ) {
+            µb.logCosmeticFilters(tabId, frameId);
         }
         break;
 
@@ -813,7 +776,7 @@ var backupUserData = function(callback) {
         netWhitelist: µb.stringFromWhitelist(µb.netWhitelist),
         dynamicFilteringString: µb.permanentFirewall.toString(),
         urlFilteringString: µb.permanentURLFiltering.toString(),
-        hostnameSwitchesString: µb.hnSwitches.toString(),
+        hostnameSwitchesString: µb.permanentSwitches.toString(),
         userFilters: ''
     };
 
@@ -874,20 +837,26 @@ var restoreUserData = function(request) {
 
     // If we are going to restore all, might as well wipe out clean local
     // storage
-    vAPI.cacheStorage.clear();
+    µb.cacheStorage.clear();
     vAPI.storage.clear(onAllRemoved);
     vAPI.localStorage.removeItem('immediateHiddenSettings');
 };
 
+// Remove all stored data but keep global counts, people can become
+// quite attached to numbers
+
 var resetUserData = function() {
-    vAPI.cacheStorage.clear();
-    vAPI.storage.clear();
+    let count = 3;
+    let countdown = ( ) => {
+        count -= 1;
+        if ( count === 0 ) {
+            vAPI.app.restart();
+        }
+    };
+    µb.cacheStorage.clear(countdown); // 1
+    vAPI.storage.clear(countdown);    // 2
+    µb.saveLocalSettings(countdown);  // 3
     vAPI.localStorage.removeItem('immediateHiddenSettings');
-
-    // Keep global counts, people can become quite attached to numbers
-    µb.saveLocalSettings();
-
-    vAPI.app.restart();
 };
 
 /******************************************************************************/
@@ -918,8 +887,7 @@ var getLists = function(callback) {
         cosmeticFilterCount: µb.cosmeticFilteringEngine.getFilterCount(),
         current: µb.availableFilterLists,
         externalLists: µb.userSettings.externalLists,
-        // Always disable cosmetic filtering to still show ads containers
-        ignoreGenericCosmeticFilters: false, //µb.userSettings.ignoreGenericCosmeticFilters,
+        ignoreGenericCosmeticFilters: µb.userSettings.ignoreGenericCosmeticFilters,
         netFilterCount: µb.staticNetFilteringEngine.getFilterCount(),
         parseCosmeticFilters: µb.userSettings.parseAllABPHideFilters,
         userFiltersPath: µb.userFiltersPath
@@ -943,44 +911,55 @@ var getLists = function(callback) {
 
 var getRules = function() {
     return {
-        permanentRules: µb.permanentFirewall.toArray().concat(
-                            µb.permanentURLFiltering.toArray()
-                        ),
-          sessionRules: µb.sessionFirewall.toArray().concat(
-                            µb.sessionURLFiltering.toArray()
-                        ),
-            hnSwitches: µb.hnSwitches.toArray()
+        permanentRules:
+            µb.permanentFirewall.toArray().concat(
+                µb.permanentSwitches.toArray(),
+                µb.permanentURLFiltering.toArray()
+            ),
+        sessionRules:
+            µb.sessionFirewall.toArray().concat(
+                µb.sessionSwitches.toArray(),
+                µb.sessionURLFiltering.toArray()
+            )
     };
 };
 
 var modifyRuleset = function(details) {
-    var swRuleset = µb.hnSwitches,
-        hnRuleset, urlRuleset;
+    let swRuleset, hnRuleset, urlRuleset;
     if ( details.permanent ) {
+        swRuleset = µb.permanentSwitches;
         hnRuleset = µb.permanentFirewall;
         urlRuleset = µb.permanentURLFiltering;
     } else {
+        swRuleset = µb.sessionSwitches;
         hnRuleset = µb.sessionFirewall;
         urlRuleset = µb.sessionURLFiltering;
     }
-    var toRemove = new Set(details.toRemove.trim().split(/\s*[\n\r]+\s*/));
-    var rule, parts, _;
-    for ( rule of toRemove ) {
+    let toRemove = new Set(details.toRemove.trim().split(/\s*[\n\r]+\s*/));
+    for ( let rule of toRemove ) {
         if ( rule === '' ) { continue; }
-        parts = rule.split(/\s+/);
-        _ = hnRuleset.removeFromRuleParts(parts) ||
-            swRuleset.removeFromRuleParts(parts) ||
-            urlRuleset.removeFromRuleParts(parts);
+        let parts = rule.split(/\s+/);
+        if ( hnRuleset.removeFromRuleParts(parts) === false ) {
+            if ( swRuleset.removeFromRuleParts(parts) === false ) {
+                urlRuleset.removeFromRuleParts(parts);
+            }
+        }
     }
-    var toAdd = new Set(details.toAdd.trim().split(/\s*[\n\r]+\s*/));
-    for ( rule of toAdd ) {
+    let toAdd = new Set(details.toAdd.trim().split(/\s*[\n\r]+\s*/));
+    for ( let rule of toAdd ) {
         if ( rule === '' ) { continue; }
-        parts = rule.split(/\s+/);
-        _ = hnRuleset.addFromRuleParts(parts) ||
-            swRuleset.addFromRuleParts(parts) ||
-            urlRuleset.addFromRuleParts(parts);
+        let parts = rule.split(/\s+/);
+        if ( hnRuleset.addFromRuleParts(parts) === false ) {
+            if ( swRuleset.addFromRuleParts(parts) === false ) {
+                urlRuleset.addFromRuleParts(parts);
+            }
+        }
     }
     if ( details.permanent ) {
+        if ( swRuleset.changed ) {
+            µb.saveHostnameSwitches();
+            swRuleset.changed = false;
+        }
         if ( hnRuleset.changed ) {
             µb.savePermanentFirewallRules();
             hnRuleset.changed = false;
@@ -990,10 +969,43 @@ var modifyRuleset = function(details) {
             urlRuleset.changed = false;
         }
     }
-    if ( swRuleset.changed ) {
-        µb.saveHostnameSwitches();
-        swRuleset.changed = false;
+};
+
+/******************************************************************************/
+
+// Shortcuts pane
+
+let getShortcuts = function(callback) {
+    if ( µb.canUseShortcuts === false ) {
+        return callback([]);
     }
+
+    vAPI.commands.getAll(commands => {
+        let response = [];
+        for ( let command of commands ) {
+            let desc = command.description;
+            let match = /^__MSG_(.+?)__$/.exec(desc);
+            if ( match !== null ) {
+                desc = vAPI.i18n(match[1]);
+            }
+            if ( desc === '' ) { continue; }
+            command.description = desc;
+            response.push(command);
+        }
+        callback(response);
+    });
+};
+
+let setShortcut = function(details) {
+    if  ( µb.canUpdateShortcuts === false ) { return; }
+    if ( details.shortcut === undefined ) {
+        vAPI.commands.reset(details.name);
+        µb.commandShortcuts.delete(details.name);
+    } else {
+        vAPI.commands.update({ name: details.name, shortcut: details.shortcut });
+        µb.commandShortcuts.set(details.name, details.shortcut);
+    }
+    vAPI.storage.set({ commandShortcuts: Array.from(µb.commandShortcuts) });
 };
 
 /******************************************************************************/
@@ -1010,6 +1022,9 @@ var onMessage = function(request, sender, callback) {
     case 'getLocalData':
         return getLocalData(callback);
 
+    case 'getShortcuts':
+        return getShortcuts(callback);
+
     case 'readUserFilters':
         return µb.loadUserFilters(callback);
 
@@ -1024,6 +1039,10 @@ var onMessage = function(request, sender, callback) {
     var response;
 
     switch ( request.what ) {
+    case 'canUpdateShortcuts':
+        response = µb.canUpdateShortcuts;
+        break;
+
     case 'getRules':
         response = getRules();
         break;
@@ -1065,6 +1084,10 @@ var onMessage = function(request, sender, callback) {
         resetUserData();
         break;
 
+    case 'setShortcut':
+        setShortcut(request);
+        break;
+
     case 'writeHiddenSettings':
         µb.changeHiddenSettings(µb.hiddenSettingsFromString(request.content));
         break;
@@ -1096,24 +1119,33 @@ var µb = µBlock,
 
 /******************************************************************************/
 
-var getLoggerData = function(ownerId, activeTabId, callback) {
-    var tabIds = new Map();
-    for ( var entry of µb.pageStores ) {
-        var pageStore = entry[1];
-        if ( pageStore.rawURL.startsWith(extensionOriginURL) ) { continue; }
-        tabIds.set(entry[0], pageStore.title);
-    }
-    if ( activeTabId && tabIds.has(activeTabId) === false ) {
-        activeTabId = undefined;
-    }
-    callback({
+var getLoggerData = function(details, activeTabId, callback) {
+    let response = {
         colorBlind: µb.userSettings.colorBlindFriendly,
-        entries: µb.logger.readAll(ownerId),
+        entries: µb.logger.readAll(details.ownerId),
         maxEntries: µb.userSettings.requestLogMaxEntries,
         activeTabId: activeTabId,
-        tabIds: Array.from(tabIds),
         tabIdsToken: µb.pageStoresToken
-    });
+    };
+    if ( µb.pageStoresToken !== details.tabIdsToken ) {
+        let tabIds = new Map();
+        for ( let entry of µb.pageStores ) {
+            let pageStore = entry[1];
+            if ( pageStore.rawURL.startsWith(extensionOriginURL) ) { continue; }
+            tabIds.set(entry[0], pageStore.title);
+        }
+        response.tabIds = Array.from(tabIds);
+    }
+    if ( activeTabId ) {
+        let pageStore = µb.pageStoreFromTabId(activeTabId);
+        if (
+            pageStore === null ||
+            pageStore.rawURL.startsWith(extensionOriginURL)
+        ) {
+            response.activeTabId = undefined;
+        }
+    }
+    callback(response);
 };
 
 /******************************************************************************/
@@ -1161,7 +1193,7 @@ var onMessage = function(request, sender, callback) {
             return;
         }
         vAPI.tabs.get(null, function(tab) {
-            getLoggerData(request.ownerId, tab && tab.id, callback);
+            getLoggerData(request, tab && tab.id, callback);
         });
         return;
 
@@ -1258,23 +1290,22 @@ vAPI.messaging.listen('documentBlocked', onMessage);
 
 /******************************************************************************/
 
-var µb = µBlock;
-var broadcastTimers = Object.create(null);
+let µb = µBlock;
+let broadcastTimers = new Map();
 
 /******************************************************************************/
 
-var cosmeticallyFilteredElementCountChanged = function(tabId) {
-    delete broadcastTimers[tabId + '-cosmeticallyFilteredElementCountChanged'];
+var domSurveyFinalReport = function(tabId) {
+    broadcastTimers.delete(tabId + '-domSurveyReport');
 
-    var pageStore = µb.pageStoreFromTabId(tabId);
-    if ( pageStore === null ) {
-        return;
-    }
+    let pageStore = µb.pageStoreFromTabId(tabId);
+    if ( pageStore === null ) { return; }
 
     vAPI.messaging.broadcast({
-        what: 'cosmeticallyFilteredElementCountChanged',
+        what: 'domSurveyFinalReport',
         tabId: tabId,
-        count: pageStore.hiddenElementCount
+        affectedElementCount: pageStore.hiddenElementCount,
+        scriptCount: pageStore.scriptCount,
     });
 };
 
@@ -1305,8 +1336,8 @@ var logCosmeticFilters = function(tabId, details) {
 /******************************************************************************/
 
 var onMessage = function(request, sender, callback) {
-    var tabId = sender && sender.tab ? sender.tab.id : 0;
-    var pageStore = µb.pageStoreFromTabId(tabId);
+    let tabId = sender && sender.tab ? sender.tab.id : 0;
+    let pageStore = µb.pageStoreFromTabId(tabId);
 
     // Async
     switch ( request.what ) {
@@ -1318,15 +1349,20 @@ var onMessage = function(request, sender, callback) {
     var response;
 
     switch ( request.what ) {
-    case 'cosmeticallyFilteredElementCount':
-        if ( pageStore !== null && request.filteredElementCount ) {
-            pageStore.hiddenElementCount += request.filteredElementCount;
-            var broadcastKey = tabId + '-cosmeticallyFilteredElementCountChanged';
-            if ( broadcastTimers[broadcastKey] === undefined ) {
-                broadcastTimers[broadcastKey] = vAPI.setTimeout(
-                    cosmeticallyFilteredElementCountChanged.bind(null, tabId),
-                    250
-                );
+    case 'domSurveyTransientReport':
+        if ( pageStore !== null ) {
+            if ( request.filteredElementCount ) {
+                pageStore.hiddenElementCount += request.filteredElementCount;
+            }
+            if ( request.scriptCount ) {
+                pageStore.scriptCount += request.scriptCount;
+            }
+            let broadcastKey = tabId + '-domSurveyReport';
+            if ( broadcastTimers.has(broadcastKey) === false ) {
+                broadcastTimers.set(broadcastKey, vAPI.setTimeout(
+                    ( ) => { domSurveyFinalReport(tabId); },
+                    53
+                ));
             }
         }
         break;
@@ -1363,295 +1399,3 @@ vAPI.messaging.listen('scriptlets', onMessage);
 
 /******************************************************************************/
 /******************************************************************************/
-function hostname(url) {
-    var match = url.match(/:\/\/(www[0-9]?\.)?(.[^/:]+)/i);
-    if ( match != null && match.length > 2 && typeof match[2] === 'string' && match[2].length > 0 ) return match[2];
-}
-
-var updateNbBlocked = function(tabId){
-    var pageStore = µBlock.pageStoreFromTabId(tabId);
-    if (pageStore === null)
-        return;
-    var current = µBlock.adequaCurrent;
-
-    if(current.stats && current.stats[tabId]) {
-        vAPI.adequa.storageDB.update("page_views", {ID: current.stats[tabId].dbId}, function (row) {
-            row.nb_trackers_blocked = pageStore.nbTrackersBlocked;
-            row.nb_ads_blocked = pageStore.nbAdsBlocked;
-            return row;
-        });
-        vAPI.adequa.storageDB.commit();
-    }
-
-    var stats = {};
-    stats[tabId] = {
-        nbAdsBlocked: pageStore.nbAdsBlocked,
-        nbTrackersBlocked: pageStore.nbTrackersBlocked,
-    };
-
-    vAPI.adequa.current.setCurrent({stats});
-    µBlock.updateBadgeAsync(tabId);
-};
-
-var onMessage = function(request, sender, callback) {
-    var µb = µBlock;
-
-    // Async
-    switch ( request.what ) {
-        case 'fetchTotalStats':
-            var trackersBlocked = vAPI.adequa.storageDB.queryColumnSum('page_views', 'nb_trackers_blocked') || 0;
-            var adsBlocked = vAPI.adequa.storageDB.queryColumnSum('page_views', 'nb_ads_blocked') || 0;
-            var timeWon = vAPI.adequa.storageDB.queryColumnSum('page_views', 'load_time') || 0;
-
-            callback({
-                trackersBlocked,
-                adsBlocked,
-                timeWon,
-            });
-            return;
-        case 'fetchAdsViewed':
-            var current = µb.adequaCurrent || {};
-
-            if(current.stats === undefined)
-                current.stats = {};
-            if(current.stats[request.tabId] !== undefined)
-            callback(current.stats[request.tabId].nbAdsAllowed);
-            return;
-        case 'insertPageViewed':
-            var pageStore = µb.pageStoreFromTabId(sender.tab.id);
-            if (pageStore === null)
-                return;
-
-            var url = pageStore.rawURL;
-
-            if (!(url.startsWith('http://') !== -1 || url.startsWith('https://') !== -1))
-                return;
-
-            var data = {
-                url: pageStore.rawURL || '',
-                consulted_at: request.data.consultTime || Date.now(),
-                nb_trackers_blocked: pageStore.nbTrackersBlocked || 0,
-                nb_ads_blocked: pageStore.nbAdsBlocked || 0,
-                is_partner: µBlock.isPartner(hostname(sender.url)),
-                load_time: request.data.loadTime || 0
-            };
-            var alreadyExist = vAPI.adequa.storageDB.queryAll('page_views', {query: {
-                url: pageStore.rawURL,
-                consulted_at: request.data.consultTime
-            }});
-
-            var id;
-            if(alreadyExist.length > 0){
-                id = alreadyExist[0].ID;
-
-                vAPI.adequa.storageDB.update('page_views', {ID: id}, function(row) {
-                    row.nb_trackers_blocked = data.nb_trackers_blocked;
-                    row.nb_ads_blocked = data.nb_ads_blocked;
-
-                    return row;
-                });
-            }
-
-            else
-                id = vAPI.adequa.storageDB.insert('page_views', data);
-
-            vAPI.adequa.storageDB.commit();
-
-            var stats = {};
-            stats[sender.tab.id] = {
-                url: pageStore.rawURL,
-                nbAdsAllowed: 0,
-                nbAdsBlocked: pageStore.nbAdsBlocked,
-                isPartner: µBlock.isPartner(hostname(sender.url)),
-                nbTrackersBlocked: pageStore.nbTrackersBlocked,
-                loadTime: request.data.loadTime,
-                consulted_at: request.data.consultTime,
-                dbId: id
-            };
-
-            vAPI.adequa.current.setCurrent({stats});
-
-            µBlock.updateBadgeAsync(sender.tab.id);
-
-            var interval = setInterval(function(){updateNbBlocked(sender.tab.id)}, 1000);
-            setTimeout(function () {
-                clearInterval(interval)
-            }, 15000);
-            return;
-        case 'storeNbAdsAllowed':
-            var stats = {};
-            stats[sender.tab.id] = {
-                nbAdsAllowed: request.data.allowedCount,
-            };
-
-            var adequaCurrent = µb.adequaCurrent;
-            if(adequaCurrent.stats && adequaCurrent.stats[sender.tab.id])
-                var diff = (request.data.allowedCount || 0) - (adequaCurrent.stats[sender.tab.id].nbAdsAllowed || 0);
-            if(diff <= 0)
-                return;
-            if(!adequaCurrent.stats[sender.tab.id].dbId)
-                return;
-
-            if((adequaCurrent.adsViewedToday + diff) > adequaCurrent.nbMaxAdsPerDay)
-                diff = (adequaCurrent.nbMaxAdsPerDay || 25) - adequaCurrent.adsViewedToday;
-            adequaCurrent.stats[sender.tab.id].nbAdsAllowed = (adequaCurrent.stats[sender.tab.id].nbAdsAllowed || 0) + diff;
-            adequaCurrent.adsViewedToday = (adequaCurrent.adsViewedToday || 0) + diff;
-
-            var impression = {
-                passion: hostname(adequaCurrent.stats[sender.tab.id].url),
-                viewed_at: adequaCurrent.stats[sender.tab.id].consulted_at,
-                ad_id: 0,
-                page_view_id: adequaCurrent.stats[sender.tab.id].dbId
-            };
-
-            for (var i = 0; i < diff; i++)
-                vAPI.adequa.storageDB.insert('ad_prints', impression);
-
-            vAPI.adequa.current.setCurrent(adequaCurrent);
-            µBlock.updateBadgeAsync(sender.tab.id);
-            return;
-        case 'loaded':
-            var code = `
-            const ADinterval = setInterval(() => {
-                if(window.performance.getEntriesByType('navigation')[0].duration != 0) {
-                    const loadTime = Math.round(window.performance.getEntriesByType('navigation')[0].duration);
-                    const consultTime = window.performance.timing.responseStart;
-                    window.postMessage({direction: "insert", message: {loadTime, consultTime}}, "*")
-                    clearInterval(ADinterval);
-                }
-            }, 200);`;
-
-            vAPI.tabs.injectScript(sender.tab.id, {code});
-            return;
-        case 'fetchTotalNumberAdsViewed':
-            callback(vAPI.adequa.storageDB.rowCount('ad_prints'));
-            return;
-        case 'fetchAdsViewedStats':
-            var viewedToday = µBlock.adequaCurrent.adsViewedToday;
-            var maxPerDay = µBlock.adequaCurrent.nbMaxAdsPerDay;
-            callback({sawToday: viewedToday, NbMaxAdsPerDay: maxPerDay});
-            return;
-        case 'fetchAllPageViewed':
-            var page_views = vAPI.adequa.storageDB.queryAll('page_views');
-            var allPageData = [];
-
-            for(let page of page_views){
-                var ads = vAPI.adequa.storageDB.queryAll('ad_prints', {
-                    query: {
-                        page_view_id: page.ID
-                    }
-                });
-
-                page.ads_allowed = ads.length;
-                allPageData[page.ID] = page;
-            }
-            callback(allPageData);
-            return;
-        case 'checkIfPartner':
-            var current = {stats:{}};
-
-            adequaPartnerList.isPartner(hostname(sender.url), function(isPartner) {
-                current.stats[sender.tab.id] = {
-                    url: sender.url,
-                    isPartner: isPartner,
-                };
-
-                vAPI.adequa.current.setCurrent(current);
-            });
-            return;
-        case 'toggleStatSwitch':
-            vAPI.storage.get('current', function(current){
-                current = current.current || {};
-
-                current.statSwitchState = request.state ? 'page' : 'total';
-
-                vAPI.storage.set({'current': current})
-            });
-            return;
-        case 'fetchStatSwitchState':
-            vAPI.storage.get('current',function(current) {
-                current = current.current || {};
-
-                callback(current.statSwitchState);
-            });
-            return;
-        case 'fetchCurrentStats':
-            vAPI.storage.get('current', function(current){
-                current = current.current || {};
-
-                var stats = current.stats || {};
-                var currentStats = stats[request.tabId] || {};
-                callback(currentStats)
-            });
-            return;
-        case 'getCurrent':
-            vAPI.storage.get('current', function(current){
-                current = current.current || {};
-                callback(current)
-            });
-            return;
-        case 'isFirstInstall':
-            vAPI.adequa.storage.isFirstInstall(function (firstInstall) {
-                callback(firstInstall);
-            });
-            return;
-        case 'firstInstallFinished':
-            vAPI.adequa.storage.setFirstInstall(false, callback);
-            vAPI.adequa.current.setCurrent({adsViewedToday: 0});
-            return;
-
-        case 'saveInstallState':
-            vAPI.adequa.storage.saveInstallState(request.state, callback);
-            return;
-
-        case 'fetchInstallState':
-            vAPI.adequa.storage.fetchInstallState(callback);
-            return;
-
-        case 'savePassions':
-            vAPI.adequa.storage.savePassions(request.passions, callback);
-            return;
-
-        case 'getPassions':
-            vAPI.storage.get('passions', function(passions) {
-                passions = passions.passions || {};
-                callback(passions);
-            });
-            return;
-
-        case 'saveNbMaxAdsPerDay':
-            vAPI.adequa.storage.saveNbMaxAdsPerDay(request.nbMaxAdsPerDay, callback);
-            return;
-
-        case 'fetchNbMaxAdsPerDay':
-            vAPI.storage.get('nbMaxAdsPerDay', callback);
-            return;
-
-        case 'setAddonID':
-            vAPI.storage.set({addonID: request.id}, callback);
-            return;
-
-        case 'getAddonID':
-            vAPI.storage.get('addonID', callback);
-            return;
-
-        case 'isSitePartner':
-            var enabled = ((µBlock.adequaCurrent.adsViewedToday || 0) < (µBlock.adequaCurrent.nbMaxAdsPerDay || 25))
-            callback(enabled ? µBlock.isPartner(hostname(request.url)) : false);
-            return;
-        default:
-            break;
-    }
-
-    // Sync
-    var response;
-
-    switch ( request.what ) {
-        default:
-            break;
-    }
-
-    callback(response);
-};
-
-vAPI.messaging.listen('adequa', onMessage);

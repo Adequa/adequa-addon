@@ -32,7 +32,7 @@ vAPI.messaging.send(
     {
         what: 'gotoURL',
         details: {
-            url: 'adequa-dashboard.html',
+            url: 'dashboard.html',
             select: true,
             index: -1
         }

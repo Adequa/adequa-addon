@@ -1,7 +1,7 @@
 /*******************************************************************************
 
     uBlock Origin - a browser extension to block requests.
-    Copyright (C) 2014-2017 Raymond Hill
+    Copyright (C) 2014-2018 Raymond Hill
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -349,11 +349,18 @@ vAPI.matchesProp = (function() {
 
 vAPI.injectScriptlet = function(doc, text) {
     if ( !doc ) { return; }
+    let script;
     try {
-        var script = doc.createElement('script');
+        script = doc.createElement('script');
         script.appendChild(doc.createTextNode(text));
         (doc.head || doc.documentElement).appendChild(script);
     } catch (ex) {
+    }
+    if ( script ) {
+        if ( script.parentNode ) {
+            script.parentNode.removeChild(script);
+        }
+        script.textContent = '';
     }
 };
 
@@ -874,30 +881,28 @@ vAPI.domCollapser = (function() {
         attributeFilter: [ 'src' ]
     };
 
+    // The injected scriptlets are those which were injected in the current
+    // document, from within `bootstrapPhase1`, and which scriptlets are
+    // selectively looked-up from:
+    // https://github.com/uBlockOrigin/uAssets/blob/master/filters/resources.txt
     var primeLocalIFrame = function(iframe) {
-        // Should probably also copy injected styles.
-        // The injected scripts are those which were injected in the current
-        // document, from within the `contentscript-start.js / injectScripts`,
-        // and which scripts are selectively looked-up from:
-        // https://github.com/gorhill/uBlock/blob/master/assets/ublock/resources.txt
         if ( vAPI.injectedScripts ) {
             vAPI.injectScriptlet(iframe.contentDocument, vAPI.injectedScripts);
         }
     };
 
+    // https://github.com/gorhill/uBlock/issues/162
+    // Be prepared to deal with possible change of src attribute.
     var addIFrame = function(iframe, dontObserve) {
-        // https://github.com/gorhill/uBlock/issues/162
-        // Be prepared to deal with possible change of src attribute.
         if ( dontObserve !== true ) {
             iframeSourceObserver.observe(iframe, iframeSourceObserverOptions);
         }
-
         var src = iframe.src;
         if ( src === '' || typeof src !== 'string' ) {
             primeLocalIFrame(iframe);
             return;
         }
-        if ( src.lastIndexOf('http', 0) !== 0 ) { return; }
+        if ( src.startsWith('http') === false ) { return; }
         toFilter[toFilter.length] = {
             type: 'sub_frame',
             url: iframe.src
@@ -972,9 +977,6 @@ vAPI.domCollapser = (function() {
                 }
             }
             process();
-            if(typeof countAds === "function"){
-                setTimeout(countAds, 5000);
-            }
         }
     };
 
@@ -1018,6 +1020,7 @@ vAPI.domSurveyor = (function() {
     var surveyPhase3 = function(response) {
         var result = response && response.result,
             mustCommit = false;
+
         if ( result ) {
             var selectors = result.simple;
             if ( Array.isArray(selectors) && selectors.length !== 0 ) {
@@ -1244,6 +1247,7 @@ vAPI.domSurveyor = (function() {
                 addChunk(pendingClassNodes, classNodes);
                 surveyTimer.start(1);
             }
+            //console.timeEnd('dom surveyor/dom layout changed');
         }
     };
 
@@ -1268,7 +1272,6 @@ vAPI.domSurveyor = (function() {
 (function bootstrap() {
 
     var bootstrapPhase2 = function(ev) {
-
         // This can happen on Firefox. For instance:
         // https://github.com/gorhill/uBlock/issues/1893
         if ( window.location === null ) { return; }
@@ -1281,54 +1284,10 @@ vAPI.domSurveyor = (function() {
             return;
         }
 
-        vAPI.messaging.send('adequa', {what: 'loaded'})
-
-        var onMessage = function(event) {
-            if (event.source == window &&
-                event.data &&
-                event.data.direction == "contentScript") {
-                window.postMessage({
-                    direction: "hasAdequa",
-                    message: true
-                }, "*");
-                vAPI.messaging.send('adequa', {what: 'checkIfPartner'})
-            }
-            else if (event.source == window &&
-                event.data &&
-                event.data.direction == "insert") {
-                vAPI.messaging.send('adequa', {
-                    what: 'insertPageViewed',
-                    data: event.data.message
-                })
-            }
-            else if (event.source == window &&
-                event.data &&
-                event.data.direction == "adsNumber") {
-                vAPI.messaging.send('adequa', {
-                    what: 'storeNbAdsAllowed',
-                    data: event.data.message
-                });
-            }
-        };
-
-        window.addEventListener("message", onMessage);
-
-        var scrollTimer = -1;
-
-        var onScroll = function() {
-            if (scrollTimer !== -1)
-                clearTimeout(scrollTimer);
-
-            scrollTimer = window.setTimeout(onScrollFinished, 500);
-        };
-
-        var onScrollFinished = function() {
-            if(typeof countAds === "function"){
-                setTimeout(countAds, 2000);
-            }
-        };
-
-        window.addEventListener("scroll", onScroll);
+        vAPI.messaging.send(
+            'contentscript',
+            { what: 'shouldRenderNoscriptTags' }
+        );
 
         if ( vAPI.domWatcher instanceof Object ) {
             vAPI.domWatcher.start();
@@ -1376,19 +1335,10 @@ vAPI.domSurveyor = (function() {
     var bootstrapPhase1 = function(response) {
         // cosmetic filtering engine aka 'cfe'
         var cfeDetails = response && response.specificCosmeticFilters;
-
         if ( !cfeDetails || !cfeDetails.ready ) {
             vAPI.domWatcher = vAPI.domCollapser = vAPI.domFilterer =
             vAPI.domSurveyor = vAPI.domIsLoaded = null;
             return;
-        }
-
-        if(response.customCosmeticFiltering){
-            var domFilterer = vAPI.domFilterer;
-            domFilterer.addCSSRule(
-                response.annoyingAds || [],
-                'display:none!important;'
-            );
         }
 
         if ( response.noCosmeticFiltering ) {
@@ -1456,16 +1406,6 @@ vAPI.domSurveyor = (function() {
             document.addEventListener('DOMContentLoaded', bootstrapPhase2);
         }
     };
-
-    var appendExtVariable = function() {
-        vAPI.messaging.send(
-            'popupPanel',
-            { what: 'getPopupData'}
-        );
-
-
-    };
-    document.addEventListener('DOMContentLoaded', appendExtVariable);
 
     // This starts bootstrap process.
     vAPI.messaging.send(

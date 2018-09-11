@@ -1,7 +1,7 @@
 /*******************************************************************************
 
     uBlock Origin - a browser extension to block requests.
-    Copyright (C) 2014-2018 Raymond Hill
+    Copyright (C) 2014-present Raymond Hill
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -288,18 +288,16 @@ PageStore.prototype.init = function(tabId, context) {
     this.logData = undefined;
     this.perLoadBlockedRequestCount = 0;
     this.perLoadAllowedRequestCount = 0;
-    this.nbTrackersBlocked = 0;
-    this.nbAdsBlocked = 0;
-    this.adsAllowed = false;
     this.hiddenElementCount = ''; // Empty string means "unknown"
     this.remoteFontCount = 0;
+    this.scriptCount = 0;
     this.popupBlockedCount = 0;
     this.largeMediaCount = 0;
     this.largeMediaTimer = null;
     this.netFilteringCache = NetFilteringResultCache.factory();
     this.internalRedirectionCount = 0;
 
-    this.noCosmeticFiltering = µb.hnSwitches.evaluateZ(
+    this.noCosmeticFiltering = µb.sessionSwitches.evaluateZ(
         'no-cosmetic-filtering',
         tabContext.rootHostname
     ) === true;
@@ -311,7 +309,7 @@ PageStore.prototype.init = function(tabId, context) {
         µb.logger.writeOne(
             tabId,
             'cosmetic',
-            µb.hnSwitches.toLogData(),
+            µb.sessionSwitches.toLogData(),
             'dom',
             tabContext.rawURL,
             this.tabHostname,
@@ -322,10 +320,8 @@ PageStore.prototype.init = function(tabId, context) {
     // Support `generichide` filter option.
     this.noGenericCosmeticFiltering = this.noCosmeticFiltering;
     if ( this.noGenericCosmeticFiltering !== true ) {
-        var result = µb.staticNetFilteringEngine.matchStringExactType(
-            this.createContextFromPage(),
-            tabContext.normalURL,
-            'generichide'
+        let result = µb.staticNetFilteringEngine.matchStringGenericHide(
+            tabContext.normalURL
         );
         this.noGenericCosmeticFiltering = result === 2;
         if (
@@ -522,7 +518,10 @@ PageStore.prototype.journalAddRequest = function(hostname, result) {
         result === 1 ? 0x00000001 : 0x00010000
     );
     if ( this.journalTimer === null ) {
-        this.journalTimer = vAPI.setTimeout(this.journalProcess.bind(this, true), 1000);
+        this.journalTimer = vAPI.setTimeout(
+            ( ) => { this.journalProcess(true); },
+            µb.hiddenSettings.requestJournalProcessPeriod
+        );
     }
 };
 
@@ -544,7 +543,10 @@ PageStore.prototype.journalAddRootFrame = function(type, url) {
     if ( this.journalTimer !== null ) {
         clearTimeout(this.journalTimer);
     }
-    this.journalTimer = vAPI.setTimeout(this.journalProcess.bind(this, true), 1000);
+    this.journalTimer = vAPI.setTimeout(
+        ( ) => { this.journalProcess(true); },
+        µb.hiddenSettings.requestJournalProcessPeriod
+    );
 };
 
 PageStore.prototype.journalProcess = function(fromTimer) {
@@ -554,20 +556,20 @@ PageStore.prototype.journalProcess = function(fromTimer) {
     this.journalTimer = null;
 
     var journal = this.journal,
-        i, n = journal.length,
-        hostname, count, hostnameCounts,
+        n = journal.length,
         aggregateCounts = 0,
         now = Date.now(),
         pivot = this.journalLastCommitted || 0;
+
     // Everything after pivot originates from current page.
-    for ( i = pivot; i < n; i += 2 ) {
-        hostname = journal[i];
-        hostnameCounts = this.hostnameToCountMap.get(hostname);
+    for ( let i = pivot; i < n; i += 2 ) {
+        let hostname = journal[i];
+        let hostnameCounts = this.hostnameToCountMap.get(hostname);
         if ( hostnameCounts === undefined ) {
             hostnameCounts = 0;
             this.contentLastModified = now;
         }
-        count = journal[i+1];
+        let count = journal[i+1];
         this.hostnameToCountMap.set(hostname, hostnameCounts + count);
         aggregateCounts += count;
     }
@@ -578,12 +580,12 @@ PageStore.prototype.journalProcess = function(fromTimer) {
     // https://github.com/chrisaljoudi/uBlock/issues/905#issuecomment-76543649
     //   No point updating the badge if it's not being displayed.
     if ( (aggregateCounts & 0xFFFF) && µb.userSettings.showIconBadge ) {
-        µb.updateBadgeAsync(this.tabId);
+        µb.updateToolbarIcon(this.tabId, 0x02);
     }
 
     // Everything before pivot does not originate from current page -- we still
     // need to bump global blocked/allowed counts.
-    for ( i = 0; i < pivot; i += 2 ) {
+    for ( let i = 0; i < pivot; i += 2 ) {
         aggregateCounts += journal[i+1];
     }
     if ( aggregateCounts !== 0 ) {
@@ -597,16 +599,6 @@ PageStore.prototype.journalProcess = function(fromTimer) {
 /******************************************************************************/
 
 PageStore.prototype.filterRequest = function(context) {
-
-    if(µBlock.isPartner(context.rootDomain))
-        if((µBlock.adequaCurrent.adsViewedToday || 0) < (µBlock.adequaCurrent.nbMaxAdsPerDay || 25)) {
-            return 0;
-        }
-
-    if (µb.getNetFilteringSwitch(context.requestURL) === false) {
-        return 0;
-    }
-
     this.logData = undefined;
 
     if ( this.getNetFilteringSwitch() === false ) {
@@ -623,26 +615,25 @@ PageStore.prototype.filterRequest = function(context) {
         return 1;
     }
 
+    if (
+        requestType === 'script' &&
+        this.filterScripting(context.rootHostname, true) === 1
+    ) {
+        return 1;
+    }
+
     var cacheableResult = this.cacheableResults[requestType] === true;
 
     if ( cacheableResult ) {
         var entry = this.netFilteringCache.lookupResult(context);
         if ( entry !== undefined ) {
-            if(entry.result === 6) {
-                this.nbTrackersBlocked++;
-            }
-
             this.logData = entry.logData;
-
-            if(entry.result >= 5)
-                entry.result = 1;
             return entry.result;
         }
     }
 
     // Dynamic URL filtering.
     var result = µb.sessionURLFiltering.evaluateZ(context.rootHostname, context.requestURL, requestType);
-
     if ( result !== 0 && µb.logger.isEnabled() ) {
         this.logData = µb.sessionURLFiltering.toLogData();
     }
@@ -650,20 +641,14 @@ PageStore.prototype.filterRequest = function(context) {
     // Dynamic hostname/type filtering.
     if ( result === 0 && µb.userSettings.advancedUserEnabled ) {
         result = µb.sessionFirewall.evaluateCellZY(context.rootHostname, context.requestHostname, requestType);
-
         if ( result !== 0 && result !== 3 && µb.logger.isEnabled() ) {
             this.logData = µb.sessionFirewall.toLogData();
         }
     }
+
     // Static filtering has lowest precedence.
     if ( result === 0 || result === 3 ) {
-
         result = µb.staticNetFilteringEngine.matchString(context);
-
-        if(result === 6) {
-            this.nbTrackersBlocked++;
-        }
-
         if ( result !== 0 && µb.logger.isEnabled() ) {
             this.logData = µb.staticNetFilteringEngine.toLogData();
         }
@@ -674,16 +659,6 @@ PageStore.prototype.filterRequest = function(context) {
     } else if ( result === 1 && this.collapsibleResources[requestType] === true ) {
         this.netFilteringCache.rememberBlock(context, true);
     }
-
-    this.nbAdsBlocked = this.perLoadBlockedRequestCount - this.nbTrackersBlocked;
-    if(this.nbAdsBlocked < 0)
-        this.nbAdsBlocked = 0;
-
-    if(result >= 5)
-        result = 1;
-
-    if(result === true)
-        result = 1;
 
     return result;
 };
@@ -702,9 +677,9 @@ PageStore.prototype.collapsibleResources = {
 /******************************************************************************/
 
 PageStore.prototype.filterCSPReport = function(context) {
-    if ( µb.hnSwitches.evaluateZ('no-csp-reports', context.requestHostname) ) {
+    if ( µb.sessionSwitches.evaluateZ('no-csp-reports', context.requestHostname) ) {
         if ( µb.logger.isEnabled() ) {
-            this.logData = µb.hnSwitches.toLogData();
+            this.logData = µb.sessionSwitches.toLogData();
         }
         return 1;
     }
@@ -733,13 +708,31 @@ PageStore.prototype.filterFont = function(context) {
     if ( context.requestType === 'font' ) {
         this.remoteFontCount += 1;
     }
-    if ( µb.hnSwitches.evaluateZ('no-remote-fonts', context.rootHostname) !== false ) {
+    if ( µb.sessionSwitches.evaluateZ('no-remote-fonts', context.rootHostname) !== false ) {
         if ( µb.logger.isEnabled() ) {
-            this.logData = µb.hnSwitches.toLogData();
+            this.logData = µb.sessionSwitches.toLogData();
         }
         return 1;
     }
     return 0;
+};
+
+/******************************************************************************/
+
+PageStore.prototype.filterScripting = function(rootHostname, netFiltering) {
+    if ( netFiltering === undefined ) {
+        netFiltering = this.getNetFilteringSwitch();
+    }
+    if (
+        netFiltering === false ||
+        µb.sessionSwitches.evaluateZ('no-scripting', rootHostname) === false
+    ) {
+        return 0;
+    }
+    if ( µb.logger.isEnabled() ) {
+        this.logData = µb.sessionSwitches.toLogData();
+    }
+    return 1;
 };
 
 /******************************************************************************/
@@ -752,7 +745,7 @@ PageStore.prototype.filterLargeMediaElement = function(size) {
     if ( Date.now() < this.allowLargeMediaElementsUntil ) {
         return 0;
     }
-    if ( µb.hnSwitches.evaluateZ('no-large-media', this.tabHostname) !== true ) {
+    if ( µb.sessionSwitches.evaluateZ('no-large-media', this.tabHostname) !== true ) {
         return 0;
     }
     if ( (size >>> 10) < µb.userSettings.largeMediaSize ) {
@@ -768,7 +761,7 @@ PageStore.prototype.filterLargeMediaElement = function(size) {
     }
 
     if ( µb.logger.isEnabled() ) {
-        this.logData = µb.hnSwitches.toLogData();
+        this.logData = µb.sessionSwitches.toLogData();
     }
 
     return 1;

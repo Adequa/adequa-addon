@@ -1,7 +1,7 @@
 /*******************************************************************************
 
     uBlock Origin - a browser extension to block requests.
-    Copyright (C) 2014-2018 Raymond Hill
+    Copyright (C) 2014-present Raymond Hill
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -30,6 +30,31 @@
 /******************************************************************************/
 
 var exports = {};
+
+/******************************************************************************/
+
+// Platform-specific behavior.
+
+// https://github.com/uBlockOrigin/uBlock-issues/issues/42
+// https://bugzilla.mozilla.org/show_bug.cgi?id=1376932
+//   Add proper version number detection once issue is fixed in Firefox.
+let dontCacheResponseHeaders =
+    vAPI.webextFlavor.soup.has('firefox');
+
+// https://github.com/gorhill/uMatrix/issues/967#issuecomment-373002011
+//   This can be removed once Firefox 60 ESR is released.
+let cantMergeCSPHeaders =
+    vAPI.webextFlavor.soup.has('firefox') && vAPI.webextFlavor.major < 59;
+
+
+// The real actual webextFlavor value may not be set in stone, so listen
+// for possible future changes.
+window.addEventListener('webextFlavor', function() {
+    dontCacheResponseHeaders =
+        vAPI.webextFlavor.soup.has('firefox');
+    cantMergeCSPHeaders =
+        vAPI.webextFlavor.soup.has('firefox') && vAPI.webextFlavor.major < 59;
+}, { once: true });
 
 /******************************************************************************/
 
@@ -191,7 +216,7 @@ var onBeforeRootFrameRequest = function(details) {
         µb = µBlock;
 
     µb.tabContextManager.push(tabId, requestURL);
-    return;
+
     // Special handling for root document.
     // https://github.com/chrisaljoudi/uBlock/issues/1001
     // This must be executed regardless of whether the request is
@@ -221,10 +246,10 @@ var onBeforeRootFrameRequest = function(details) {
     }
 
     // Permanently unrestricted?
-    if ( result === 0 && µb.hnSwitches.evaluateZ('no-strict-blocking', requestHostname) ) {
+    if ( result === 0 && µb.sessionSwitches.evaluateZ('no-strict-blocking', requestHostname) ) {
         result = 2;
-        if ( logEnabled === true ) {
-            logData = { engine: 'u', result: 2, raw: 'no-strict-blocking: ' + µb.hnSwitches.z + ' true' };
+        if ( logEnabled ) {
+            logData = { engine: 'u', result: 2, raw: 'no-strict-blocking: ' + µb.sessionSwitches.z + ' true' };
         }
     }
 
@@ -339,21 +364,25 @@ var onBeforeBehindTheSceneRequest = function(details) {
         pageStore = µb.pageStoreFromTabId(details.tabId);
     if ( pageStore === null ) { return; }
 
-    var result = 0,
+    var µburi = µb.URI,
         context = pageStore.createContextFromPage(),
         requestType = details.type,
         requestURL = details.url;
 
     context.requestURL = requestURL;
-    context.requestHostname = µb.URI.hostnameFromURI(requestURL);
+    context.requestHostname = µburi.hostnameFromURI(requestURL);
     context.requestType = requestType;
 
+    var normalURL;
     if ( details.tabId === vAPI.anyTabId && context.pageHostname === '' ) {
-        context.pageHostname = µb.URI.hostnameFromURI(details.documentUrl);
-        context.pageDomain = µb.URI.domainFromHostname(context.pageHostname);
+        normalURL = µb.normalizePageURL(0, details.documentUrl);
+        context.pageHostname = µburi.hostnameFromURI(normalURL);
+        context.pageDomain = µburi.domainFromHostname(context.pageHostname);
         context.rootHostname = context.pageHostname;
         context.rootDomain = context.pageDomain;
     }
+
+    pageStore.logData = undefined;
 
     // https://bugs.chromium.org/p/chromium/issues/detail?id=637577#c15
     //   Do not filter behind-the-scene network request of type `beacon`: there
@@ -368,12 +397,33 @@ var onBeforeBehindTheSceneRequest = function(details) {
     // https://github.com/gorhill/uBlock/issues/3150
     //   Ability to globally block CSP reports MUST also apply to
     //   behind-the-scene network requests.
+
+    // 2018-03-30:
+    //   Filter all behind-the-scene network requests like any other network
+    //   requests. Hopefully this will not break stuff as it used to be the
+    //   case.
+
+    var result = 0;
+
     if (
-        details.tabId !== vAPI.noTabId ||
+        µburi.isNetworkURI(details.documentUrl) ||
         µb.userSettings.advancedUserEnabled ||
         requestType === 'csp_report'
     ) {
         result = pageStore.filterRequest(context);
+
+        // The "any-tab" scope is not whitelist-able, and in such case we must
+        // use the origin URL as the scope. Most such requests aren't going to
+        // be blocked, so we further test for whitelisting and modify the
+        // result only when the request is being blocked.
+        if (
+            result === 1 &&
+            normalURL !== undefined &&
+            µb.getNetFilteringSwitch(normalURL) === false
+        ) {
+            result = 2;
+            pageStore.logData = { engine: 'u', result: 2, raw: 'whitelisted' };
+        }
     }
 
     pageStore.journalAddRequest(context.requestHostname, result);
@@ -498,10 +548,10 @@ onBeforeMaybeSpuriousCSPReport.textDecoder = undefined;
 
 var onHeadersReceived = function(details) {
     // Do not interfere with behind-the-scene requests.
-    var tabId = details.tabId;
+    let tabId = details.tabId;
     if ( vAPI.isBehindTheSceneTabId(tabId) ) { return; }
 
-    var µb = µBlock,
+    let µb = µBlock,
         requestType = details.type,
         isRootDoc = requestType === 'main_frame',
         isDoc = isRootDoc || requestType === 'sub_frame';
@@ -510,7 +560,7 @@ var onHeadersReceived = function(details) {
         µb.tabContextManager.push(tabId, details.url);
     }
 
-    var pageStore = µb.pageStoreFromTabId(tabId);
+    let pageStore = µb.pageStoreFromTabId(tabId);
     if ( pageStore === null ) {
         if ( isRootDoc === false ) { return; }
         pageStore = µb.bindTabToPageStats(tabId, 'beforeRequest');
@@ -521,43 +571,51 @@ var onHeadersReceived = function(details) {
         return foilLargeMediaElement(pageStore, details);
     }
 
-    if ( isDoc && µb.canFilterResponseBody ) {
-        filterDocument(pageStore, details);
-    }
+    if ( isDoc === false ) { return; }
+
+    // Keep in mind response headers will be modified in-place if needed, so
+    // `details.responseHeaders` will always point to the modified response
+    // headers.
+    let responseHeaders = details.responseHeaders;
 
     // https://github.com/gorhill/uBlock/issues/2813
     //   Disable the blocking of large media elements if the document is itself
     //   a media element: the resource was not prevented from loading so no
     //   point to further block large media elements for the current document.
     if ( isRootDoc ) {
-        if ( reMediaContentTypes.test(headerValueFromName('content-type', details.responseHeaders)) ) {
+        let contentType = headerValueFromName('content-type', responseHeaders);
+        if ( reMediaContentTypes.test(contentType) ) {
             pageStore.allowLargeMediaElementsUntil = Date.now() + 86400000;
-        }
-        return injectCSP(pageStore, details);
-    }
-
-    if ( isDoc ) {
-        return injectCSP(pageStore, details);
-    }
-};
-
-var onBeforeSendHeaders = function(details) {
-    var tabId = details.tabId;
-    var µb = µBlock, isFrame,
-        pageStore = µb.pageStoreFromTabId(tabId);
-
-    var requestContext = pageStore.createContextFromFrameId(
-        isFrame ? details.parentFrameId : details.frameId
-    );
-    console.log(requestContext);
-    for (var i = 0; i < details.requestHeaders.length; ++i) {
-        if (details.requestHeaders[i].name === 'Cookie') {
-            console.log(details);
-            details.requestHeaders.splice(i, 1);
-            break;
+            return;
         }
     }
-    return details;
+
+    // At this point we have a HTML document.
+
+    let filteredHTML = µb.canFilterResponseBody &&
+                       filterDocument(pageStore, details) === true;
+
+    let modifiedHeaders = injectCSP(pageStore, details) === true;
+
+    // https://bugzilla.mozilla.org/show_bug.cgi?id=1376932
+    //   Prevent document from being cached by the browser if we modified it,
+    //   either through HTML filtering and/or modified response headers.
+    if ( (filteredHTML || modifiedHeaders) && dontCacheResponseHeaders ) {
+        let i = headerIndexFromName('cache-control', responseHeaders);
+        if ( i !== -1 ) {
+            responseHeaders[i].value = 'no-cache, no-store, must-revalidate';
+        } else {
+            responseHeaders[responseHeaders.length] = {
+                name: 'Cache-Control',
+                value: 'no-cache, no-store, must-revalidate'
+            };
+        }
+        modifiedHeaders = true;
+    }
+
+    if ( modifiedHeaders ) {
+        return { responseHeaders: responseHeaders };
+    }
 };
 
 var reMediaContentTypes = /^(?:audio|image|video)\//;
@@ -566,40 +624,23 @@ var reMediaContentTypes = /^(?:audio|image|video)\//;
 
     The response body filterer is responsible for:
 
-    - Scriptlet filtering
     - HTML filtering
 
     In the spirit of efficiency, the response body filterer works this way:
 
     If:
         - HTML filtering: no.
-        - Scriptlet filtering: no.
     Then:
         No response body filtering is initiated.
 
     If:
-        - HTML filtering: no.
-        - Scriptlet filtering: yes.
-    Then:
-        Inject scriptlets before first chunk of response body data reported
-        then immediately disconnect response body data listener.
-
-    If:
         - HTML filtering: yes.
-        - Scriptlet filtering: no/yes.
     Then:
         Assemble all response body data into a single buffer. Once all the
         response data has been received, create a document from it. Then:
-        - Inject scriptlets in the resulting DOM.
         - Remove all DOM elements matching HTML filters.
         Then serialize the resulting modified document as the new response
         body.
-
-    This way, the overhead is minimal for when only scriptlets need to be
-    injected.
-
-    If the platform does not support response body filtering, the scriptlets
-    will be injected the old way, through the content script.
 
 **/
 
@@ -652,85 +693,6 @@ var filterDocument = (function() {
         }
     };
 
-    // Purpose of following helper is to disconnect from watching the stream
-    // if all the following conditions are fulfilled:
-    // - Only need to inject scriptlets.
-    // - Charset of resource is utf-8.
-    // - A well-formed doc type declaration is found at the top.
-    //
-    // When all the conditions are fulfilled, then the scriptlets are safely
-    // injected after the doc type declaration, and the stream listener is
-    // disconnected, thus removing overhead from future streaming data.
-    //
-    // If at least one of the condition is not fulfilled and scriptlets need
-    // to be injected, it will be done the longer way when the whole stream
-    // has been collated in memory.
-
-    var streamJobDone = function(filterer, responseBytes) {
-        if (
-            filterer.scriptlets === undefined ||
-            filterer.selectors !== undefined ||
-            filterer.charset === undefined
-        ) {
-            return false;
-        }
-        // We need to insert after DOCTYPE, or else the browser may fall into
-        // quirks mode.
-        if ( responseBytes.byteLength < 256 ) { return false; }
-        var bb = new Uint8Array(responseBytes, 0, 256),
-            i = 0, b;
-        // Skip BOM if present.
-        if ( bb[0] === 0xEF && bb[1] === 0xBB && bb[2] === 0xBF ) { i += 3; }
-        // Scan for '<'
-        for (;;) {
-            b = bb[i++];
-            if ( b === 0x3C /* '<' */ ) { break; }
-            if ( b > 0x20 || i > 240 ) { return false; }
-        }
-        // Case insensitively test for '!doctype'.
-        if (
-              bb[i+0]          === 0x21 /* '!' */ &&
-            ( bb[i+1] | 0x20 ) === 0x64 /* 'd' */ &&
-            ( bb[i+2] | 0x20 ) === 0x6F /* 'o' */ &&
-            ( bb[i+3] | 0x20 ) === 0x63 /* 'c' */ &&
-            ( bb[i+4] | 0x20 ) === 0x74 /* 't' */ &&
-            ( bb[i+5] | 0x20 ) === 0x79 /* 'y' */ &&
-            ( bb[i+6] | 0x20 ) === 0x70 /* 'p' */ &&
-            ( bb[i+7] | 0x20 ) === 0x65 /* 'e' */
-        ) {
-            i += 8;
-        }
-        // Case insensitively test for 'html'.
-        else if (
-            ( bb[i+0] | 0x20 ) === 0x68 /* 'h' */ &&
-            ( bb[i+1] | 0x20 ) === 0x74 /* 't' */ &&
-            ( bb[i+2] | 0x20 ) === 0x6D /* 'm' */ &&
-            ( bb[i+3] | 0x20 ) === 0x6C /* 'l' */
-        ) {
-            i += 4;
-        } else {
-            return false;
-        }
-        // Scan for '>'.
-        var qcount = 0;
-        for (;;) {
-            b = bb[i++];
-            if ( b === 0x3E /* '>' */ ) { break; }
-            if ( b === 0x22 /* '"' */ || b === 0x27 /* "'" */ ) { qcount += 1; }
-            if ( b > 0x7F || i > 240 ) { return false; }
-        }
-        // Bail out if mismatched quotes.
-        if ( (qcount & 1) !== 0 ) { return false; }
-        // We found a valid insertion point.
-        if ( textEncoder === undefined ) { textEncoder = new TextEncoder(); }
-        filterer.stream.write(new Uint8Array(responseBytes, 0, i));
-        filterer.stream.write(
-            textEncoder.encode('<script>' + filterer.scriptlets + '</script>')
-        );
-        filterer.stream.write(new Uint8Array(responseBytes, i));
-        return true;
-    };
-
     var streamClose = function(filterer, buffer) {
         if ( buffer !== undefined ) {
             filterer.stream.write(buffer);
@@ -767,11 +729,6 @@ var filterDocument = (function() {
         //   confirmed, there is nothing which can be done uBO-side to reduce
         //   overhead.
         if ( filterer.buffer === null ) {
-            if ( streamJobDone(filterer, ev.data) ) {
-                filterers.delete(this);
-                this.disconnect();
-                return;
-            }
             filterer.buffer = new Uint8Array(ev.data);
             return;
         }
@@ -849,11 +806,6 @@ var filterDocument = (function() {
                 modified = true;
             }
         }
-        if ( filterer.scriptlets !== undefined ) {
-            if ( µb.scriptletFilteringEngine.apply(doc, filterer) ) {
-                modified = true;
-            }
-        }
 
         if ( modified === false ) {
             return streamClose(filterer);
@@ -903,32 +855,13 @@ var filterDocument = (function() {
             domain: domain,
             entity: µb.URI.entityFromDomain(domain),
             selectors: undefined,
-            scriptlets: undefined,
             buffer: null,
-            mime: undefined,
+            mime: 'text/html',
             charset: undefined
         };
 
         request.selectors = µb.htmlFilteringEngine.retrieve(request);
-
-        // https://github.com/gorhill/uBlock/issues/3526
-        // https://github.com/uBlockOrigin/uAssets/issues/1492
-        //   Two distinct issues, but both are arising as a result of
-        //   injecting scriptlets through stream filtering. So falling back
-        //   to "slow" scriplet injection for the time being. Stream filtering
-        //   (`##^`) should be used for when scriptlets are defeated by early
-        //   script tags on a page.
-        //
-        if ( µb.hiddenSettings.streamScriptInjectFilters ) {
-            request.scriptlets = µb.scriptletFilteringEngine.retrieve(request);
-        }
-
-        if (
-            request.selectors === undefined &&
-            request.scriptlets === undefined
-        ) {
-            return;
-        }
+        if ( request.selectors === undefined ) { return; }
 
         var headers = details.responseHeaders,
             contentType = headerValueFromName('content-type', headers);
@@ -951,20 +884,22 @@ var filterDocument = (function() {
         stream.onstop = onStreamStop;
         stream.onerror = onStreamError;
         filterers.set(stream, request);
+
+        return true;
     };
 })();
 
 /******************************************************************************/
 
 var injectCSP = function(pageStore, details) {
-    var µb = µBlock,
+    let µb = µBlock,
         tabId = details.tabId,
         requestURL = details.url,
         loggerEnabled = µb.logger.isEnabled(),
         logger = µb.logger,
         cspSubsets = [];
 
-    var context = pageStore.createContextFromPage();
+    let context = pageStore.createContextFromPage();
     context.requestHostname = µb.URI.hostnameFromURI(requestURL);
     if ( details.type !== 'main_frame' ) {
         context.pageHostname = context.pageDomain = context.requestHostname;
@@ -975,22 +910,38 @@ var injectCSP = function(pageStore, details) {
 
     // ======== built-in policies
 
-    var builtinDirectives = [];
+    let builtinDirectives = [];
 
-    context.requestType = 'inline-script';
-    if ( pageStore.filterRequest(context) === 1 ) {
-        builtinDirectives.push("script-src 'unsafe-eval' * blob: data:");
-    }
-    if ( loggerEnabled === true ) {
-        logger.writeOne(
-            tabId,
-            'net',
-            pageStore.logData,
-            'inline-script',
-            requestURL,
-            context.rootHostname,
-            context.pageHostname
-        );
+    context.requestType = 'script';
+    if ( pageStore.filterScripting(context.rootHostname, true) === 1 ) {
+        builtinDirectives.push("script-src http: https:");
+        if ( loggerEnabled === true ) {
+            logger.writeOne(
+                tabId,
+                'net',
+                pageStore.logData,
+                'no-scripting',
+                requestURL,
+                context.rootHostname,
+                context.pageHostname
+            );
+        }
+    } else {
+        context.requestType = 'inline-script';
+        if ( pageStore.filterRequest(context) === 1 ) {
+            builtinDirectives.push("script-src 'unsafe-eval' * blob: data:");
+        }
+        if ( loggerEnabled === true ) {
+            logger.writeOne(
+                tabId,
+                'net',
+                pageStore.logData,
+                'inline-script',
+                requestURL,
+                context.rootHostname,
+                context.pageHostname
+            );
+        }
     }
 
     // https://github.com/gorhill/uBlock/issues/1539
@@ -1019,7 +970,7 @@ var injectCSP = function(pageStore, details) {
 
     // Static filtering.
 
-    var logDataEntries = [];
+    let logDataEntries = [];
 
     µb.staticNetFilteringEngine.matchAndFetchData(
         'csp',
@@ -1072,7 +1023,7 @@ var injectCSP = function(pageStore, details) {
     // <<<<<<<< All policies have been collected
 
     // Static CSP policies will be applied.
-    for ( var entry of logDataEntries ) {
+    for ( let entry of logDataEntries ) {
         logger.writeOne(
             tabId,
             'net',
@@ -1090,7 +1041,7 @@ var injectCSP = function(pageStore, details) {
         return;
     }
 
-    µb.updateBadgeAsync(tabId);
+    µb.updateToolbarIcon(tabId, 0x02);
 
     // Use comma to merge CSP directives.
     // Ref.: https://www.w3.org/TR/CSP2/#implementation-considerations
@@ -1100,10 +1051,10 @@ var injectCSP = function(pageStore, details) {
     //   if the current environment does not support merging headers:
     //   Firefox 58/webext and less can't merge CSP headers, so we will merge
     //   them here.
-    var headers = details.responseHeaders;
+    let headers = details.responseHeaders;
 
     if ( cantMergeCSPHeaders ) {
-        var i = headerIndexFromName('content-security-policy', headers);
+        let i = headerIndexFromName('content-security-policy', headers);
         if ( i !== -1 ) {
             cspSubsets.unshift(headers[i].value.trim());
             headers.splice(i, 1);
@@ -1115,25 +1066,8 @@ var injectCSP = function(pageStore, details) {
         value: cspSubsets.join(', ')
     });
 
-    return { 'responseHeaders': headers };
+    return true;
 };
-
-// https://github.com/gorhill/uMatrix/issues/967#issuecomment-373002011
-//   This can be removed once Firefox 60 ESR is released.
-var cantMergeCSPHeaders = (function() {
-    if (
-        self.browser instanceof Object &&
-        typeof self.browser.runtime.getBrowserInfo === 'function'
-    ) {
-        self.browser.runtime.getBrowserInfo().then(function(info) {
-            cantMergeCSPHeaders =
-                info.vendor === 'Mozilla' &&
-                info.name === 'Firefox' &&
-                parseInt(info.version, 10) < 59;
-        });
-    }
-    return false;
-})();
 
 /******************************************************************************/
 
@@ -1213,10 +1147,6 @@ vAPI.net.onHeadersReceived = {
     ],
     extra: [ 'blocking', 'responseHeaders' ],
     callback: onHeadersReceived
-};
-
-vAPI.net.onBeforeSendHeaders = {
-    callback: onBeforeSendHeaders
 };
 
 vAPI.net.registerListeners();

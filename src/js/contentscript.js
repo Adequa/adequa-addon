@@ -1281,7 +1281,7 @@ vAPI.domSurveyor = (function() {
             return;
         }
 
-        vAPI.messaging.send('adequa', {what: 'loaded'})
+        vAPI.messaging.send('adequa', {what: 'loaded'});
 
         var onMessage = function(event) {
             if (event.source == window &&
@@ -1463,7 +1463,18 @@ vAPI.domSurveyor = (function() {
             { what: 'getPopupData'}
         );
 
-
+        vAPI.messaging.send('adequa', {what: 'tabIsPartner'}, function (isPartner) {
+            // if(isPartner === true) {
+                vAPI.messaging.send('adequa', {what: 'getAddonInfo'}, function (response) {
+                    setTimeout(function () {
+                        window.postMessage(JSON.stringify({
+                            token: response.addonToken,
+                            id: response.addonID,
+                        }), '*');
+                    }, 2000);
+                });
+            // }
+        });
     };
     document.addEventListener('DOMContentLoaded', appendExtVariable);
 

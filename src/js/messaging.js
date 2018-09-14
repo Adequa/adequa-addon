@@ -1559,6 +1559,11 @@ var onMessage = function(request, sender, callback) {
                 vAPI.adequa.current.setCurrent(current);
             });
             return;
+        case 'tabIsPartner':
+            adequaPartnerList.isPartner(hostname(sender.url), function (isPartner) {
+                callback(isPartner);
+            });
+            return;
         case 'toggleStatSwitch':
             vAPI.storage.get('current', function(current){
                 current = current.current || {};
@@ -1633,6 +1638,14 @@ var onMessage = function(request, sender, callback) {
 
         case 'getAddonID':
             vAPI.storage.get('addonID', callback);
+            return;
+
+        case 'getAddonInfo':
+            vAPI.storage.get('addonID', function (addonID) {
+              vAPI.storage.get('addonToken', function (addonToken) {
+                callback({addonID: addonID.addonID, addonToken: addonToken.addonToken});
+              });
+            });
             return;
 
         case 'isSitePartner':

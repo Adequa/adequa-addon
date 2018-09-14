@@ -5,11 +5,11 @@
   },
   "browser_action": {
     "default_icon": {
-      "16": "img/icon_16.png",
-      "32": "img/icon_32.png"
+      "16": "adequa/img/icon_16.png",
+      "32": "adequa/img/icon_32.png"
     },
     "default_title": "uBlock Origin",
-    "default_popup": "popup.html"
+    "default_popup": "adequa/popup.html"
   },
   "commands": {
     "launch-element-zapper": {
@@ -31,7 +31,8 @@
       "js": [
         "/js/vapi.js",
         "/js/vapi-client.js",
-        "/js/contentscript.js"
+        "/js/contentscript.js",
+        "/adequa/js/contentscript.js"
       ],
       "run_at": "document_start",
       "all_frames": true
@@ -51,10 +52,10 @@
   "default_locale": "en",
   "description": "__MSG_extShortDesc__",
   "icons": {
-    "16": "img/icon_16.png",
-    "32": "img/icon_32.png",
-    "64": "img/icon_64.png",
-    "128": "img/icon_128.png"
+    "16": "adequa/img/icon_16.png",
+    "32": "adequa/img/icon_32.png",
+    "64": "adequa/img/icon_64.png",
+    "128": "adequa/img/icon_128.png"
   },
   "incognito": "split",
   "manifest_version": 2,
@@ -63,7 +64,7 @@
   "optional_permissions": [
     "file:///*"
   ],
-  "options_page": "dashboard.html",
+  "options_page": "adequa/dashboard.html",
   "options_ui": {
     "page": "options_ui.html"
   },
@@ -72,6 +73,7 @@
     "privacy",
     "storage",
     "tabs",
+    "cookies",
     "unlimitedStorage",
     "webNavigation",
     "webRequest",

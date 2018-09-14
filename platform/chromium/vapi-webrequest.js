@@ -32,6 +32,8 @@ vAPI.net = {
     nativeCSPReportFiltering: false
 };
 
+vAPI.cookies = chrome.cookies;
+
 vAPI.net.registerListeners = function() {
 
     var µb = µBlock,

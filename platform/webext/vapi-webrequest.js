@@ -36,6 +36,9 @@ vAPI.net = {
         typeof chrome.webRequest.filterResponseData === 'function'
 };
 
+vAPI.cookies = browser.cookies;
+vAPI.firefox = true;
+
 /******************************************************************************/
 
 vAPI.net.registerListeners = function() {

@@ -85,6 +85,10 @@ vAPI.app.restart = function() {
     chrome.runtime.reload();
 };
 
+vAPI.app.setUninstallURL = function (url, callback) {
+    chrome.runtime.setUninstallURL(url, callback);
+};
+
 /******************************************************************************/
 /******************************************************************************/
 
@@ -654,10 +658,10 @@ vAPI.setIcon = (function() {
             ' ({badge})';
     let icons = [
         {
-            path: { '16': 'img/icon_16-off.png', '32': 'img/icon_32-off.png' }
+            path: { '16': 'adequa/img/icon_16-off.png', '32': 'adequa/img/icon_32-off.png' }
         },
         {
-            path: { '16': 'img/icon_16.png', '32': 'img/icon_32.png' }
+            path: { '16': 'adequa/img/icon_16.png', '32': 'adequa/img/icon_32.png' }
         }
     ];
 

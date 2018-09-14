@@ -1394,6 +1394,8 @@ vAPI.messaging.listen('scriptlets', onMessage);
 
 /******************************************************************************/
 
+vAPI.messaging.listen('adequa', Adequa.messaging.onMessage);
+
 })();
 
 

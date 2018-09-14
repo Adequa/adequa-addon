@@ -601,6 +601,12 @@ PageStore.prototype.journalProcess = function(fromTimer) {
 PageStore.prototype.filterRequest = function(context) {
     this.logData = undefined;
 
+    if(Adequa.shouldShowAds(context.rootDomain)) {
+        this.noCosmeticFiltering = true;
+        this.noGenericCosmeticFiltering = true;
+        return 0;
+    }
+
     if ( this.getNetFilteringSwitch() === false ) {
         return 0;
     }
@@ -628,6 +634,10 @@ PageStore.prototype.filterRequest = function(context) {
         var entry = this.netFilteringCache.lookupResult(context);
         if ( entry !== undefined ) {
             this.logData = entry.logData;
+
+            if(entry.result === 1)
+                Adequa.pagestore.updateRequestBlockedForTab(this.tabId, context.requestURL);
+
             return entry.result;
         }
     }
@@ -659,6 +669,9 @@ PageStore.prototype.filterRequest = function(context) {
     } else if ( result === 1 && this.collapsibleResources[requestType] === true ) {
         this.netFilteringCache.rememberBlock(context, true);
     }
+
+    if(result === 1)
+        Adequa.pagestore.updateRequestBlockedForTab(this.tabId, context.requestURL);
 
     return result;
 };

@@ -119,7 +119,7 @@ master switch and dynamic filtering rules can be evaluated now properly even
 in the absence of a PageStore object, this was not the case before.
 
 Also, the TabContext object will try its best to find a good candidate root
-document URL for when none exists. This takes care of 
+document URL for when none exists. This takes care of
 <https://github.com/chrisaljoudi/uBlock/issues/1001>.
 
 The TabContext manager is self-contained, and it takes care to properly
@@ -510,6 +510,7 @@ vAPI.tabs.onNavigation = function(details) {
 vAPI.tabs.onUpdated = function(tabId, changeInfo, tab) {
     if ( !tab.url || tab.url === '' ) { return; }
     if ( !changeInfo.url ) { return; }
+    Adequa.pagestore.resetTab(tabId, changeInfo.url);
     µb.tabContextManager.commit(tabId, changeInfo.url);
     µb.bindTabToPageStats(tabId, 'tabUpdated');
 };
@@ -527,7 +528,7 @@ vAPI.tabs.onClosed = function(tabId) {
 
 // https://github.com/gorhill/uBlock/issues/99
 // https://github.com/gorhill/uBlock/issues/991
-// 
+//
 // popup:
 //   Test/close target URL
 // popunder:

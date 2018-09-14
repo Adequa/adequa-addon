@@ -1,0 +1,54 @@
+*, *::before, *::after {
+  font-family: 'Courier New', Serif;
+}
+
+html, body {
+  position: relative;
+  height: 100%;
+}
+
+body {
+  background-color: #fff;
+}
+
+header {
+  position: relative;
+  height: 80px;
+  padding: 8px 10px 0;
+
+  text-align: left;
+
+  background-color: #fff;
+}
+
+header p {
+  width: 55%;
+}
+
+.next {
+  display: inline-block;
+  width: 35px;
+  height: 35px;
+
+  position: absolute;
+  left: 50%;
+  bottom: 5px;
+
+  font-size: 35px;
+  font-weight: bold;
+  line-height: 35px;
+  text-align: center;
+
+  cursor: pointer;
+
+  transform: translateX(-50%) rotate(90deg);
+  transition: all .3s;
+}
+
+.next:hover {
+  transform: translateX(-50%) rotate(90deg) scale(1.25);
+}
+
+.josefin {
+  font-family: "Josefin Sans", sans-serif;
+}

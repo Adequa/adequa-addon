@@ -20,7 +20,7 @@ Adequa.messaging.onMessage = function(request, sender, callback) {
             });
             return;
         case 'fetchAdsViewed':
-            callback((Adequa.current.tabs[request.tabId] || {}).nbAdsAllowed);
+            callback((Adequa.current.tabs[request.tabId] || {}).nbAdsViewed);
             return;
         case 'fetchTotalNumberAdsViewed':
             callback(Adequa.storage.db.rowCount('ad_prints'));
@@ -53,7 +53,6 @@ Adequa.messaging.onMessage = function(request, sender, callback) {
             callback(Adequa.current.statSwitchState);
             return;
         case 'fetchCurrentStats':
-            console.log(request)
             callback(Adequa.current.tabs[request.tabId] || {});
             return;
         case 'getCurrent':
@@ -96,10 +95,10 @@ Adequa.messaging.onMessage = function(request, sender, callback) {
             return;
         case 'getQuerySelectors':
             const hostname = Adequa.hostname(request.url);
-            callback(Adequa.current.partnerList[hostname] || []);
+            callback((Adequa.current.partnerList[hostname] || []).allowed);
             return;
         case 'setAdsViewed':
-            console.log(request.nbAdsViewed);
+            Adequa.pagestore.updateAdsViewedForTab(tabId, request.nbAdsViewed);
             return;
         default:
             break;

@@ -510,7 +510,6 @@ vAPI.tabs.onNavigation = function(details) {
 vAPI.tabs.onUpdated = function(tabId, changeInfo, tab) {
     if ( !tab.url || tab.url === '' ) { return; }
     if ( !changeInfo.url ) { return; }
-    Adequa.pagestore.resetTab(tabId, changeInfo.url);
     µb.tabContextManager.commit(tabId, changeInfo.url);
     µb.bindTabToPageStats(tabId, 'tabUpdated');
 };

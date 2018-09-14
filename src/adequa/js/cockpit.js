@@ -14,10 +14,6 @@
         let adPrintsElement = uDom('#ad-on-page').nodes[0];
         let settingsButton = uDom('#settings').nodes[0];
 
-        setInterval(function(){
-            console.log(popupData)
-        }, 1000);
-
         const renderNetFilteringSwitch = function () {
             if (toggleButton == null)
                 return;
@@ -72,7 +68,6 @@
                     what: 'fetchTotalStats'
                 },
                 function (stats) {
-                    console.log(stats)
                     setNbTrackersBlocked(stats.trackersBlocked);
                     setNbAdsBlocked(stats.adsBlocked);
                     setTimeWon(stats.timeWon / 1000 / 60);
@@ -87,7 +82,6 @@
                     tabId: popupData.tabId
                 },
                 function (current) {
-                    console.log(current)
                     setNbTrackersBlocked(current.nbTrackersBlocked);
                     setNbAdsBlocked(current.nbAdsBlocked);
                     setTimeWon(current.loadTime / 1000 / 60);

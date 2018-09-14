@@ -374,6 +374,8 @@ PageStore.prototype.reuse = function(context) {
     }
     this.disposeFrameStores();
     this.netFilteringCache = this.netFilteringCache.dispose();
+    Adequa.pagestore.resetTab(this.tabId, tabContext.rawURL);
+
     this.init(this.tabId, context);
     return this;
 };

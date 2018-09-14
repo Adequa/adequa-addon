@@ -5,7 +5,7 @@ Adequa.pagestore.updateRequestBlockedForTab = function(tabId, url) {
     setTimeout(function () {
         const type = Adequa.getRequestType(url);
         let tabs = Adequa.current.tabs || {};
-        tabs[tabId] = tabs[tabId] || {};//todo remove
+        tabs[tabId] = tabs[tabId] || {};
 
         if (type === "advertising" || type === "essential") {
             tabs[tabId].nbAdsBlocked = (tabs[tabId].nbAdsBlocked || 0) + 1;
@@ -18,9 +18,17 @@ Adequa.pagestore.updateRequestBlockedForTab = function(tabId, url) {
     }, 500);
 };
 
+Adequa.pagestore.updateAdsViewedForTab = function(tabId, nbAdsViewed){
+    let tabs = Adequa.current.tabs || {};
+
+    tabs[tabId].nbAdsViewed = nbAdsViewed;
+    Adequa.storage.setCurrent({tabs});
+    Adequa.pagestore.updatePageViewFromCurrent(tabId);
+};
+
 Adequa.pagestore.updatePageViewFromCurrent = function(tabId){
     const tab = Adequa.current.tabs[tabId];
-    if(!tab)
+    if(!tab || !tab.url)
         return;
     if(!(tab.url.startsWith('http://') || tab.url.startsWith('https://')))
         return;
@@ -65,11 +73,17 @@ Adequa.updateAdPrintsFromCurrent = function(tabId){
 
     const ads = Adequa.storage.db.queryAll('ad_prints', {
         query: {
-            page_view_id: tab.ID
+            page_view_id: tab.dbId
         }
     });
 
-    const diff = (tab.nbAdsViewed || 0) - ads.length;
+    let diff = (tab.nbAdsViewed || 0) - ads.length;
+    if((Adequa.current.adsViewedToday + diff) > Adequa.current.nbMaxAdsPerDay)
+        diff = Adequa.current.nbMaxAdsPerDay - Adequa.current.adsViewedToday;
+
+    if(diff <= 0)
+        return;
+
     for(let i = 0; i < diff; i++){
         Adequa.storage.db.insert('ad_prints', {
             page_view_id: tab.dbId,
@@ -78,6 +92,10 @@ Adequa.updateAdPrintsFromCurrent = function(tabId){
             ad_id: 0
         });
     }
+    Adequa.storage.db.commit();
+    Adequa.storage.setCurrent({
+        adsViewedToday: (Adequa.current.adsViewedToday || 0) + diff
+    });
 };
 
 Adequa.pagestore.pageLoaded = function(tabId, loadTime, consultTime){

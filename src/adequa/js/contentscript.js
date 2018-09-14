@@ -36,12 +36,17 @@ const countAds = function () {
         what: 'getQuerySelectors',
         url: location.href
     }, function(querySelectors){
+        if(!querySelectors)
+            return;
         for (let selector of querySelectors) {
             let elements = document.querySelectorAll(selector);
             if (elements.length !== 0) {
                 elements.forEach(function (elem) {
                     if(elem.hasAttribute('data-adequa'))
                         return;
+
+                    if(window.getComputedStyle(elem, null).display === 'none')
+                        return false;
                     if (elem.clientHeight >= 45 && isElementInViewport(elem)) {
                         const iframe = elem.querySelector('iframe');
                         if(iframe){
@@ -60,7 +65,6 @@ const countAds = function () {
         }
 
         const ads = document.querySelectorAll('[data-adequa]').length || 0;
-        console.log(ads)
         vAPI.messaging.send('adequa', {
             what: 'setAdsViewed',
             nbAdsViewed: ads
@@ -79,17 +83,15 @@ const onScroll = function() {
 
 const onScrollFinished = function() {
     countAds();
-    setTimeout(countAds, 1000);
-    setTimeout(countAds, 2000);
-    setTimeout(countAds, 5000);
+    setTimeout(countAds, 4000);
 };
 
 const domWatcherInterface = {
     onDOMCreated: function() {
-        countAds();
+        setTimeout(countAds, 2000);
     },
     onDOMChanged: function() {
-        countAds();
+        setTimeout(countAds, 2000);
     }
 };
 

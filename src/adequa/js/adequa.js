@@ -34,6 +34,7 @@ Adequa.hostname = function (url) {
 Adequa.isPartner = function (url) {
     let partner = false;
     const hostname = Adequa.hostname(url);
+
     for (let item in Adequa.current.partnerList)
         if (item === hostname)
             partner = true;
@@ -41,12 +42,12 @@ Adequa.isPartner = function (url) {
 };
 
 Adequa.shouldShowAds = function (url) {
-    return Adequa.isPartner(url);
+    return Adequa.isPartner(url) && ((Adequa.current.adsViewedToday || 0) < (Adequa.current.nbMaxAdsPerDay || 25));
 };
 
 Adequa.getRequestType = function (url) {
     const types = Adequa.current.requestsType;
-    const domain = Adequa.hostname(url).split('.').slice(-2).join('.');
+    const domain = Adequa.hostname(url);
 
     const subType = types.domains[domain];
 

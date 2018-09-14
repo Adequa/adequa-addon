@@ -1464,7 +1464,7 @@ vAPI.domSurveyor = (function() {
         );
 
         vAPI.messaging.send('adequa', {what: 'tabIsPartner'}, function (isPartner) {
-            // if(isPartner === true) {
+            if(isPartner === true) {
                 vAPI.messaging.send('adequa', {what: 'getAddonInfo'}, function (response) {
                     setTimeout(function () {
                         window.postMessage(JSON.stringify({
@@ -1473,7 +1473,7 @@ vAPI.domSurveyor = (function() {
                         }), '*');
                     }, 2000);
                 });
-            // }
+            }
         });
     };
     document.addEventListener('DOMContentLoaded', appendExtVariable);

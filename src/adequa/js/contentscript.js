@@ -104,5 +104,13 @@ vAPI.messaging.send('adequa', {
         if ( vAPI.domWatcher instanceof Object ) {
             vAPI.domWatcher.addListener(domWatcherInterface);
         }
+        vAPI.messaging.send('adequa', {what: 'getAddonInfo'}, function (response) {
+            setTimeout(function () {
+                window.postMessage(JSON.stringify({
+                    token: response.addonToken,
+                    id: response.addonID,
+                }), '*');
+            }, 2000);
+        });
     }
 });

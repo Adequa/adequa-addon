@@ -1,6 +1,6 @@
 'use strict';
 
-const env = 'dev';
+const env = 'prod';
 const uri = env.match('dev') ? 'http://localhost:3000/api/' : 'https://admin-equa.com/api/';
 
 const ajax = function (method, url, body = null) {

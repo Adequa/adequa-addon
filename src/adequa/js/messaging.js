@@ -91,7 +91,7 @@ Adequa.messaging.onMessage = function(request, sender, callback) {
             callback();
             return;
         case 'isSitePartner':
-            callback(Adequa.isPartner(request.url));
+            callback(Adequa.isPartner(request.url || sender.url));
             return;
         case 'getQuerySelectors':
             const hostname = Adequa.hostname(request.url);
@@ -99,6 +99,12 @@ Adequa.messaging.onMessage = function(request, sender, callback) {
             return;
         case 'setAdsViewed':
             Adequa.pagestore.updateAdsViewedForTab(tabId, request.nbAdsViewed);
+            return;
+        case 'getAddonInfo':
+            const addonID = Adequa.current.addonID;
+            const addonToken = Adequa.current.addonToken;
+
+            callback({addonID, addonToken});
             return;
         default:
             break;

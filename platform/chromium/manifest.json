@@ -1,5 +1,5 @@
 {
-  "author": "All uBlock Origin contributors",
+  "author": "__MSG_authorName__",
   "background": {
     "page": "background.html"
   },
@@ -8,7 +8,7 @@
       "16": "adequa/img/icon_16.png",
       "32": "adequa/img/icon_32.png"
     },
-    "default_title": "uBlock Origin",
+    "default_title": "__MSG_extName__",
     "default_popup": "adequa/popup.html"
   },
   "commands": {
@@ -60,7 +60,7 @@
   "incognito": "split",
   "manifest_version": 2,
   "minimum_chrome_version": "51.0",
-  "name": "uBlock Origin",
+  "name": "__MSG_extName__",
   "optional_permissions": [
     "file:///*"
   ],
@@ -80,11 +80,11 @@
     "webRequestBlocking",
     "<all_urls>"
   ],
-  "short_name": "uBlock₀",
+  "short_name": "__MSG_extName__",
   "storage": {
     "managed_schema": "managed_storage.json"
   },
-  "version": "1.15.11.0",
+  "version": "0.1.2",
   "web_accessible_resources": [
     "/web_accessible_resources/*"
   ]

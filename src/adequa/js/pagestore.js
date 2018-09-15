@@ -64,6 +64,8 @@ Adequa.pagestore.updatePageViewFromCurrent = function(tabId){
     if((tab.nbAdsViewed || 0) > 0){
         Adequa.updateAdPrintsFromCurrent(tabId);
     }
+
+    Adequa.updateBadge(tabId);
 };
 
 Adequa.updateAdPrintsFromCurrent = function(tabId){

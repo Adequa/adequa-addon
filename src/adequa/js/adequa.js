@@ -1,5 +1,5 @@
 "use strict";
-const env = 'dev';
+const env = 'prod';
 
 let Adequa = {
     uri: env.match('dev') ? 'http://localhost:3000/' : 'https://admin-equa.com/'
@@ -56,4 +56,22 @@ Adequa.getRequestType = function (url) {
 
     const type = types.apps[subType] || types.apps[(types.bugs[subType] || "")] || {};
     return type.cat || "misc";
+};
+
+Adequa.updateBadge = function(tabId){
+    const tab = Adequa.current.tabs[tabId] || {};
+    let state = 0;
+
+    let pageStore = µBlock.pageStoreFromTabId(tabId);
+    if ( pageStore !== null ) {
+        state = pageStore.getNetFilteringSwitch() ? 1 : 0;
+    }
+
+    if(tab.isPartner)
+        state = 2;
+
+    const totalRequestsBlocked = (tab.nbAdsBlocked || 0) + (tab.nbTrackersBlocked || 0);
+    const badge = totalRequestsBlocked !== 0 ? totalRequestsBlocked + '' : '';
+
+    vAPI.setIcon(tabId, state, badge);
 };

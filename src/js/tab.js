@@ -927,6 +927,7 @@ vAPI.tabs.registerListeners();
     let tabIdToDetails = new Map();
 
     let updateBadge = function(tabId) {
+        return;
         let parts = tabIdToDetails.get(tabId);
         tabIdToDetails.delete(tabId);
 

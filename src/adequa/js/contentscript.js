@@ -1,4 +1,5 @@
 "use strict";
+const domFilterer = new vAPI.DOMFilterer();
 
 const checkIfLoaded = function(){
     if(window.performance.getEntriesByType('navigation')[0].duration !== 0) {
@@ -27,8 +28,10 @@ const isElementInViewport = function(elem) {
 };
 
 const addAd = function(element){
-    if(!element.hasAttribute('data-adequa'))
-        element.setAttribute('data-adequa', '');
+    if(element.hasAttribute('data-adequa'))
+        return;
+
+    element.setAttribute('data-adequa', '');
 };
 
 const countAds = function () {
@@ -38,7 +41,8 @@ const countAds = function () {
     }, function(querySelectors){
         if(!querySelectors)
             return;
-        for (let selector of querySelectors) {
+        querySelectors.allowed.push('.adequa-ad');
+        for (let selector of querySelectors.allowed) {
             let elements = document.querySelectorAll(selector);
             if (elements.length !== 0) {
                 elements.forEach(function (elem) {
@@ -64,10 +68,22 @@ const countAds = function () {
             }
         }
 
-        const ads = document.querySelectorAll('[data-adequa]').length || 0;
+        const ads = document.querySelectorAll('[data-adequa]');
+        let partnerAds = [];
+        for(let element of ads){
+            if(!element.classList.contains('adequa-ad'))
+                continue;
+            const ins = element.querySelector('ins');
+            if(!ins)
+                continue;
+
+            partnerAds.push({id: ins.getAttribute('data-revive-id'), passion: ins.getAttribute('data-revive-themes')});
+        }
+
         vAPI.messaging.send('adequa', {
             what: 'setAdsViewed',
-            nbAdsViewed: ads
+            nbAdsViewed: ads.length || 0,
+            partnerAds
         });
     });
 };
@@ -86,6 +102,54 @@ const onScrollFinished = function() {
     setTimeout(countAds, 4000);
 };
 
+const getBlockedSelectors = function(cfeDetails, callback) {
+    vAPI.messaging.send('adequa', {
+        what: 'getQuerySelectors',
+        url: location.href
+    }, function(querySelectors){
+        let selectors = [];
+        let allowed = (querySelectors.allowed || []).concat(['.AD-Rotate', '.adequa-ad']);
+        for(let list of [cfeDetails.declarativeFilters, cfeDetails.highGenericHideSimple, cfeDetails.highGenericHideComplex, cfeDetails.injectedHideFilters, querySelectors.blocked]) {
+            let allFilters = [];
+            let newSelectors = [];
+            if(list.indexOf(',') !== -1) {
+                allFilters = list.split(',');
+            }
+            else {
+                allFilters = list;
+            }
+            for (let filter of allFilters || [])
+                if (allowed.indexOf(filter) === -1)
+                    newSelectors.push(filter);
+
+            selectors.push(newSelectors.join(','));
+        }
+        callback(selectors);
+    });
+};
+
+const removeUnneededElements = function () {
+    vAPI.messaging.send(
+        'contentscript',
+        {
+            what: 'retrieveContentScriptParameters',
+            url: window.location.href,
+            isRootFrame: window === window.top,
+            charset: document.characterSet
+        },
+        function(response){
+            const cfeDetails = response && response.specificCosmeticFilters;
+
+            getBlockedSelectors(cfeDetails, function(selectors){
+                domFilterer.addCSSRule(
+                    selectors,
+                    'display:none!important;'
+                );
+            });
+        }
+    );
+};
+
 const domWatcherInterface = {
     onDOMCreated: function() {
         setTimeout(countAds, 2000);
@@ -93,6 +157,20 @@ const domWatcherInterface = {
     onDOMChanged: function() {
         setTimeout(countAds, 2000);
     }
+};
+
+const injectCss = function(){
+    vAPI.messaging.send('adequa', {
+        what: 'getQuerySelectors',
+        url: location.href
+    }, function(querySelectors){
+        for(let selector in querySelectors.css){
+            domFilterer.addCSSRule(
+                selector,
+                querySelectors.css[selector]
+            );
+        }
+    });
 };
 
 vAPI.messaging.send('adequa', {
@@ -104,6 +182,10 @@ vAPI.messaging.send('adequa', {
         if ( vAPI.domWatcher instanceof Object ) {
             vAPI.domWatcher.addListener(domWatcherInterface);
         }
+
+        removeUnneededElements();
+        injectCss();
+
         vAPI.messaging.send('adequa', {what: 'getAddonInfo'}, function (response) {
             setTimeout(function () {
                 window.postMessage(JSON.stringify({
@@ -114,3 +196,15 @@ vAPI.messaging.send('adequa', {
         });
     }
 });
+
+const onMessage = function (event) {
+    if (event.source === window &&
+        event.data &&
+        event.data.direction === "contentScript") {
+        window.postMessage({
+            direction: "hasAdequa",
+            message: true
+        }, "*");
+    }
+};
+window.addEventListener("message", onMessage);

@@ -15,6 +15,7 @@ fi
 rm -rf $DES
 mkdir $DES
 cp    ./assets/assets.json                                       $DES/
+cp -R ./assets/adequa                                            $DES/
 
 mkdir $DES/thirdparties
 cp -R ../uAssets/thirdparties/easylist-downloads.adblockplus.org $DES/thirdparties/

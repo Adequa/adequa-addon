@@ -18,12 +18,25 @@ Adequa.pagestore.updateRequestBlockedForTab = function(tabId, url) {
     }, 500);
 };
 
-Adequa.pagestore.updateAdsViewedForTab = function(tabId, nbAdsViewed){
+Adequa.pagestore.updateAdsViewedForTab = function(tabId, nbAdsViewed, partnerAds){
     let tabs = Adequa.current.tabs || {};
 
+    const totalNbAdsViewed = ((Adequa.current.totalNbAdsViewed || 0) + (nbAdsViewed - (tabs[tabId].nbAdsViewed || 0))) || 0;
+    let diff = (nbAdsViewed - (tabs[tabId].nbAdsViewed || 0)) || 0;
+
+    if(diff < 0)
+        diff = 0;
+
+    if(((Adequa.current.adsViewedToday || 0) + diff) > Adequa.current.nbMaxAdsPerDay)
+        diff = Adequa.current.nbMaxAdsPerDay - (Adequa.current.adsViewedToday || 0);
+
+    Adequa.storage.setCurrent({
+        adsViewedToday: (Adequa.current.adsViewedToday || 0) + diff
+    });
     tabs[tabId].nbAdsViewed = nbAdsViewed;
-    Adequa.storage.setCurrent({tabs});
-    Adequa.pagestore.updatePageViewFromCurrent(tabId);
+
+    Adequa.storage.setCurrent({tabs, totalNbAdsViewed});
+    Adequa.pagestore.updateAdPrintsFromCurrent(tabId, partnerAds);
 };
 
 Adequa.pagestore.updatePageViewFromCurrent = function(tabId){
@@ -61,43 +74,30 @@ Adequa.pagestore.updatePageViewFromCurrent = function(tabId){
         });
         Adequa.storage.db.commit();
     }
-    if((tab.nbAdsViewed || 0) > 0){
-        Adequa.updateAdPrintsFromCurrent(tabId);
-    }
-
     Adequa.updateBadge(tabId);
 };
 
-Adequa.updateAdPrintsFromCurrent = function(tabId){
+Adequa.pagestore.updateAdPrintsFromCurrent = function(tabId, partnerAds){
     const tab = Adequa.current.tabs[tabId];
     if(!tab)
         return;
 
-    const ads = Adequa.storage.db.queryAll('ad_prints', {
-        query: {
-            page_view_id: tab.dbId
-        }
-    });
-
-    let diff = (tab.nbAdsViewed || 0) - ads.length;
-    if((Adequa.current.adsViewedToday + diff) > Adequa.current.nbMaxAdsPerDay)
-        diff = Adequa.current.nbMaxAdsPerDay - Adequa.current.adsViewedToday;
-
-    if(diff <= 0)
+    if(!partnerAds)
         return;
 
-    for(let i = 0; i < diff; i++){
+    Adequa.storage.db.deleteRows('ad_prints', {
+            page_view_id: tab.dbId,
+            viewed_at: tab.consultTime,
+        });
+
+    for(let ad of partnerAds){
         Adequa.storage.db.insert('ad_prints', {
             page_view_id: tab.dbId,
-            passion: 'passion',
+            passion: ad.passion,
             viewed_at: tab.consultTime,
-            ad_id: 0
+            ad_id: ad.id
         });
     }
-    Adequa.storage.db.commit();
-    Adequa.storage.setCurrent({
-        adsViewedToday: (Adequa.current.adsViewedToday || 0) + diff
-    });
 };
 
 Adequa.pagestore.pageLoaded = function(tabId, loadTime, consultTime){

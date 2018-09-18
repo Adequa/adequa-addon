@@ -23,7 +23,7 @@ Adequa.messaging.onMessage = function(request, sender, callback) {
             callback((Adequa.current.tabs[request.tabId] || {}).nbAdsViewed);
             return;
         case 'fetchTotalNumberAdsViewed':
-            callback(Adequa.storage.db.rowCount('ad_prints'));
+            callback(Adequa.current.totalNbAdsViewed || 0);
             return;
         case 'fetchAdsViewedStats':
             const viewedToday = Adequa.current.adsViewedToday;
@@ -94,11 +94,11 @@ Adequa.messaging.onMessage = function(request, sender, callback) {
             callback(Adequa.isPartner(request.url || sender.url));
             return;
         case 'getQuerySelectors':
-            const hostname = Adequa.hostname(request.url);
-            callback((Adequa.current.partnerList[hostname] || []).allowed);
+            const hostname = Adequa.hostname(request.url || sender.url);
+            callback((Adequa.current.partnerList[hostname] || []));
             return;
         case 'setAdsViewed':
-            Adequa.pagestore.updateAdsViewedForTab(tabId, request.nbAdsViewed);
+            Adequa.pagestore.updateAdsViewedForTab(tabId, request.nbAdsViewed, request.partnerAds);
             return;
         case 'getAddonInfo':
             const addonID = Adequa.current.addonID;

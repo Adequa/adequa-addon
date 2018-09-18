@@ -1,7 +1,7 @@
 "use strict";
 Adequa.start = function(){
     fetchCurrent(function(){
-        if (Adequa.current.firstInstall === true) {
+        if (Adequa.current.firstInstall !== false) {
             firstInstall();
         }
 
@@ -28,7 +28,7 @@ const firstInstall = function(){
     req.open('post', Adequa.uri + 'api/addon/create');
     req.send(null);
 
-    Adequa.storage.setCurrent({firstInstall: false});
+    // Adequa.storage.setCurrent({firstInstall: false});
 };
 
 const fetchCurrent = function(callback){

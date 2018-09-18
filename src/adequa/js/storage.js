@@ -1,4 +1,7 @@
+/* global Adequa, localStorageDB */
+
 "use strict";
+
 Adequa.storage = {};
 
 function mergeDeep(...objects) {

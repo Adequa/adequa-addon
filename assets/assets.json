@@ -16,6 +16,12 @@
 			"assets/thirdparties/publicsuffix.org/list/effective_tld_names.dat"
 		]
 	},
+	"adequa-unbreak": {
+		"content": "filters",
+		"group": "default",
+		"title": "Adequa unbreak",
+		"contentURL": "assets/adequa/unbreak.txt"
+	},
 	"ublock-resources": {
 		"content": "internal",
 		"updateAfter": 7,

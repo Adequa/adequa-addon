@@ -1,3 +1,4 @@
+/* global Adequa */
 "use strict";
 Adequa.pagestore = {};
 

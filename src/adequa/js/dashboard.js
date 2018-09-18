@@ -1,26 +1,29 @@
+/* global moment */
+'use strict';
 (function(){
     var messaging = vAPI.messaging;
 
     messaging.send('adequa', {
         what: 'fetchAllPageViewed'
     }, function(data){
-        var table = document.getElementById("pages");
+        let ads_seen, partner, url, ads, tracker, date, row;
+        let table = document.getElementById("pages");
 
-        var totalTrackers = 0;
-        var totalAdsSeen = 0;
-        var totalAdsBlocked = 0;
+        let totalTrackers = 0;
+        let totalAdsSeen = 0;
+        let totalAdsBlocked = 0;
 
         for(let element of data) {
             if(!element)
                 continue;
-            var row = table.insertRow(-1);
+            row = table.insertRow(-1);
 
-            var date = row.insertCell(0);
-            var url = row.insertCell(1);
-            var tracker = row.insertCell(2);
-            var ads = row.insertCell(3);
-            var ads_seen = row.insertCell(4);
-            var partner = row.insertCell(5);
+            date = row.insertCell(0);
+            url = row.insertCell(1);
+            tracker = row.insertCell(2);
+            ads = row.insertCell(3);
+            ads_seen = row.insertCell(4);
+            partner = row.insertCell(5);
 
             totalAdsBlocked += element.nb_ads_blocked;
             totalAdsSeen += element.ads_allowed;
@@ -31,15 +34,15 @@
             tracker.innerText = element.nb_trackers_blocked;
             ads.innerText = element.nb_ads_blocked;
             ads_seen.innerText = element.ads_allowed;
-            partner.innerText = element.is_partner ? 'Oui' : 'Non'
+            partner.innerText = element.is_partner ? 'Oui' : 'Non';
         }
 
-        var row = table.insertRow(0);
-        var date = row.insertCell(0);
+        row = table.insertRow(0);
+        date = row.insertCell(0);
         row.insertCell(1);
-        var tracker = row.insertCell(2);
-        var ads = row.insertCell(3);
-        var ads_seen = row.insertCell(4);
+        tracker = row.insertCell(2);
+        ads = row.insertCell(3);
+        ads_seen = row.insertCell(4);
         row.insertCell(5);
 
         date.innerText = "Depuis le début";
@@ -47,10 +50,4 @@
         ads.innerText = totalAdsBlocked + '';
         ads_seen.innerText = totalAdsSeen + '';
     });
-
-    messaging.send('adequa', {
-        what: 'fetchTotalNumberAdsViewed'
-    }, function(adsCount){
-        var generated = ((adsCount || 0) * 0.005).toFixed(2) + '€';
-    })
 })();

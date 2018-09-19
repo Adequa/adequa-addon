@@ -1,5 +1,10 @@
 /* global Adequa */
 "use strict";
+if(!Adequa.current)
+    Adequa.current = {};
+if(!Adequa.current.tabs)
+    Adequa.current.tabs = {};
+
 Adequa.start = function(){
     fetchCurrent(function(){
         if (Adequa.current.firstInstall !== false) {
@@ -69,4 +74,5 @@ const setTimer = function () {
     }, 15000);
 
     setInterval(resetIfDayChanged, 1000 * 60 * 60);
+    setInterval(Adequa.resources.fetchAll, 1000 * 60 * 30);
 };

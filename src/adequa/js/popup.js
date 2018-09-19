@@ -3,12 +3,14 @@
 'use strict';
 
 let changeScreen = function (screen, onLoadCallback) {
-    onLoadCallback = onLoadCallback || function () {};
+    if(typeof onLoadCallback !== "function")
+        onLoadCallback = function () {};
 
     let iframe = uDom('iframe');
 
     iframe.on('load', function () {
-        onLoadCallback(this.contentWindow.document);
+        if(typeof onLoadCallback === "function")
+            onLoadCallback(this.contentWindow.document);
         onLoadCallback = null;
     });
 

@@ -1,7 +1,8 @@
 'use strict';
 
 (function () {
-    const uri = Adequa.uri + 'api/';
+    const env = 'prod';
+    const uri = env.match('dev') ? 'http://localhost:3000/api/' : 'https://admin-equa.com/api/';
 
     let nbMaxAdsPerDay, addon_id, timeout = -1;
 
@@ -25,7 +26,8 @@
 
     let onThemeSelected = function(){
         //Retrieve every inputs
-        let inputs = Array.from(document.getElementsByTagName('input'));
+        const chooseThemes = document.getElementById('chose-theme');
+        let inputs = Array.from(chooseThemes.getElementsByTagName('input'));
 
         let inputsChecked = inputs.filter(function (input) {
             return input.type.toLowerCase() === 'checkbox' && input.checked === true;
@@ -47,7 +49,7 @@
             elem.style.fontWeight = 'bold';
             elem.style.textAlign = 'center';
             elem.style.width = '100%';
-            document.body.insertBefore(elem, document.getElementById('finish'));
+            document.getElementById('themes').insertAdjacentElement("afterend", elem);
 
             setTimeout(function () {
                 document.body.removeChild(elem);
@@ -65,9 +67,10 @@
     };
 
     let showChoiceScreen = function (passions) {
-        let requestThemes = function (document) {
+        let requestThemes = function () {
             ajax('get', 'themes')
                 .then(function (data) {
+                    console.log(data)
                     let themes = JSON.parse(data.responseText);
                     let themesNode = document.getElementById('themes');
 
@@ -117,7 +120,7 @@
                 });
         };
 
-        requestThemes(document);
+        requestThemes();
     };
 
 
@@ -137,6 +140,7 @@
                 clearTimeout(timeout);
 
             timeout = setTimeout(function(){
+                console.log(nbMaxAdsPerDay)
                 if (addon_id) {
                     vAPI.messaging.send('adequa', {
                         what: 'saveNbMaxAdsPerDay',
@@ -166,8 +170,7 @@
             vAPI.messaging.send('adequa', {
                 what: 'getAddonID'
             }, function(result){
-                addon_id = result.addonID;
-
+                addon_id = result;
                 showChoiceNbAdsScreen();
                 showChoiceScreen(passions);
             });
@@ -179,8 +182,4 @@
 
         ajax('post', 'store/themes', data);
     };
-
-    document.getElementById('finish').addEventListener('click', function () {
-        location.href = 'cockpit.html'
-    });
 })();

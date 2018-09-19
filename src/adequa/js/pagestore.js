@@ -37,6 +37,7 @@ Adequa.pagestore.updateAdsViewedForTab = function(tabId, nbAdsViewed, partnerAds
     tabs[tabId].nbAdsViewed = nbAdsViewed;
 
     Adequa.storage.setCurrent({tabs, totalNbAdsViewed});
+    Adequa.pagestore.updatePageViewFromCurrent(tabId);
     Adequa.pagestore.updateAdPrintsFromCurrent(tabId, partnerAds);
 };
 
@@ -52,7 +53,8 @@ Adequa.pagestore.updatePageViewFromCurrent = function(tabId){
             url: tab.url || '',
             consulted_at: tab.consultTime || 0,
             nb_trackers_blocked: tab.nbTrackersBlocked || 0,
-            nb_ads_blocked: tab.nb_ads_blocked || 0,
+            nb_ads_blocked: tab.nbAdsBlocked || 0,
+            nb_ads_viewed: tab.nbAdsViewed || 0,
             is_partner: tab.isPartner || false,
             load_time: tab.loadTime || 0
         });
@@ -69,6 +71,7 @@ Adequa.pagestore.updatePageViewFromCurrent = function(tabId){
             row.consulted_at = tab.consultTime || 0;
             row.nb_trackers_blocked = tab.nbTrackersBlocked || 0;
             row.nb_ads_blocked = tab.nbAdsBlocked || 0;
+            row.nb_ads_viewed = tab.nbAdsViewed || 0;
             row.is_partner = tab.isPartner || false;
             row.load_time = tab.loadTime || 0;
             return row;
@@ -103,6 +106,7 @@ Adequa.pagestore.updateAdPrintsFromCurrent = function(tabId, partnerAds){
 
 Adequa.pagestore.pageLoaded = function(tabId, loadTime, consultTime){
     let tabs = Adequa.current.tabs || {};
+    tabs[tabId] = tabs[tabId] || {};
     tabs[tabId].loadTime = loadTime;
     tabs[tabId].consultTime = consultTime;
 

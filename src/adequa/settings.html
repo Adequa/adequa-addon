@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Adequa - Settings</title>
+    <link rel="stylesheet" href="css/settings.css">
+</head>
+<body>
+<main>
+    <div id="chose-theme">
+        <h2 class="bold">TH&Egrave;MES</h2>
+        <div>
+            <ul id="themes">
+                <li>
+                    <p style="text-align: center;">Loading ...</p>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div id="chose-adsperday">
+        <h2 class="bold">NOMBRE DE PUBS: <span id="nbAdsPerDay">25</span></h2>
+        <div class="range-container">
+            <input type="range" min="15" max="60" step="1" value="25" id="range">
+            <div>
+                <p>60</p>
+                <p id="range-min">15</p>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script src="../js/vapi.js"></script>
+<script src="../js/vapi-common.js"></script>
+<script src="../js/vapi-client.js"></script>
+<script src="js/settings.js"></script>
+</body>
+</html>

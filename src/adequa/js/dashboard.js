@@ -1,53 +1,24 @@
-/* global moment */
 'use strict';
 (function(){
-    var messaging = vAPI.messaging;
+    const iframe = document.querySelector('main > iframe');
+    const aside = document.querySelector('main > aside');
+    const links = aside.querySelectorAll('a');
 
-    messaging.send('adequa', {
-        what: 'fetchAllPageViewed'
-    }, function(data){
-        let ads_seen, partner, url, ads, tracker, date, row;
-        let table = document.getElementById("pages");
-
-        let totalTrackers = 0;
-        let totalAdsSeen = 0;
-        let totalAdsBlocked = 0;
-
-        for(let element of data) {
-            if(!element)
-                continue;
-            row = table.insertRow(-1);
-
-            date = row.insertCell(0);
-            url = row.insertCell(1);
-            tracker = row.insertCell(2);
-            ads = row.insertCell(3);
-            ads_seen = row.insertCell(4);
-            partner = row.insertCell(5);
-
-            totalAdsBlocked += element.nb_ads_blocked;
-            totalAdsSeen += element.ads_allowed;
-            totalTrackers += element.nb_trackers_blocked;
-
-            date.innerText = moment(element.consulted_at).format('DD/MM/YYYY HH:mm');
-            url.innerHTML = element.url.link(element.url);
-            tracker.innerText = element.nb_trackers_blocked;
-            ads.innerText = element.nb_ads_blocked;
-            ads_seen.innerText = element.ads_allowed;
-            partner.innerText = element.is_partner ? 'Oui' : 'Non';
+    if(location.hash){
+        iframe.setAttribute('src', location.hash.split('#')[1] + '.html');
+        for(let element of links){
+            if(element.getAttribute('href') === location.hash)
+                element.classList.add('active');
         }
+    }
 
-        row = table.insertRow(0);
-        date = row.insertCell(0);
-        row.insertCell(1);
-        tracker = row.insertCell(2);
-        ads = row.insertCell(3);
-        ads_seen = row.insertCell(4);
-        row.insertCell(5);
+    for(let link of links){
+        link.addEventListener('click', function(event){
+           iframe.setAttribute('src', event.target.hash.split('#')[1] + '.html');
+           for(let element of links)
+               element.classList.remove('active');
 
-        date.innerText = "Depuis le début";
-        tracker.innerText = totalTrackers + '';
-        ads.innerText = totalAdsBlocked + '';
-        ads_seen.innerText = totalAdsSeen + '';
-    });
+           event.target.classList.add('active');
+        });
+    }
 })();

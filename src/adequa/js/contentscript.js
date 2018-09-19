@@ -5,7 +5,7 @@ const checkIfLoaded = function(){
     if(window.performance.getEntriesByType('navigation')[0].duration !== 0) {
         const loadTime = Math.round(window.performance.getEntriesByType('navigation')[0].duration);
         const consultTime = window.performance.timing.responseStart;
-        vAPI.messaging.send('adequa', {what: "pageLoadTime", loadTime, consultTime});
+        vAPI.messaging.send('adequa', {what: "pageLoadTime", loadTime, consultTime});//TODO check vAPI undefined
         clearInterval(ADinterval);
     }
 };
@@ -51,18 +51,9 @@ const countAds = function () {
 
                     if(window.getComputedStyle(elem, null).display === 'none')
                         return false;
-                    if (elem.clientHeight >= 45 && isElementInViewport(elem)) {
-                        const iframe = elem.querySelector('iframe');
-                        if(iframe){
-                            try {
-                                var doc = (iframe.contentWindow || iframe.contentDocument);
-                                if (doc.document) doc = doc.document;
-                                if (!(doc && doc.documentElement.scrollHeight <= 40))
-                                    addAd(elem);
-                            } catch(e) {}
-                        }
-                        else
-                            addAd(elem);
+
+                    if (elem.clientHeight >= 35 && isElementInViewport(elem)) {
+                        addAd(elem);
                     }
                 });
             }

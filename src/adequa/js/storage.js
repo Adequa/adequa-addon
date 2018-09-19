@@ -28,7 +28,7 @@ function mergeDeep(...objects) {
 if (!Adequa.storage.db) { Adequa.storage.db = new localStorageDB('adequa', localStorage); }
 
 if (Adequa.storage.db.isNew()) {
-  Adequa.storage.db.createTable('page_views', ['url', 'consulted_at', 'nb_trackers_blocked', 'nb_ads_blocked', 'is_partner', 'load_time']);
+  Adequa.storage.db.createTable('page_views', ['url', 'consulted_at', 'nb_trackers_blocked', 'nb_ads_blocked', 'nb_ads_viewed', 'is_partner', 'load_time']);
   Adequa.storage.db.createTable('ad_prints', ['passion', 'page_view_id', 'viewed_at', 'ad_id']);
   Adequa.storage.db.createTable('user_choices', ['made_at', 'choice', 'choice_feature']);
 

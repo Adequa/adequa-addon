@@ -33,19 +33,7 @@ Adequa.messaging.onMessage = function(request, sender, callback) {
             return;
         case 'fetchAllPageViewed':
             const page_views = Adequa.storage.db.queryAll('page_views');
-            let allPageData = [];
-
-            for(let page of page_views){
-                const ads = Adequa.storage.db.queryAll('ad_prints', {
-                    query: {
-                        page_view_id: page.ID
-                    }
-                });
-
-                page.ads_allowed = ads.length;
-                allPageData[page.ID] = page;
-            }
-            callback(allPageData);
+            callback(page_views);
             return;
         case 'toggleStatSwitch':
             Adequa.storage.setCurrent({statSwitchState: request.state ? 'page' : 'total'});
@@ -77,7 +65,8 @@ Adequa.messaging.onMessage = function(request, sender, callback) {
             return;
 
         case 'savePassions':
-            Adequa.storage.setCurrent({passions: request.passions});
+            Adequa.current.passions = request.passions;
+            Adequa.storage.setCurrent({});
             callback();
             return;
 
@@ -106,6 +95,9 @@ Adequa.messaging.onMessage = function(request, sender, callback) {
             const addonToken = Adequa.current.addonToken;
 
             callback({addonID, addonToken});
+            return;
+        case 'openTab':
+            vAPI.tabs.open({url: request.url});
             return;
         default:
             break;

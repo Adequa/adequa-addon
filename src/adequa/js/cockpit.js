@@ -182,7 +182,10 @@
             statsSwitch.addEventListener('change', toggleStatsDisplayed);
         if (settingsButton)
             settingsButton.addEventListener('click', function () {
-                location.href = "/adequa/popup-settings.html";
+                messaging.send('adequa', {
+                    what: 'openTab',
+                    url: 'adequa/dashboard.html#settings'
+                });
             });
 
     };

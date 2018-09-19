@@ -8,10 +8,10 @@ Adequa.pagestore.updateRequestBlockedForTab = function(tabId, url) {
         let tabs = Adequa.current.tabs || {};
         tabs[tabId] = tabs[tabId] || {};
 
-        if (type === "advertising" || type === "essential") {
+        if (type === "advertising") {
             tabs[tabId].nbAdsBlocked = (tabs[tabId].nbAdsBlocked || 0) + 1;
         }
-        else if (type === "site_analytics") {
+        else if (type === "site_analytics" || type === "essential") {
             tabs[tabId].nbTrackersBlocked = (tabs[tabId].nbTrackersBlocked || 0) + 1;
         }
         Adequa.storage.setCurrent({tabs});
@@ -22,7 +22,6 @@ Adequa.pagestore.updateRequestBlockedForTab = function(tabId, url) {
 Adequa.pagestore.updateAdsViewedForTab = function(tabId, nbAdsViewed, partnerAds){
     let tabs = Adequa.current.tabs || {};
 
-    const totalNbAdsViewed = ((Adequa.current.totalNbAdsViewed || 0) + (nbAdsViewed - (tabs[tabId].nbAdsViewed || 0))) || 0;
     let diff = (nbAdsViewed - (tabs[tabId].nbAdsViewed || 0)) || 0;
 
     if(diff < 0)
@@ -31,12 +30,14 @@ Adequa.pagestore.updateAdsViewedForTab = function(tabId, nbAdsViewed, partnerAds
     if(((Adequa.current.adsViewedToday || 0) + diff) > Adequa.current.nbMaxAdsPerDay)
         diff = Adequa.current.nbMaxAdsPerDay - (Adequa.current.adsViewedToday || 0);
 
-    Adequa.storage.setCurrent({
-        adsViewedToday: (Adequa.current.adsViewedToday || 0) + diff
-    });
     tabs[tabId].nbAdsViewed = nbAdsViewed;
 
-    Adequa.storage.setCurrent({tabs, totalNbAdsViewed});
+    Adequa.storage.setCurrent({
+        adsViewedToday: (Adequa.current.adsViewedToday || 0) + diff,
+        totalNbAdsViewed: (Adequa.current.totalNbAdsViewed || 0) + diff,
+        tabs: tabs
+    });
+
     Adequa.pagestore.updatePageViewFromCurrent(tabId);
     Adequa.pagestore.updateAdPrintsFromCurrent(tabId, partnerAds);
 };

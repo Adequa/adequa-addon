@@ -1,6 +1,6 @@
 "use strict";
 const domFilterer = new vAPI.DOMFilterer();
-
+const messaging = vAPI.messaging;
 const checkIfLoaded = function(){
     if(window.performance.getEntriesByType('navigation')[0].duration !== 0) {
         const loadTime = Math.round(window.performance.getEntriesByType('navigation')[0].duration);
@@ -35,7 +35,7 @@ const addAd = function(element){
 };
 
 const countAds = function () {
-    vAPI.messaging.send('adequa', {
+    messaging.send('adequa', {
         what: 'getQuerySelectors',
         url: location.href
     }, function(querySelectors){
@@ -71,7 +71,7 @@ const countAds = function () {
             partnerAds.push({id: ins.getAttribute('data-revive-id'), passion: ins.getAttribute('data-revive-themes')});
         }
 
-        vAPI.messaging.send('adequa', {
+        messaging.send('adequa', {
             what: 'setAdsViewed',
             nbAdsViewed: ads.length || 0,
             partnerAds
@@ -94,7 +94,7 @@ const onScrollFinished = function() {
 };
 
 const getBlockedSelectors = function(cfeDetails, callback) {
-    vAPI.messaging.send('adequa', {
+    messaging.send('adequa', {
         what: 'getQuerySelectors',
         url: location.href
     }, function(querySelectors){
@@ -120,7 +120,7 @@ const getBlockedSelectors = function(cfeDetails, callback) {
 };
 
 const removeUnneededElements = function () {
-    vAPI.messaging.send(
+    messaging.send(
         'contentscript',
         {
             what: 'retrieveContentScriptParameters',
@@ -151,7 +151,7 @@ const domWatcherInterface = {
 };
 
 const injectCss = function(){
-    vAPI.messaging.send('adequa', {
+    messaging.send('adequa', {
         what: 'getQuerySelectors',
         url: location.href
     }, function(querySelectors){
@@ -164,7 +164,7 @@ const injectCss = function(){
     });
 };
 
-vAPI.messaging.send('adequa', {
+messaging.send('adequa', {
     what: 'isSitePartner',
     url: location.href
 }, function(isSitePartner){

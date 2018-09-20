@@ -74,6 +74,7 @@
     "storage",
     "tabs",
     "cookies",
+    "management",
     "unlimitedStorage",
     "webNavigation",
     "webRequest",

@@ -191,11 +191,13 @@ messaging.send('adequa', {
 const onMessage = function (event) {
     if (event.source === window &&
         event.data &&
-        event.data.direction === "contentScript") {
-        window.postMessage({
-            direction: "hasAdequa",
-            message: true
-        }, "*");
+        event.data.direction === "AdequaContentScript") {
+        vAPI.messaging.send('adequa', {what: 'getAddonInfo'}, function (response) {
+            window.postMessage({
+                direction: "hasAdequa",
+                addonId: response.addonID
+            }, "*");
+        });
     }
 };
 window.addEventListener("message", onMessage);

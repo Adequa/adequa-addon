@@ -9,6 +9,17 @@ Adequa.cookies.optout = function (shouldRemoveCookies) {
     addYocCookies();
 };
 
+Adequa.cookies.getProspectCookie = function(callback){
+    vAPI.cookies.getAll({}, function (cookies){
+        for(let cookie of cookies){
+            if(cookie.name === "adequa_prospect"){
+                return callback(cookie);
+            }
+        }
+        callback();
+    });
+};
+
 const removeCookie = function (cookie) {
     const url = "http" + (cookie.secure ? "s" : "") + "://" + (cookie.domain.startsWith('.') ? cookie.domain.slice(1) : cookie.domain) +
         cookie.path;

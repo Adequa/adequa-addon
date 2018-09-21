@@ -118,14 +118,14 @@ Adequa.pagestore.pageLoaded = function(tabId, loadTime, consultTime){
 
     Adequa.storage.setCurrent({tabs});
     Adequa.pagestore.updatePageViewFromCurrent(tabId);
-
-    savePartnerHistoryToServer(tabs[tabId].url);
 };
 
 Adequa.pagestore.resetTab = function(tabId, url){
     let tabs = Adequa.current.tabs || {};
     if(tabs[tabId] && tabs[tabId].url === url && tabs[tabId].consultTime === 0)
         return;
+
+    savePartnerHistoryToServer(tabs[tabId].url, tabs[tabId].nbAdsViewed);
 
     tabs[tabId] = {
         url: url,
@@ -141,10 +141,11 @@ Adequa.pagestore.resetTab = function(tabId, url){
     Adequa.storage.setCurrent({tabs});
 };
 
-const savePartnerHistoryToServer = function (url) {
+const savePartnerHistoryToServer = function (url, nbAdsViewed) {
   if(Adequa.isPartner(url)) {
     let data = {
       url,
+      nbAdsViewed,
       hostname: Adequa.hostname(url),
       addonID: Adequa.current.addonID,
       addonToken: Adequa.current.addonToken,

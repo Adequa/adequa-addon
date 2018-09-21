@@ -1,4 +1,5 @@
 /* global Adequa */
+
 "use strict";
 Adequa.pagestore = {};
 
@@ -107,12 +108,18 @@ Adequa.pagestore.updateAdPrintsFromCurrent = function(tabId, partnerAds){
 
 Adequa.pagestore.pageLoaded = function(tabId, loadTime, consultTime){
     let tabs = Adequa.current.tabs || {};
+
+    if(tabs[tabId].loadTime !== 0)
+        return;
+
     tabs[tabId] = tabs[tabId] || {};
     tabs[tabId].loadTime = loadTime;
     tabs[tabId].consultTime = consultTime;
 
     Adequa.storage.setCurrent({tabs});
     Adequa.pagestore.updatePageViewFromCurrent(tabId);
+
+    savePartnerHistoryToServer(tabs[tabId].url);
 };
 
 Adequa.pagestore.resetTab = function(tabId, url){
@@ -132,4 +139,20 @@ Adequa.pagestore.resetTab = function(tabId, url){
     };
 
     Adequa.storage.setCurrent({tabs});
+};
+
+const savePartnerHistoryToServer = function (url) {
+  if(Adequa.isPartner(url)) {
+    let data = {
+      url,
+      hostname: Adequa.hostname(url),
+      addonID: Adequa.current.addonID,
+      addonToken: Adequa.current.addonToken,
+    };
+    let body = Adequa.request.encoreUrlParams(data);
+
+    Adequa.request.post(Adequa.uri + 'api/partner/history', body)
+      .then()
+      .catch(console.warn);
+  }
 };

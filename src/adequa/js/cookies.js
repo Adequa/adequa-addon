@@ -27,13 +27,11 @@ const removeCookie = function (cookie) {
 };
 
 const removeYocCookies = function () {
-    for (let cookie of Adequa.current.yocCookies) {
-        vAPI.cookies.getAll({domain: cookie.domain}, function(cookies) {
-            for (let c of cookies) {
-                removeCookie(c);
-            }
-        });
-    }
+    Adequa.cookies.getAdsCookies(function(adsCookies){
+        for (let cookie of adsCookies) {
+            removeCookie(cookie);
+        }
+    });
 };
 
 const addYocCookies = function () {
@@ -42,6 +40,21 @@ const addYocCookies = function () {
             cookie.storeId = "firefox-default";
         vAPI.cookies.set(cookie);
     }
+};
+
+Adequa.cookies.getAdsCookies = function(callback){
+    let adsCookies = [];
+    vAPI.cookies.getAll({}, function(cookies){
+        for (let cookie of Adequa.current.yocCookies) {
+            for (let c of cookies) {
+                if(c.domain === cookie.domain){
+                    adsCookies.push(c);
+                }
+            }
+        }
+        callback(adsCookies);
+    });
+
 };
 
 const onCookieChanged = function (changeInfo) {

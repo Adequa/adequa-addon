@@ -1,14 +1,15 @@
 /* global Adequa */
 "use strict";
-if(!Adequa.current)
-    Adequa.current = {};
-if(!Adequa.current.tabs)
-    Adequa.current.tabs = {};
 
 Adequa.start = function(){
     fetchCurrent(function(){
         if (Adequa.current.firstInstall !== false) {
             firstInstall();
+        }
+        else {
+            setTimeout(function(){
+                Adequa.cookies.optout(false);
+            }, 15000);
         }
 
         resetIfDayChanged();
@@ -19,32 +20,43 @@ Adequa.start = function(){
 };
 
 const firstInstall = function(){
-    const req = new XMLHttpRequest();
-    req.onreadystatechange = function () {
-        if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
-            const response = JSON.parse(this.responseText);
-            const addonID = response.addon_id;
-            const addonToken = response.token;
-
-            Adequa.storage.setCurrent({addonID, addonToken});
-            //Set uninstall url to open
-            vAPI.app.setUninstallURL(Adequa.uri + 'au-revoir?addon_id=' + addonID + '&token=' + addonToken);
-        }
-    };
-    req.open('post', Adequa.uri + 'api/addon/create');
-    req.send(null);
+    // const req = new XMLHttpRequest();
+    // req.onreadystatechange = function () {
+    //     if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
+    //         const response = JSON.parse(this.responseText);
+    //         const addonID = response.addon_id;
+    //         const addonToken = response.token;
+    //
+    //         Adequa.storage.setCurrent({addonID, addonToken});
+    //         //Set uninstall url to open
+    //         vAPI.app.setUninstallURL(Adequa.uri + 'au-revoir?addon_id=' + addonID + '&token=' + addonToken);
+    //     }
+    // };
+    // req.open('post', Adequa.uri + 'api/addon/create');
+    // req.send(null);
 
     disableAdblockers();
 
     Adequa.cookies.getProspectCookie(function(prospect){
         if(!prospect)
             return;
-        
+
         const checkTabs = function(tabs){
             for(let tab of tabs){
                 if(tab.url.indexOf(prospect.domain) !== -1){
+                    updateTab(tab);
                     reloadTab(tab.id);
                 }
+            }
+
+        };
+
+        const updateTab = function(tab){
+            if(vAPI.chrome){
+                chrome.tabs.update(tab.id, {active: true});
+            }
+            else {
+                browser.tabs.update(tab.id, {active: true});
             }
         };
 
@@ -98,10 +110,6 @@ const resetIfDayChanged = function () {
 };
 
 const setTimer = function () {
-    setTimeout(function(){
-        Adequa.cookies.optout(Adequa.current.firstInstall);
-    }, 15000);
-
     setInterval(resetIfDayChanged, 1000 * 60 * 60);
     setInterval(Adequa.resources.fetchAll, 1000 * 60 * 30);
 };

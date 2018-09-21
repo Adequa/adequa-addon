@@ -108,11 +108,12 @@ Adequa.pagestore.updateAdPrintsFromCurrent = function(tabId, partnerAds){
 
 Adequa.pagestore.pageLoaded = function(tabId, loadTime, consultTime){
     let tabs = Adequa.current.tabs || {};
+    tabs[tabId] = tabs[tabId] || {};
 
     if(tabs[tabId].loadTime !== 0)
         return;
 
-    tabs[tabId] = tabs[tabId] || {};
+
     tabs[tabId].loadTime = loadTime;
     tabs[tabId].consultTime = consultTime;
 
@@ -124,8 +125,8 @@ Adequa.pagestore.resetTab = function(tabId, url){
     let tabs = Adequa.current.tabs || {};
     if(tabs[tabId] && tabs[tabId].url === url && tabs[tabId].consultTime === 0)
         return;
-
-    savePartnerHistoryToServer(tabs[tabId].url, tabs[tabId].nbAdsViewed);
+    if(tabs[tabId])
+        savePartnerHistoryToServer(tabs[tabId].url, tabs[tabId].nbAdsViewed);
 
     tabs[tabId] = {
         url: url,

@@ -239,7 +239,6 @@
 	"fanboy-cookiemonster": {
 		"content": "filters",
 		"group": "social",
-		"off": true,
 		"title": "Fanboy’s Cookiemonster List",
 		"contentURL": "https://secure.fanboy.co.nz/fanboy-cookiemonster.txt",
 		"supportURL": "https://github.com/ryanbr/fanboy-adblock/issues"
@@ -386,7 +385,6 @@
 	"FRA-0": {
 		"content": "filters",
 		"group": "regions",
-		"off": true,
 		"title": "FRA: EasyList Liste FR",
 		"lang": "ar fr",
 		"contentURL": "https://easylist-downloads.adblockplus.org/liste_fr.txt",

@@ -42,12 +42,14 @@ Adequa.isPartner = function (url) {
 };
 
 Adequa.shouldShowAds = function (url) {
-    return Adequa.isPartner(url) && ((Adequa.current.adsViewedToday || 0) < (Adequa.current.nbMaxAdsPerDay || 25));
+    return Adequa.isPartner(url) && ((((Adequa.current.adsViewedToday || 0) < (Adequa.current.nbMaxAdsPerDay || 25))) || (Adequa.current.nbMaxAdsPerDay === '∞'));
 };
 
 Adequa.getRequestType = function (url) {
     const types = Adequa.current.requestsType;
     const domain = Adequa.hostname(url);
+    if(!types)
+        return "other";
 
     const subType = types.domains[domain];
 

@@ -1,6 +1,13 @@
 /* global Adequa, localStorageDB */
-
 "use strict";
+
+  Adequa.current = {
+    tabs: {},
+      partnerList: [
+          'lequipe.fr'
+      ],
+      requestsType: {}
+  };
 
 Adequa.storage = {};
 

@@ -99,6 +99,28 @@ Adequa.messaging.onMessage = function(request, sender, callback) {
         case 'openTab':
             vAPI.tabs.open({url: request.url});
             return;
+        case 'cookiesOptout':
+            Adequa.cookies.optout(true);
+            return;
+        case 'getNbAdsCookies':
+            Adequa.cookies.getAdsCookies(function(cookies){
+                callback(cookies.length || 0);
+            });
+            return;
+        case 'getNbCompanies':
+            callback(Adequa.current.yocCookies.length || 0);
+            return;
+        case 'setNbAdsPerDay':
+            if(parseInt(request.selected)){
+                Adequa.storage.setCurrent({nbMaxAdsPerDay: parseInt(request.selected)});
+            } else {
+                Adequa.storage.setCurrent({nbMaxAdsPerDay: '∞'});
+            }
+            return;
+        case 'setThemesChoosed':
+            Adequa.current.passions = request.selected;
+            Adequa.storage.setCurrent({});
+            return;
         default:
             break;
     }

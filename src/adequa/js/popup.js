@@ -1,30 +1,33 @@
-/* global uDom */
-
 'use strict';
 
-let changeScreen = function (screen, onLoadCallback) {
-    if(typeof onLoadCallback !== "function")
-        onLoadCallback = function () {};
 
-    let iframe = uDom('iframe');
+vAPI.messaging.send('adequa', {
+    what: 'isFirstInstall'
+}, function(isFirstInstall){
+    if(isFirstInstall === false)
+        return;
 
-    iframe.on('load', function () {
-        if(typeof onLoadCallback === "function")
-            onLoadCallback(this.contentWindow.document);
-        onLoadCallback = null;
+    vAPI.messaging.send('adequa', {
+        what: 'fetchInstallState'
+    }, function (state) {
+        const iframe = document.querySelector('iframe');
+
+        switch (state) {
+            case 1:
+                iframe.setAttribute('src', 'installation-cookies.html');
+                break;
+
+            case 2:
+                iframe.setAttribute('src', 'installation-ads.html');
+                break;
+
+            case 3:
+                iframe.setAttribute('src', 'installation-themes.html');
+                break;
+
+            default:
+                iframe.setAttribute('src', 'installation-presentation.html');
+                break;
+        }
     });
-
-    iframe.attr('src', screen);
-
-    return iframe.nodes[0].contentWindow.document;
-};
-
-const getAddonID = function () {
-    return new Promise(function (resolve) {
-        vAPI.messaging.send('adequa', {
-            what: 'getAddonID'
-        }, function (result) {
-            resolve(result);
-        });
-    });
-};
+});

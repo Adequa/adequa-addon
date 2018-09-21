@@ -2,26 +2,41 @@
 <html>
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Adequa - Themes</title>
-  <link rel="stylesheet" href="css/common.css">
   <link rel="stylesheet" href="css/installation.css">
-  <link rel="stylesheet" href="css/installation-themes.css">
 </head>
 <body>
 
 <header>
-  <p>Choisis les <strong>thèmes qui t'intéressent</strong> parmi les suivants (au moins un) pour <strong>à terme</strong> te montrer des publicités correspondant à tes choix :</p>
+  <h2>CONTRÔLE<br> LA PUB</h2>
 </header>
 
-<div class="body">
-  <ul id="themes">
-    <li>
-      <p style="text-align: center;">Loading ...</p>
-    </li>
-  </ul>
-</div>
+<main>
+  <div class="bloc full">
+    <div class="yellow">
+      <p>Choisis les thèmes qui t’intéressent (on<br> essayera autant que possible de te<br> montrer des pubs qui y correspondent)</p>
+    </div>
+  </div>
 
-<a class="next" id="next-screen">></a>
+  <div id="chose-themes">
+    <span class="montserrat bold pointer" data-theme-id="0">business</span>
+    <span class="montserrat bold pointer" data-theme-id="1">culture & loisirs</span>
+    <span class="montserrat bold pointer" data-theme-id="2">maison & santé</span>
+    <span class="montserrat bold pointer" data-theme-id="3">mode & shopping</span>
+    <span class="montserrat bold pointer" data-theme-id="4">sport</span>
+    <span class="montserrat bold pointer" data-theme-id="5">sciences & techno</span>
+    <span class="montserrat bold pointer" data-theme-id="6">voiture</span>
+    <span class="montserrat bold pointer" data-theme-id="7">voyages</span>
+  </div>
+</main>
 
+<footer>
+  <a href="cockpit.html" class="montserrat bold">OK</a>
+</footer>
+<script src="../js/vapi.js"></script>
+<script src="../js/vapi-common.js"></script>
+<script src="../js/vapi-client.js"></script>
+<script src="js/installation-themes.js"></script>
 </body>
 </html>

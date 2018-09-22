@@ -6,6 +6,7 @@ Adequa.resources.fetchAll = function () {
     getAPIResponse('resources-version', function(versions){
         if(Object.is(Adequa.current.versions || {}, versions)) return;
 
+        if(!checkVersion(versions, 'themes') || !Adequa.current.availableThemes) getAvailableThemes();
         if(!checkVersion(versions, 'cookie-whitelist') || !Adequa.current.cookieWhitelist) getWhitelist();
         if(!checkVersion(versions, 'query-selectors') || !Adequa.current.partnerList) getPartnerList();
         if(!checkVersion(versions, 'notarget-cookies') || !Adequa.current.yocCookies) getOptoutCookies();
@@ -28,6 +29,12 @@ const getWhitelist = function () {
 const getPartnerList = function () {
     getAPIResponse('query-selectors', function (partnerList) {
         Adequa.storage.setCurrent({partnerList});
+    });
+};
+
+const getAvailableThemes = function () {
+    getAPIResponse('themes', function (availableThemes) {
+        Adequa.storage.setCurrent({availableThemes});
     });
 };
 

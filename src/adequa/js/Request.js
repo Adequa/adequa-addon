@@ -7,6 +7,10 @@ class XMLRequest {
     return XMLRequest.ajax('get', url, body);
   }
 
+  static put(url, body) {
+    return XMLRequest.ajax('put', url, body);
+  }
+
   static post(url, body) {
     return XMLRequest.ajax('post', url, body);
   }

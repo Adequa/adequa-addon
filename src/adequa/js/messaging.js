@@ -113,13 +113,32 @@ Adequa.messaging.onMessage = function(request, sender, callback) {
         case 'setNbAdsPerDay':
             if(parseInt(request.selected)){
                 Adequa.storage.setCurrent({nbMaxAdsPerDay: parseInt(request.selected)});
+                const data = {
+                    addon_id: Adequa.current.addonID,
+                    nb_ads: request.selected
+                };
+                Adequa.request.put(Adequa.uri + 'update/nb-ads-per-day', Adequa.request.encoreUrlParams(data));
             } else {
                 Adequa.storage.setCurrent({nbMaxAdsPerDay: '∞'});
+                const data = {
+                    addon_id: Adequa.current.addonID,
+                    nb_ads: 0
+                };
+                Adequa.request.put(Adequa.uri + 'update/nb-ads-per-day', Adequa.request.encoreUrlParams(data));
             }
             return;
         case 'setThemesChoosed':
             Adequa.current.passions = request.selected;
             Adequa.storage.setCurrent({});
+
+            const data = {
+                addon_id: Adequa.current.addonID,
+                themes: request.selected.toString()
+            };
+            Adequa.request.post(Adequa.uri + 'api/store/themes', Adequa.request.encoreUrlParams(data));
+            return;
+        case 'getAvailableThemes':
+            callback(Adequa.current.availableThemes);
             return;
         default:
             break;

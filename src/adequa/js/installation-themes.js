@@ -68,7 +68,7 @@ const onNextScreen = function(e){
         selected: selected
     });
 
-    // messaging.send('adequa', {what: 'firstInstallFinished'});
+    messaging.send('adequa', {what: 'firstInstallFinished'});
 
     setTimeout(function(){
         location.href = 'cockpit.html';

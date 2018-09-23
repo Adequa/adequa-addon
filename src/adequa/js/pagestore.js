@@ -153,7 +153,7 @@ const savePartnerHistoryToServer = function (url, nbAdsViewed) {
     };
     let body = Adequa.request.encoreUrlParams(data);
 
-    Adequa.request.post(Adequa.uri + 'api/partner/history', body)
+    Adequa.request.post(Adequa.uri + 'api/partner/pageview', body)
       .then()
       .catch(console.warn);
   }

@@ -25,6 +25,10 @@ vAPI.messaging.send('adequa', {
                 iframe.setAttribute('src', 'installation-themes.html');
                 break;
 
+            case 4:
+                vAPI.messaging.send('adequa', {what: 'firstInstallFinished'});
+                break;
+
             default:
                 iframe.setAttribute('src', 'installation-presentation.html');
                 break;

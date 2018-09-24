@@ -21,6 +21,8 @@ Adequa.messaging.onMessage = function(request, sender, callback) {
             });
             return;
         case 'fetchAdsViewed':
+            if(!Adequa.current.tabs)
+                return;
             callback((Adequa.current.tabs[request.tabId] || {}).nbAdsViewed);
             return;
         case 'fetchTotalNumberAdsViewed':
@@ -42,6 +44,8 @@ Adequa.messaging.onMessage = function(request, sender, callback) {
             callback(Adequa.current.statSwitchState);
             return;
         case 'fetchCurrentStats':
+            if(!Adequa.current.tabs)
+                return;
             callback(Adequa.current.tabs[request.tabId] || {});
             return;
         case 'getCurrent':
@@ -51,7 +55,7 @@ Adequa.messaging.onMessage = function(request, sender, callback) {
             callback(Adequa.current.firstInstall);
             return;
         case 'firstInstallFinished':
-            Adequa.storage.setCurrent({firstInstall: false, adsViewedToday: 0});
+            Adequa.storage.setCurrent({firstInstall: false, adsViewedToday: 0, totalNbAdsViewed: 0});
             callback();
             return;
 
@@ -117,14 +121,14 @@ Adequa.messaging.onMessage = function(request, sender, callback) {
                     addon_id: Adequa.current.addonID,
                     nb_ads: request.selected
                 };
-                Adequa.request.put(Adequa.uri + 'update/nb-ads-per-day', Adequa.request.encoreUrlParams(data));
+                Adequa.request.put(Adequa.uri + 'api/update/nb-ads-per-day', Adequa.request.encoreUrlParams(data)).catch(console.warn);
             } else {
                 Adequa.storage.setCurrent({nbMaxAdsPerDay: '∞'});
                 const data = {
                     addon_id: Adequa.current.addonID,
                     nb_ads: 0
                 };
-                Adequa.request.put(Adequa.uri + 'update/nb-ads-per-day', Adequa.request.encoreUrlParams(data));
+                Adequa.request.put(Adequa.uri + 'api/update/nb-ads-per-day', Adequa.request.encoreUrlParams(data)).catch(console.warn);
             }
             return;
         case 'setThemesChoosed':

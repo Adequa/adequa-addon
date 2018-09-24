@@ -47,7 +47,7 @@ Adequa.cookies.getAdsCookies = function(callback){
     vAPI.cookies.getAll({}, function(cookies){
         for (let cookie of Adequa.current.yocCookies) {
             for (let c of cookies) {
-                if(c.domain === cookie.domain){
+                if((c.domain === cookie.domain) && (c.name !== cookie.name)){
                     adsCookies.push(c);
                 }
             }

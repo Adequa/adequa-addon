@@ -17,6 +17,7 @@ Adequa.start = function(){
 
         setTimer();
     });
+    µBlock.scheduleAssetUpdater(0);
 };
 
 const firstInstall = function(){

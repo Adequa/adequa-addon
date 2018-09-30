@@ -2,26 +2,15 @@
 "use strict";
 Adequa.messaging = {};
 
-Adequa.messaging.onMessage = function(request, sender, callback) {
+Adequa.messaging.onMessage = function (request, sender, callback) {
     let tabId = sender && sender.tab ? sender.tab.id : 0;
 
-    switch ( request.what ) {
+    switch (request.what) {
         case 'pageLoadTime':
             Adequa.pagestore.pageLoaded(tabId, request.loadTime, request.consultTime);
             return;
-        case 'fetchTotalStats':
-            const trackersBlocked = Adequa.storage.db.queryColumnSum('page_views', 'nb_trackers_blocked') || 0;
-            const adsBlocked = Adequa.storage.db.queryColumnSum('page_views', 'nb_ads_blocked') || 0;
-            const timeWon = Adequa.storage.db.queryColumnSum('page_views', 'load_time') || 0;
-
-            callback({
-                trackersBlocked,
-                adsBlocked,
-                timeWon,
-            });
-            return;
         case 'fetchAdsViewed':
-            if(!Adequa.current.tabs)
+            if (!Adequa.current.tabs)
                 return;
             callback((Adequa.current.tabs[request.tabId] || {}).nbAdsViewed);
             return;
@@ -44,7 +33,7 @@ Adequa.messaging.onMessage = function(request, sender, callback) {
             callback(Adequa.current.statSwitchState);
             return;
         case 'fetchCurrentStats':
-            if(!Adequa.current.tabs)
+            if (!Adequa.current.tabs)
                 return;
             callback(Adequa.current.tabs[request.tabId] || {});
             return;
@@ -107,7 +96,7 @@ Adequa.messaging.onMessage = function(request, sender, callback) {
             Adequa.cookies.optout(true);
             return;
         case 'getNbAdsCookies':
-            Adequa.cookies.getAdsCookies(function(cookies){
+            Adequa.cookies.getAdsCookies(function (cookies) {
                 callback(cookies.length || 0);
             });
             return;
@@ -115,7 +104,7 @@ Adequa.messaging.onMessage = function(request, sender, callback) {
             callback(Adequa.current.yocCookies.length || 0);
             return;
         case 'setNbAdsPerDay':
-            if(parseInt(request.selected)){
+            if (parseInt(request.selected)) {
                 Adequa.storage.setCurrent({nbMaxAdsPerDay: parseInt(request.selected)});
                 const data = {
                     addon_id: Adequa.current.addonID,
@@ -134,15 +123,71 @@ Adequa.messaging.onMessage = function(request, sender, callback) {
         case 'setThemesChoosed':
             Adequa.current.passions = request.selected;
             Adequa.storage.setCurrent({});
-
+            return;
+        case 'themesChanged':
             const data = {
                 addon_id: Adequa.current.addonID,
-                themes: request.selected.toString()
+                themes: Adequa.current.passions || []
             };
-            Adequa.request.post(Adequa.uri + 'api/store/themes', Adequa.request.encoreUrlParams(data));
+            Adequa.request.post(Adequa.uri + 'api/store/themes', data).catch(console.warn);
+            callback(Adequa.current.passions || []);
+            return;
+        case 'nbAdsPerDayChanged':
+            const body = {
+                addon_id: Adequa.current.addonID,
+                nb_ads: parseInt(Adequa.current.nbMaxAdsPerDay || 25) ? Adequa.current.nbMaxAdsPerDay || 25 : 0
+            };
+            Adequa.request.put(Adequa.uri + 'api/update/nb-ads-per-day', body).catch(console.warn);
             return;
         case 'getAvailableThemes':
             callback(Adequa.current.availableThemes);
+            return;
+        case 'getCockpitData':
+            const hostnameData = Adequa.storage.db.queryAll('page_views', {
+                query: {hostname: Adequa.hostname(request.url || '')}
+            });
+
+            let firstVisit;
+            let nbPages;
+
+            if (!hostnameData.length){
+                firstVisit = Date.now();
+                nbPages = 1;
+            } else {
+                firstVisit = hostnameData[0].consulted_at;
+                nbPages = hostnameData.length;
+            }
+
+            let nbAdsBlocked = 0;
+            let nbTrackersBlocked = 0;
+            let nbAdsViewed = 0;
+            let loadTime = 0;
+
+            for (let row of hostnameData) {
+                nbAdsBlocked = nbAdsBlocked + row.nb_ads_blocked;
+                nbTrackersBlocked = nbTrackersBlocked + row.nb_trackers_blocked;
+                nbAdsViewed = nbAdsViewed + row.nb_ads_viewed;
+                loadTime = loadTime + row.load_time;
+            }
+
+            const trackersBlocked = Adequa.storage.db.queryColumnSum('page_views', 'nb_trackers_blocked') || 0;
+            const adsBlocked = Adequa.storage.db.queryColumnSum('page_views', 'nb_ads_blocked') || 0;
+
+            callback({
+                hostname: Adequa.hostname(request.url || ''),
+                firstVisit: firstVisit || Date.now(),
+                nbPages: nbPages || 1,
+                nbAdsBlocked: nbAdsBlocked || 0,
+                nbTrackersBlocked: nbTrackersBlocked || 0,
+                nbAdsViewed: nbAdsViewed || 0,
+                loadTime: loadTime || 0,
+                nbAdsViewedToday: Adequa.current.adsViewedToday || 0,
+                nbMaxAdsPerDay: Adequa.current.nbMaxAdsPerDay || 0,
+                totalAdsBlocked: adsBlocked || 0,
+                totalTrackersBlocked: trackersBlocked || 0,
+                siteIsPartner: Adequa.isPartner(request.url || ''),
+                totalNbAdsViewed: Adequa.current.totalNbAdsViewed || 0
+            });
             return;
         default:
             break;

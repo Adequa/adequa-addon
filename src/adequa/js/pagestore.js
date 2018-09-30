@@ -53,6 +53,7 @@ Adequa.pagestore.updatePageViewFromCurrent = function(tabId){
     if(tab.dbId === 0){
         const id = Adequa.storage.db.insert("page_views", {
             url: tab.url || '',
+            hostname: Adequa.hostname(tab.url || ''),
             consulted_at: tab.consultTime || 0,
             nb_trackers_blocked: tab.nbTrackersBlocked || 0,
             nb_ads_blocked: tab.nbAdsBlocked || 0,
@@ -64,12 +65,13 @@ Adequa.pagestore.updatePageViewFromCurrent = function(tabId){
 
         tab.dbId = id;
         Adequa.storage.setCurrent({
-            tabs: {}[tabId] = tab
+            tabs: {}[tabId || 0] = tab
         });
     }
     else {
         Adequa.storage.db.update("page_views", {ID: tab.dbId}, function(row) {
             row.url = tab.url || '';
+            row.hostname = Adequa.hostname(tab.url || '');
             row.consulted_at = tab.consultTime || 0;
             row.nb_trackers_blocked = tab.nbTrackersBlocked || 0;
             row.nb_ads_blocked = tab.nbAdsBlocked || 0;

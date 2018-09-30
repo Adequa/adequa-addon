@@ -1,43 +1,39 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Adequa - Ads</title>
-  <link rel="stylesheet" href="css/installation.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Adequa - Presentation</title>
+    <link rel="stylesheet" href="css/installation-common.css">
+    <link rel="stylesheet" href="css/installation-steps.css">
 </head>
 <body>
-
 <header>
-  <h2>SOUTIENS LES<br> CRÉATEURS DE CONTENU</h2>
+    <h2>CONTRÔLE<br>
+        LES PUBS
+    </h2>
 </header>
-
-<main>
-  <div class="bloc full">
-    <div class="yellow">
-      <p>Accepte de voir un nombre limité par<br> jour de publicités non intrusives<br> uniquement sur les médias gratuits que<br> tu aimes</p>
+<main style="background-color: var(--blue)">
+    <div>
+        <div style="display: flex; align-items: center">
+            <h2>COMBIEN PAR JOUR ?</h2><p style="color:white;margin-left:10px; margin-top:3px">Choisis</p>
+        </div>
+        <input id="ads" type="range" min="15" max="80" step="1" value="25">
+        <div style="position: relative; display: flex; justify-content: space-between">
+            <p id="start">15</p>
+            <div id="bubble" style="position: absolute; left: 49px">
+                <span style="position: absolute; top:0;left:-3px;">25</span>
+            </div>
+            <p id="end">80</p>
+        </div>
+        <p style="color:white;">Tu généreras environ 25€/an pour les sites que tu soutiens.</p>
     </div>
-  </div>
-
-  <div id="chose-ads">
-    <p class="montserrat">Combien?</p>
-    <span class="montserrat bold pointer">15</span>
-    <span class="montserrat bold pointer">25</span>
-    <span class="montserrat bold pointer">40</span>
-    <span class="montserrat bold pointer">60</span>
-    <span class="montserrat pointer">no limit</span>
-  </div>
-
-  <div class="bloc">
-    <div class="yellow left">
-      <p>Réalise et sois fier de la valeur<br> que tu génères pour eux.</p>
+    <div>
+        <h2>SUR QUELS SITES ? </h2>
+        <p>On a prédéfini une liste de sites à soutenir. Tu pourras ajouter des sites à cette liste à tout moment.</p>
     </div>
-  </div>
 </main>
 
-<footer>
-  <a href="installation-themes.html" class="montserrat bold">OK</a>
-</footer>
 <script src="../js/vapi.js"></script>
 <script src="../js/vapi-common.js"></script>
 <script src="../js/vapi-client.js"></script>

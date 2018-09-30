@@ -1,47 +1,33 @@
 'use strict';
 const messaging = vAPI.messaging;
 
-setTimeout(function(){
-    document.body.style.opacity = '1';
-}, 100);
+const input = document.getElementById('ads');
+const bubble = document.getElementById('bubble');
+const start = document.getElementById('start');
+const end = document.getElementById('end');
 
-const link = document.querySelector('footer a');
-const spans = document.querySelectorAll('#chose-ads span');
+messaging.send('adequa', {
+    what: 'setNbAdsPerDay',
+    selected: input.value
+});
 
-let selected = '25';
+input.addEventListener('input', function(e){
+    if(e.target.value >= 75)
+        end.style.visibility = 'hidden';
+    else
+        end.style.visibility = 'visible';
 
-const onClick = function(event){
-    selected = event.target.innerText;
-    const active = document.querySelectorAll('.active');
-    for(let element of active)
-        element.classList.remove('active');
+    if(e.target.value <= 20)
+        start.style.visibility = 'hidden';
+    else
+        start.style.visibility = 'visible';
 
-    event.target.classList.add('active');
-};
-
-for(let element of spans){
-    element.addEventListener('click', onClick);
-    if(element.innerText === '25')
-        element.classList.add('active');
-}
-
-const onNextScreen = function(e){
-    e.preventDefault();
-
-    document.body.style.opacity = '0';
+    let pos = (document.querySelector('input + div').getBoundingClientRect().width * (e.target.value-15) / (80-15));
+    bubble.innerHTML = '<span style="position: absolute;top: 0;left: -' + (20*pos/document.querySelector('input + div').getBoundingClientRect().width) +'px;">' + e.target.value + '</span>';
+    bubble.style.left = pos + 'px';
 
     messaging.send('adequa', {
         what: 'setNbAdsPerDay',
-        selected: selected
+        selected: e.target.value
     });
-
-    messaging.send('adequa', {
-        what: 'saveInstallState',
-        state: 3
-    });
-
-    setTimeout(function(){
-        location.href = 'installation-themes.html';
-    }, 500);
-};
-link.addEventListener('click', onNextScreen);
+});

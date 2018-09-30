@@ -8,66 +8,75 @@
     <link rel="stylesheet" href="css/cockpit.css" type="text/css">
 </head>
 <body>
-<header>
-    <button id="toggleNetFilteringSwitch">
-        <img src="img/icon_pause.png" height="30"/>
-        Désactiver l'AdOpter sur ce site
-    </button>
+<header style="position: relative">
+    <div>
+        <img src="img/PICTO_ADEQUA_VF-2.png" />
+        <div class="red-block"></div>
+    </div>
+    <h2 class="bold">TU TE PROTÈGES SUR<br>
+        CE SITE !
+    </h2>
+    <p id="toggleNetFilteringSwitch">
+        SOUTENIR
+    </p>
 </header>
-<div class="stats" id="avoided">
-    <p>ÉVITÉ</p>
-    <div>
-        <div class="stat">
-            <p>Traceurs</p>
-            <p id="trackers_blocked">0</p>
+
+<main>
+    <div class="site" style="background-color: var(--red);">
+        <h2>OUF !</h2>
+        <p>Depuis 20 jours, sur <span id="hostname">example.com</span></p>
+        <div>
+            <p>tu es venu</p>
+            <span>0</span>
+            <p>fois</p>
         </div>
-        <div class="stat">
-            <p>Publicités</p>
-            <p id="ads_blocked">0</p>
+        <div>
+            <p>tu as évité</p>
+            <span>0</span>
+            <p>pubs</p>
         </div>
-        <div class="stat">
-            <p>Temps de chargement</p>
-            <p id="time_won">0 mins</p>
+        <div>
+            <p></p>
+            <span>0</span>
+            <p>traceurs</p>
         </div>
-        <div class="switch">
-            <label class="slider">
-                <input type="checkbox">
-                <span class="redbox"></span>
-                <p>Depuis le début</p>
-                <p>Sur cette page</p>
-            </label>
-        </div>
-    </div>
-</div>
-</div>
-<div class="stats" id="saw">
-    <p>VU</p>
-    <div id="ad-prints" class="adslist">
-        <div class="stat">
-            <p>Aujourd'hui</p>
-            <p id="ads-viewed-today">0/0</p>
-        </div>
-        <div class="stat">
-            <p>Sur cette page</p>
-            <p id="ad-on-page">0</p>
-        </div>
-        <div id="ad-total" class="stat">
-            <p>Depuis le début</p>
-            <p id="total-ad-number">0</p>
+        <div>
+            <p></p>
+            <span>0</span>
+            <p>minutes de chargement</p>
         </div>
     </div>
-</div>
+    <div class="stats">
+        <div class="stat">
+            <img src="img/PICTO_ADEQUA_VF-2.png">
+            <div style="background-color: var(--red);"></div>
+            <h2 id="adsBlocked">3629</h2>
+            <p>pubs évitées</p>
+        </div>
+        <div class="stat">
+            <img src="img/PICTO_ADEQUA_VF-1.png">
+            <div style="background-color: var(--yellow);"></div>
+            <h2 id="trackersBlocked">270</h2>
+            <p>traceurs bloqués</p>
+        </div>
+        <div class="stat">
+            <img src="img/PICTO_ADEQUA_VF-3.png">
+            <div style="background-color: var(--green);"></div>
+            <h2 id="generated">20€</h2>
+            <p>générés</p>
+        </div>
+        <div class="stat">
+            <img src="img/PICTO_ADEQUA_VF-4.png">
+            <div style="background-color: var(--blue);"></div>
+            <h2 id="adsPerDay">25 pubs/j</h2>
+            <p>acceptées</p>
+        </div>
+        <p id="settings">CONTRÔLER</p>
+    </div>
+</main>
+
 <footer>
-    <button id="settings">
-        <img src="img/icon_adequa.png"/>
-        Modifier mes<br>paramètres
-    </button>
-    <div>
-        <p>GÉNÉRÉ</p>
-        <div id="generated">
-            <p>0€</p>
-        </div>
-    </div>
+    <img src="img/banner.png" id="contact" alt="Adequa Beta">
 </footer>
 
 <script src="../js/vapi.js"></script>
@@ -75,5 +84,6 @@
 <script src="../js/vapi-client.js"></script>
 <script src="../js/udom.js"></script>
 <script src="js/cockpit.js"></script>
+<script src="js/lib/moment.min.js"></script>
 </body>
 </html>

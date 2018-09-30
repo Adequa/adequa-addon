@@ -1,12 +1,7 @@
 'use strict';
 const messaging = vAPI.messaging;
 
-setTimeout(function(){
-    document.body.style.opacity = '1';
-}, 100);
-
 const cookies = document.querySelector('#cookies');
-const link = document.querySelector('footer a');
 const companies = document.querySelector('#companies');
 
 messaging.send('adequa', {
@@ -32,21 +27,3 @@ messaging.send('adequa', {
         number++;
     }, timer);
 });
-
-const onNextScreen = function(e){
-    e.preventDefault();
-
-    document.body.style.opacity = '0';
-
-    messaging.send('adequa', {what: 'cookiesOptout'});
-
-    messaging.send('adequa', {
-        what: 'saveInstallState',
-        state: 2
-    });
-
-    setTimeout(function(){
-        location.href = 'installation-ads.html';
-    }, 500);
-};
-link.addEventListener('click', onNextScreen);

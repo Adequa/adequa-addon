@@ -28,13 +28,13 @@ Adequa.pagestore.updateAdsViewedForTab = function(tabId, nbAdsViewed, partnerAds
     if(diff < 0)
         diff = 0;
 
-    if(((Adequa.current.adsViewedToday || 0) + diff) > Adequa.current.nbMaxAdsPerDay)
-        diff = Adequa.current.nbMaxAdsPerDay - (Adequa.current.adsViewedToday || 0);
+    if(((Adequa.getNumberAdsViewedToday() || 0) + diff) > Adequa.current.nbMaxAdsPerDay)
+        diff = Adequa.current.nbMaxAdsPerDay - (Adequa.getNumberAdsViewedToday() || 0);
 
     tabs[tabId].nbAdsViewed = nbAdsViewed;
 
     Adequa.storage.setCurrent({
-        adsViewedToday: (Adequa.current.adsViewedToday || 0) + diff,
+        adsViewedToday: (Adequa.getNumberAdsViewedToday() || 0) + diff,
         totalNbAdsViewed: (Adequa.current.totalNbAdsViewed || 0) + diff,
         tabs: tabs
     });

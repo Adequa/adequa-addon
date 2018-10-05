@@ -42,7 +42,7 @@ Adequa.isPartner = function (url) {
 };
 
 Adequa.shouldShowAds = function (url) {
-    return Adequa.isPartner(url) && ((((Adequa.current.adsViewedToday || 0) < (Adequa.current.nbMaxAdsPerDay || 25))) || (Adequa.current.nbMaxAdsPerDay === '∞'));
+    return Adequa.isPartner(url) && ((((Adequa.getNumberAdsViewedToday() || 0) < (Adequa.current.nbMaxAdsPerDay || 25))) || (Adequa.current.nbMaxAdsPerDay === '∞'));
 };
 
 Adequa.getRequestType = function (url) {
@@ -76,4 +76,21 @@ Adequa.updateBadge = function(tabId){
     const badge = totalRequestsBlocked !== 0 ? totalRequestsBlocked + '' : '';
 
     vAPI.setIcon(tabId, state, badge);
+};
+
+Adequa.getNumberAdsViewedToday = function(){
+    const now = new Date();
+    const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+    const pageViewedToday = Adequa.storage.db.queryAll('page_views', {
+        query: function(row){
+            return row.consulted_at > startOfDay;
+        }
+    });
+
+    let adsViewed = 0;
+    for(let page of pageViewedToday)
+        adsViewed += page.nb_ads_viewed;
+
+    return adsViewed;
 };

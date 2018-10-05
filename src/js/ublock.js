@@ -123,7 +123,7 @@ var matchBucket = function(url, hostname, bucket, start) {
         targetHostname = this.URI.hostnameFromURI(targetURL),
         key = targetHostname,
         directive = scope === 'page' ? targetURL : targetHostname;
-
+    console.log(url, newState, currentState)
     // Add to directive list
     if ( newState === false ) {
         if ( netWhitelist[key] === undefined ) {

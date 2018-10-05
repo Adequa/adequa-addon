@@ -55,7 +55,12 @@ const getAPIResponse = function (route, callback) {
     req.open('GET', Adequa.uri + 'api/' + route, true);
     req.onreadystatechange = function () {
         if (req.readyState === 4 && (req.status === 200 || req.status === 0)) {
-            callback(JSON.parse(req.responseText));
+            try {
+                callback(JSON.parse(req.responseText));
+            }
+            catch(e){
+                console.warn(e)
+            }
             req = null;
         }
     };

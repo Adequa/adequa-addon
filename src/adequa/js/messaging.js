@@ -18,7 +18,7 @@ Adequa.messaging.onMessage = function (request, sender, callback) {
             callback(Adequa.current.totalNbAdsViewed || 0);
             return;
         case 'fetchAdsViewedStats':
-            const viewedToday = Adequa.current.adsViewedToday;
+            const viewedToday = Adequa.getNumberAdsViewedToday();
             const maxPerDay = Adequa.current.nbMaxAdsPerDay;
             callback({sawToday: viewedToday, NbMaxAdsPerDay: maxPerDay});
             return;
@@ -106,18 +106,8 @@ Adequa.messaging.onMessage = function (request, sender, callback) {
         case 'setNbAdsPerDay':
             if (parseInt(request.selected)) {
                 Adequa.storage.setCurrent({nbMaxAdsPerDay: parseInt(request.selected)});
-                const data = {
-                    addon_id: Adequa.current.addonID,
-                    nb_ads: request.selected
-                };
-                Adequa.request.put(Adequa.uri + 'api/update/nb-ads-per-day', Adequa.request.encoreUrlParams(data)).catch(console.warn);
             } else {
                 Adequa.storage.setCurrent({nbMaxAdsPerDay: '∞'});
-                const data = {
-                    addon_id: Adequa.current.addonID,
-                    nb_ads: 0
-                };
-                Adequa.request.put(Adequa.uri + 'api/update/nb-ads-per-day', Adequa.request.encoreUrlParams(data)).catch(console.warn);
             }
             return;
         case 'setThemesChoosed':
@@ -127,10 +117,11 @@ Adequa.messaging.onMessage = function (request, sender, callback) {
         case 'themesChanged':
             const data = {
                 addon_id: Adequa.current.addonID,
-                themes: Adequa.current.passions || []
+                themes: (Adequa.current.passions || []).toString()
             };
-            Adequa.request.post(Adequa.uri + 'api/store/themes', data).catch(console.warn);
-            callback(Adequa.current.passions || []);
+            Adequa.request.post(Adequa.uri + 'api/store/themes', Adequa.request.encoreUrlParams(data)).catch(console.warn);
+            if(typeof callback === "function")
+                callback(Adequa.current.passions || []);
             return;
         case 'nbAdsPerDayChanged':
             const body = {
@@ -181,13 +172,34 @@ Adequa.messaging.onMessage = function (request, sender, callback) {
                 nbTrackersBlocked: nbTrackersBlocked || 0,
                 nbAdsViewed: nbAdsViewed || 0,
                 loadTime: loadTime || 0,
-                nbAdsViewedToday: Adequa.current.adsViewedToday || 0,
+                nbAdsViewedToday: Adequa.getNumberAdsViewedToday() || 0,
                 nbMaxAdsPerDay: Adequa.current.nbMaxAdsPerDay || 0,
                 totalAdsBlocked: adsBlocked || 0,
                 totalTrackersBlocked: trackersBlocked || 0,
                 siteIsPartner: Adequa.isPartner(request.url || ''),
                 totalNbAdsViewed: Adequa.current.totalNbAdsViewed || 0
             });
+            return;
+        case 'getWhitelist':
+            const ubWhitelist = µBlock.netWhitelist;
+            const defaultWhitelist = µBlock.netWhitelistDefault;
+
+            let whitelist = [];
+
+            for(let item in ubWhitelist) {
+                let push = true;
+                for(let entry of defaultWhitelist.split('\n'))
+                    if(item === entry)
+                        push = false;
+
+                if(push && item !== "#") whitelist.push(item);
+            }
+
+            callback(whitelist);
+            return;
+        case 'disableFiltering':
+            if(request.url)
+            µBlock.toggleNetFilteringSwitch('https://' + request.url);
             return;
         default:
             break;

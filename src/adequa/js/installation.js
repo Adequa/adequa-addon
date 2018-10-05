@@ -58,27 +58,7 @@ const adsValidate = function(callback){
 };
 
 const themesValidate = function(callback){
-    messaging.send('adequa', {what: 'themesChanged'}, function(selected){
-        if(selected.length === 0){
-            let elem = document.createElement('p');
-            elem.appendChild(document.createTextNode('Vous devez renseigner au moins un thème'));
-            elem.style.color = '#f00';
-            elem.style.position = 'absolute';
-            elem.style.top = '128px';
-            elem.style.padding = '5px';
-            elem.style.zIndex = '9999';
-            elem.style.fontWeight = 'bold';
-            elem.style.textAlign = 'center';
-            elem.style.width = '100%';
-            document.body.insertBefore(elem, document.querySelector('iframe'));
-
-            setTimeout(function () {
-                document.body.removeChild(elem);
-            }, 5000);
-
-            return;
-        }
-
+    messaging.send('adequa', {what: 'themesChanged'}, function(){
         messaging.send('adequa', {what: 'firstInstallFinished'});
         callback(true);
         setTimeout(function(){

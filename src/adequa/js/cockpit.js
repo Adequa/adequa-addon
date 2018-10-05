@@ -102,7 +102,10 @@
             elem.innerHTML = partnerHtmlMaxAds(hostname, firstVisit, generated, nbVisit, nbAdsViewedOnSite);
         }
         else {
-            elem.innerHTML = notPartnerHtml(hostname, firstVisit, nbVisit, nbAdsBlocked, nbTrackersBlocked, loadTime);
+            if(!uDom('body').hasClass('off'))
+                elem.innerHTML = notPartnerHtml(hostname, firstVisit, nbVisit, nbAdsBlocked, nbTrackersBlocked, loadTime);
+            else
+                elem.innerHTML = whitelistedHtml(nbAdsViewedToday, nbMaxAdsPerDay);
         }
         document.querySelector('main').insertBefore(elem, document.querySelector('.stats'));
     };
@@ -133,6 +136,18 @@
             <p>minutes de chargement</p>
         </div>
     </div>
+        `;
+    };
+
+    const whitelistedHtml = function(nbAdsViewedToday, nbMaxAdsPerDay){
+        return `
+        <div id="progress">
+            <div style="width: ${(100 * nbAdsViewedToday / nbMaxAdsPerDay).toFixed(0)}%"></div>
+            <p>Aujourd'hui tu as vu <span>${nbAdsViewedToday}/${nbMaxAdsPerDay}</span> pubs !</p>  
+        </div>
+        <div class="site" style="background-color: var(--green)">
+            <p>Ce site n'est pas encore partenaire d'Adequa. On ne peut donc pas contrôler le nombre pubs qui s'affichent. Elles ne sont pas comptées dans ta jauge quotidienne.</p> 
+        </div>
         `;
     };
 

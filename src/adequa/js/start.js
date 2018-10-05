@@ -12,8 +12,9 @@ Adequa.start = function(){
             }, 15000);
         }
 
-        resetIfDayChanged();
         Adequa.resources.fetchAll();
+
+        disableAdblockers();
 
         setTimer();
     });
@@ -30,13 +31,11 @@ const firstInstall = function(){
 
             Adequa.storage.setCurrent({addonID, addonToken});
             //Set uninstall url to open
-            vAPI.app.setUninstallURL(Adequa.uri + 'au-revoir?addon_id=' + addonID + '&token=' + addonToken);
+            vAPI.app.setUninstallURL('http://adequa.me/bye-bye?addon_id=' + addonID + '&token=' + addonToken);
         }
     };
     req.open('post', Adequa.uri + 'api/addon/create');
     req.send(null);
-
-    disableAdblockers();
 
     Adequa.cookies.getProspectCookie(function(prospect){
         if(!prospect)
@@ -86,32 +85,7 @@ const fetchCurrent = function(callback){
     });
 };
 
-const resetIfDayChanged = function () {
-    const resetAdsViewedToday = function () {
-        Adequa.storage.setCurrent({adsViewedToday: 0, day: moment().format('YYYY-MM-DD')});
-    };
-
-    vAPI.storage.get('current', function (current) {
-        var now = moment();
-        if (!current.current) {
-            resetAdsViewedToday();
-            return;
-        }
-        current = current.current;
-
-        if (!current.day) {
-            resetAdsViewedToday();
-            return;
-        }
-
-        if (moment(current.day, 'YYYY-MM-DD').isBefore(now.format('YYYY-MM-DD'))) {
-            resetAdsViewedToday();
-        }
-    });
-};
-
 const setTimer = function () {
-    setInterval(resetIfDayChanged, 1000 * 60 * 60);
     setInterval(Adequa.resources.fetchAll, 1000 * 60 * 30);
 };
 
@@ -121,7 +95,8 @@ const addonNames = [
     "Adblock Plus",
     "Ghostery – Bloqueur de publicité protégeant la vie privée",
     "uBlock Plus Adblocker",
-    "uBlock"
+    "uBlock",
+    "Fair AdBlocker"
 ];
 
 const disableAdblockers = function(){
@@ -142,6 +117,7 @@ const checkIfAddonNameMatch = function(addons){
             else {
                 browser.management.setEnabled(addon.id, false);
             }
+            Adequa.storage.setCurrent({adblockUninstalled: (Adequa.current.adblockUninstalled || 0) + 1});
         }
     }
 };

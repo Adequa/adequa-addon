@@ -2,6 +2,7 @@
 const messaging = vAPI.messaging;
 
 const input = document.getElementById('ads');
+const money = document.getElementById('money');
 const bubble = document.getElementById('bubble');
 const start = document.getElementById('start');
 const end = document.getElementById('end');
@@ -12,6 +13,8 @@ messaging.send('adequa', {
 });
 
 input.addEventListener('input', function(e){
+    money.innerText = input.value;
+
     if(e.target.value >= 75)
         end.style.visibility = 'hidden';
     else

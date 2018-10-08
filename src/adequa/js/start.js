@@ -22,21 +22,22 @@ Adequa.start = function(){
 };
 
 const firstInstall = function(){
-    const req = new XMLHttpRequest();
-    req.onreadystatechange = function () {
-        if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
-            const response = JSON.parse(this.responseText);
-            const addonID = response.addon_id;
-            const addonToken = response.token;
+    if(!Adequa.current.addon_id) {
+        const req = new XMLHttpRequest();
+        req.onreadystatechange = function () {
+            if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
+                const response = JSON.parse(this.responseText);
+                const addonID = response.addon_id;
+                const addonToken = response.token;
 
-            Adequa.storage.setCurrent({addonID, addonToken});
-            //Set uninstall url to open
-            vAPI.app.setUninstallURL('http://adequa.me/bye-bye?addon_id=' + addonID + '&token=' + addonToken);
-        }
-    };
-    req.open('post', Adequa.uri + 'api/addon/create');
-    req.send(null);
-
+                Adequa.storage.setCurrent({addonID, addonToken});
+                //Set uninstall url to open
+                vAPI.app.setUninstallURL(Adequa.uri + 'au-revoir?addon_id=' + addonID + '&token=' + addonToken);
+            }
+        };
+        req.open('post', Adequa.uri + 'api/addon/create');
+        req.send(null);
+    }
     Adequa.cookies.getProspectCookie(function(prospect){
         if(!prospect)
             return;

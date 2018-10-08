@@ -139,8 +139,9 @@
                 const cfeDetails = response && response.specificCosmeticFilters;
 
                 getBlockedSelectors(cfeDetails, function (selectors) {
+                    for(let selector of selectors)
                     domFilterer.addCSSRule(
-                        selectors,
+                        selector,
                         'display:none!important;'
                     );
                 });

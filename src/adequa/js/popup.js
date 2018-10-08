@@ -10,7 +10,6 @@ vAPI.messaging.send('adequa', {
         what: 'fetchInstallState'
     }, function (state) {
         const iframe = document.querySelector('iframe');
-        console.log(state)
         if(!state) {
             iframe.setAttribute('src', 'installation-presentation.html');
             return;

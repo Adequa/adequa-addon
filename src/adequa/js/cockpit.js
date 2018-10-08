@@ -62,14 +62,6 @@
                     url: 'adequa/dashboard.html#settings'
                 });
             });
-
-        if (contactButton)
-            contactButton.addEventListener('click', function () {
-                messaging.send('adequa', {
-                    what: 'openTab',
-                    url: 'mailto:julien@adequa.me'
-                });
-            });
         const adsBlockedElem = document.querySelector('#adsBlocked');
         const trackersBlockedElem = document.querySelector('#trackersBlocked');
         const generatedElem = document.querySelector('#generated');

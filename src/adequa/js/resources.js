@@ -51,18 +51,18 @@ const getOptoutCookies = function () {
 };
 
 const getAPIResponse = function (route, callback) {
-    let req = new XMLHttpRequest();
-    req.open('GET', Adequa.uri + 'api/' + route, true);
-    req.onreadystatechange = function () {
-        if (req.readyState === 4 && (req.status === 200 || req.status === 0)) {
-            try {
-                callback(JSON.parse(req.responseText));
-            }
-            catch(e){
-                console.warn(e)
-            }
-            req = null;
+    Adequa.request.get(Adequa.uri + 'api/' + route).then(function(req){
+        try {
+            callback(JSON.parse(req.response));
         }
-    };
-    req.send(null);
+        catch(e){
+            Adequa.request.get('/assets/adequa/' + route + '.json').then(function(failoverReq){
+                callback(JSON.parse(failoverReq.response));
+            });
+        }
+    }).catch(function(){
+        Adequa.request.get('/assets/adequa/' + route + '.json').then(function(failoverReq){
+            callback(JSON.parse(failoverReq.response));
+        });
+    });
 };

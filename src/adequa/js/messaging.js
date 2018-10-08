@@ -128,7 +128,7 @@ Adequa.messaging.onMessage = function (request, sender, callback) {
                 addon_id: Adequa.current.addonID,
                 nb_ads: parseInt(Adequa.current.nbMaxAdsPerDay || 25) ? Adequa.current.nbMaxAdsPerDay || 25 : 0
             };
-            Adequa.request.put(Adequa.uri + 'api/update/nb-ads-per-day', body).catch(console.warn);
+            Adequa.request.put(Adequa.uri + 'api/update/nb-ads-per-day', Adequa.request.encoreUrlParams(body)).catch(console.warn);
             return;
         case 'getAvailableThemes':
             callback(Adequa.current.availableThemes);

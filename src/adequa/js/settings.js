@@ -5,10 +5,13 @@ const input = document.getElementById('ads');
 const bubble = document.getElementById('bubble');
 const start = document.getElementById('start');
 const end = document.getElementById('end');
+const money = document.getElementById('money');
 
 let timeout = 0, themesTimeout = 0;
 
 input.addEventListener('input', function(e){
+    money.innerText = input.value;
+
     if (e.target.value >= 75)
         end.style.visibility = 'hidden';
     else

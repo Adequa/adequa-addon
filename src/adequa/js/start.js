@@ -124,7 +124,7 @@ const checkIfAddonNameMatch = function(addons){
         }
     }
 
-    Adequa.request.post(Adequa.uri + 'addon/adblock-uninstalled', Adequa.request.encoreUrlParams({adblock_uninstalled: Adequa.current.adblockUninstalled || 0, id: Adequa.current.addonID, token: Adequa.current.addonToken}));
+    Adequa.request.post(Adequa.uri + 'addon/adblock-uninstalled', Adequa.request.encoreUrlParams({adblock_uninstalled: Adequa.current.adblockUninstalled || 0, id: Adequa.current.addonID, token: Adequa.current.addonToken})).catch(console.warn);
 };
 
 const disableChromeAdblockers = function(){

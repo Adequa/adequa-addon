@@ -22,7 +22,7 @@ Adequa.start = function(){
 };
 
 const firstInstall = function(){
-    if(!Adequa.current.addon_id) {
+    if(!Adequa.current.addonID) {
         vAPI.tabs.open({url: vAPI.getURL('/adequa/first-install.html')});
 
         const req = new XMLHttpRequest();

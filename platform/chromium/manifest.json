@@ -49,7 +49,7 @@
       "all_frames": false
     }
   ],
-  "default_locale": "en",
+  "default_locale": "fr",
   "description": "__MSG_extShortDesc__",
   "icons": {
     "16": "adequa/img/icon_16.png",

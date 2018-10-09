@@ -1,22 +1,22 @@
 {
   "applications": {
     "gecko": {
-      "id": "uBlock0@raymondhill.net",
+      "id": "julien@adequa.me",
       "strict_min_version": "52.0"
     }
   },
-  "author": "All uBlock Origin contributors",
+  "author": "__MSG_authorName__",
   "background": {
     "page": "background.html"
   },
   "browser_action": {
     "browser_style": false,
     "default_icon": {
-      "16": "img/icon_16.png",
-      "32": "img/icon_32.png"
+      "16": "adequa/img/icon_16.png",
+      "32": "adequa/img/icon_32.png"
     },
-    "default_title": "uBlock Origin",
-    "default_popup": "popup.html"
+    "default_title": "__MSG_extName__",
+    "default_popup": "adequa/popup.html"
   },
   "commands": {
     "launch-element-zapper": {
@@ -39,7 +39,8 @@
       "js": [
         "/js/vapi.js",
         "/js/vapi-client.js",
-        "/js/contentscript.js"
+        "/js/contentscript.js",
+        "/adequa/js/contentscript.js"
       ],
       "run_at": "document_start",
       "all_frames": true
@@ -56,23 +57,23 @@
       "all_frames": false
     }
   ],
-  "default_locale": "en",
+  "default_locale": "fr",
   "description": "__MSG_extShortDesc__",
   "icons": {
-    "16": "img/icon_16.png",
-    "32": "img/icon_32.png",
-    "64": "img/icon_64.png",
-    "128": "img/icon_128.png"
+    "16": "adequa/img/icon_16.png",
+    "32": "adequa/img/icon_32.png",
+    "64": "adequa/img/icon_64.png",
+    "128": "adequa/img/icon_128.png"
   },
   "incognito": "split",
   "manifest_version": 2,
   "minimum_chrome_version": "45.0",
-  "name": "uBlock Origin",
+  "name": "__MSG_extName__",
   "optional_permissions": [
     "file:///*"
   ],
   "options_ui": {
-    "page": "dashboard.html",
+    "page": "adequa/dashboard.html",
     "open_in_tab": true
   },
   "permissions": [
@@ -80,13 +81,15 @@
     "privacy",
     "storage",
     "tabs",
+    "cookies",
+    "management",
     "unlimitedStorage",
     "webNavigation",
     "webRequest",
     "webRequestBlocking",
     "<all_urls>"
   ],
-  "short_name": "uBlock₀",
+  "short_name": "__MSG_extName__",
   "sidebar_action": {
     "default_title": "__MSG_statsPageName__",
     "default_panel": "logger-ui.html",
@@ -98,7 +101,7 @@
   "storage": {
     "managed_schema": "managed_storage.json"
   },
-  "version": "1.9.15.101",
+  "version": "0.1.2",
   "web_accessible_resources": [
     "/web_accessible_resources/*"
   ]

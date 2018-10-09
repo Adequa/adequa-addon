@@ -47,3 +47,13 @@ h1, h2 {
 p {
     font-family: "Josefin Slab", serif;
 }
+
+svg *{
+    transition: fill 0.2s;
+    fill: black;
+}
+
+svg:hover * {
+    transition: fill 0.2s;
+    fill: var(--green);
+}

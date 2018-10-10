@@ -138,7 +138,7 @@
             <p>Aujourd'hui tu as vu <span>${nbAdsViewedToday}/${nbMaxAdsPerDay}</span> pubs !</p>  
         </div>
         <div class="site" style="background-color: var(--green)">
-            <p>Ce site n'est pas encore partenaire d'Adequa. On ne peut donc pas contrôler le nombre pubs qui s'affichent. Elles ne sont pas comptées dans ta jauge quotidienne.</p> 
+            <p>Ce site n'est pas encore partenaire d'Adequa. On ne peut donc pas contrôler le nombre de pubs qui s'affichent. Elles ne sont pas comptées dans ta jauge quotidienne.</p> 
         </div>
         `;
     };

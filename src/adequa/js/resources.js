@@ -7,7 +7,7 @@ Adequa.resources.fetchAll = function () {
         if(Object.is(Adequa.current.versions || {}, versions)) return;
 
         if(!checkVersion(versions, 'themes') || !Adequa.current.availableThemes) getAvailableThemes();
-        if(!checkVersion(versions, 'cookie-whitelist') || !Adequa.current.cookieWhitelist) getWhitelist();
+        if(!checkVersion(versions, 'cookie-blacklist') || !Adequa.current.cookieBlacklist) getBlacklist();
         if(!checkVersion(versions, 'query-selectors') || !Adequa.current.partnerList) getPartnerList();
         if(!checkVersion(versions, 'notarget-cookies') || !Adequa.current.yocCookies) getOptoutCookies();
         if(!checkVersion(versions, 'requests-type') || !Adequa.current.requestsType) getRequestsType();
@@ -20,15 +20,20 @@ const checkVersion = function(versions, name){
   return versions[name] === (Adequa.current.versions || {})[name];
 };
 
-const getWhitelist = function () {
-    getAPIResponse('cookie-whitelist', function (list) {
-        Adequa.storage.setCurrent({cookieWhitelist: list});
+const getBlacklist = function () {
+    getAPIResponse('cookie-blacklist', function (list) {
+        Adequa.storage.setCurrent({cookieBlacklist: list});
     });
 };
 
 const getPartnerList = function () {
     getAPIResponse('query-selectors', function (partnerList) {
         Adequa.storage.setCurrent({partnerList});
+        for(let partner in Adequa.current.partnerList) {
+            if (µBlock.getNetFilteringSwitch('https://' + partner)) {
+                µBlock.toggleNetFilteringSwitch('https://' + partner);
+            }
+        }
     });
 };
 

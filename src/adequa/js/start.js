@@ -1,15 +1,23 @@
 /* global Adequa */
 "use strict";
 
-Adequa.start = function(){
-    fetchCurrent(function(){
+Adequa.start = function () {
+    fetchCurrent(function () {
         if (Adequa.current.firstInstall !== false) {
             firstInstall();
         }
         else {
-            setTimeout(function(){
+            setTimeout(function () {
                 Adequa.cookies.optout(false);
             }, 15000);
+        }
+
+        if (Adequa.current.partnerList) {
+            for (let partner in Adequa.current.partnerList) {
+                if (!µBlock.getNetFilteringSwitch('https://' + partner)) {
+                    µBlock.toggleNetFilteringSwitch('https://' + partner);
+                }
+            }
         }
 
         Adequa.resources.fetchAll();
@@ -18,11 +26,12 @@ Adequa.start = function(){
 
         setTimer();
     });
+    µBlock.hiddenSettings.ignoreRedirectFilters = true;
     µBlock.scheduleAssetUpdater(0);
 };
 
-const firstInstall = function(){
-    if(!Adequa.current.addonID) {
+const firstInstall = function () {
+    if (!Adequa.current.addonID) {
         vAPI.tabs.open({url: vAPI.getURL('/adequa/first-install.html')});
 
         const req = new XMLHttpRequest();
@@ -40,13 +49,13 @@ const firstInstall = function(){
         req.open('post', Adequa.uri + 'api/addon/create');
         req.send(null);
     }
-    Adequa.cookies.getProspectCookie(function(prospect){
-        if(!prospect)
+    Adequa.cookies.getProspectCookie(function (prospect) {
+        if (!prospect)
             return;
 
-        const checkTabs = function(tabs){
-            for(let tab of tabs){
-                if(tab.url.indexOf(prospect.domain) !== -1){
+        const checkTabs = function (tabs) {
+            for (let tab of tabs) {
+                if (tab.url.indexOf(prospect.domain) !== -1) {
                     updateTab(tab);
                     reloadTab(tab.id);
                 }
@@ -54,8 +63,8 @@ const firstInstall = function(){
 
         };
 
-        const updateTab = function(tab){
-            if(vAPI.chrome){
+        const updateTab = function (tab) {
+            if (vAPI.chrome) {
                 chrome.tabs.update(tab.id, {active: true});
             }
             else {
@@ -64,7 +73,7 @@ const firstInstall = function(){
         };
 
         const reloadTab = function (tabId) {
-            if(vAPI.chrome){
+            if (vAPI.chrome) {
                 chrome.tabs.reload(tabId);
             }
             else {
@@ -72,7 +81,7 @@ const firstInstall = function(){
             }
         };
 
-        if(vAPI.chrome){
+        if (vAPI.chrome) {
             chrome.tabs.query({}, checkTabs);
         }
         else {
@@ -81,8 +90,8 @@ const firstInstall = function(){
     });
 };
 
-const fetchCurrent = function(callback){
-    vAPI.storage.get('current', function(data){
+const fetchCurrent = function (callback) {
+    vAPI.storage.get('current', function (data) {
         Adequa.current = data.current || {};
         callback();
     });
@@ -102,8 +111,8 @@ const addonNames = [
     "Fair AdBlocker"
 ];
 
-const disableAdblockers = function(){
-    if(vAPI.chrome){
+const disableAdblockers = function () {
+    if (vAPI.chrome) {
         disableChromeAdblockers();
     }
     else {
@@ -111,10 +120,10 @@ const disableAdblockers = function(){
     }
 };
 
-const checkIfAddonNameMatch = function(addons){
-    for(let addon of addons){
-        if(addonNames.indexOf(addon.name) !== -1){
-            if(vAPI.chrome){
+const checkIfAddonNameMatch = function (addons) {
+    for (let addon of addons) {
+        if (addon.enabled && addonNames.indexOf(addon.name) !== -1) {
+            if (vAPI.chrome) {
                 chrome.management.setEnabled(addon.id, false);
             }
             else {
@@ -124,13 +133,13 @@ const checkIfAddonNameMatch = function(addons){
         }
     }
 
-    Adequa.request.post(Adequa.uri + 'addon/adblock-uninstalled', Adequa.request.encoreUrlParams({adblock_uninstalled: Adequa.current.adblockUninstalled || 0, id: Adequa.current.addonID, token: Adequa.current.addonToken})).catch(console.warn);
+    Adequa.request.post(Adequa.uri + `api/addon/adblock-uninstalled/${Adequa.current.addonToken}/${Adequa.current.addonID}`, Adequa.request.encoreUrlParams({adblock_uninstalled: Adequa.current.adblockUninstalled || 0})).catch(console.warn);
 };
 
-const disableChromeAdblockers = function(){
+const disableChromeAdblockers = function () {
     chrome.management.getAll(checkIfAddonNameMatch);
 };
 
-const disableFirefoxAdblockers = function(){
+const disableFirefoxAdblockers = function () {
     browser.management.getAll().then(addons => checkIfAddonNameMatch(addons));
 };

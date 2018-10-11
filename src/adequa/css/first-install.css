@@ -29,7 +29,7 @@ main > div:last-child {
     display: flex;
     flex-direction: column;
     justify-content: space-evenly;
-    padding-right: 30px;
+    padding-right: 80px;
 }
 
 main > div:last-child > div {
@@ -86,9 +86,9 @@ main strong {
 
 #arrow {
     top: 5px;
-    right: 28px;
+    right: 80px;
     position: absolute;
-    height: 30vh;
+    height: 28vh;
     border-left: 3px solid #64A19D;
     background-color: white;
 }

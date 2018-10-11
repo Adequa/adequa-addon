@@ -41,7 +41,7 @@ messaging.send('adequa', {
     what: 'getCurrent'
 }, function(current){
     input.value = current.nbMaxAdsPerDay;
-
+    money.innerText = input.value;
     let pos = (document.querySelector('input + div').getBoundingClientRect().width * (input.value-15) / (80-15));
     bubble.innerHTML = '<span style="position: absolute;top: 0;left: -' + (20*pos/document.querySelector('input + div').getBoundingClientRect().width) +'px;">' + input.value + '</span>';
     bubble.style.left = pos + 'px';
@@ -53,11 +53,11 @@ messaging.send('adequa', {
         chooseThemes.innerHTML = '';
         for(let theme of themes){
             let elem = document.createElement('span');
-
-            for(let passion of current.passions) {
-                if(theme.id === parseInt(passion))
-                    elem.classList.add('selected');
-            }
+            if(current.passions)
+                for(let passion of current.passions) {
+                    if(theme.id === parseInt(passion))
+                        elem.classList.add('selected');
+                }
             elem.setAttribute('data-theme-id', theme.id);
             elem.innerText = theme.name;
             elem.addEventListener('click', onClick);

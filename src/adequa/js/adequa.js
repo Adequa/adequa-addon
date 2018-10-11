@@ -94,3 +94,13 @@ Adequa.getNumberAdsViewedToday = function(){
 
     return adsViewed;
 };
+
+Adequa.getTotalNumberAdsViewed = function(){
+    const pageViewed = Adequa.storage.db.queryAll('page_views');
+
+    let adsViewed = 0;
+    for(let page of pageViewed)
+        adsViewed += page.nb_ads_viewed;
+
+    return adsViewed;
+};

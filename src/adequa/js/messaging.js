@@ -15,7 +15,7 @@ Adequa.messaging.onMessage = function (request, sender, callback) {
             callback((Adequa.current.tabs[request.tabId] || {}).nbAdsViewed);
             return;
         case 'fetchTotalNumberAdsViewed':
-            callback(Adequa.current.totalNbAdsViewed || 0);
+            callback(Adequa.getTotalNumberAdsViewed() || 0);
             return;
         case 'fetchAdsViewedStats':
             const viewedToday = Adequa.getNumberAdsViewedToday();
@@ -44,7 +44,7 @@ Adequa.messaging.onMessage = function (request, sender, callback) {
             callback(Adequa.current.firstInstall);
             return;
         case 'firstInstallFinished':
-            Adequa.storage.setCurrent({firstInstall: false, adsViewedToday: 0, totalNbAdsViewed: 0});
+            Adequa.storage.setCurrent({firstInstall: false});
             callback();
             return;
 
@@ -177,7 +177,7 @@ Adequa.messaging.onMessage = function (request, sender, callback) {
                 totalAdsBlocked: adsBlocked || 0,
                 totalTrackersBlocked: trackersBlocked || 0,
                 siteIsPartner: Adequa.isPartner(request.url || ''),
-                totalNbAdsViewed: Adequa.current.totalNbAdsViewed || 0
+                totalNbAdsViewed: Adequa.getTotalNumberAdsViewed() || 0
             });
             return;
         case 'getWhitelist':
@@ -191,8 +191,11 @@ Adequa.messaging.onMessage = function (request, sender, callback) {
                 for(let entry of defaultWhitelist.split('\n'))
                     if(item === entry)
                         push = false;
+                for(let entry in Adequa.current.partnerList)
+                    if(item === entry)
+                        push = false;
 
-                if(push && item !== "#") whitelist.push(item);
+                if(push && item !== "#" && item !== "0") whitelist.push(item);
             }
 
             callback(whitelist);

@@ -68,9 +68,9 @@ const onCookieChanged = function (changeInfo) {
     if (!Adequa.isPartner(hostname))
         return;
 
-    const hostnameWhitelist = ((Adequa.current.cookieWhitelist || {})[hostname] || []);
+    const hostnameBlacklist = ((Adequa.current.cookieBlacklist || {})[hostname] || []);
 
-    if (hostnameWhitelist.indexOf(changeInfo.cookie.name) === -1)
+    if (hostnameBlacklist.indexOf(changeInfo.cookie.name) !== -1)
         removeCookie(changeInfo.cookie);
 };
 

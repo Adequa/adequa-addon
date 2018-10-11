@@ -65,7 +65,7 @@
     "64": "adequa/img/icon_64.png",
     "128": "adequa/img/icon_128.png"
   },
-  "incognito": "split",
+  "incognito": "spanning",
   "manifest_version": 2,
   "minimum_chrome_version": "45.0",
   "name": "__MSG_extName__",
@@ -90,18 +90,10 @@
     "<all_urls>"
   ],
   "short_name": "__MSG_extName__",
-  "sidebar_action": {
-    "default_title": "__MSG_statsPageName__",
-    "default_panel": "logger-ui.html",
-    "default_icon": {
-      "16": "img/ublock.svg",
-      "48": "img/ublock.svg"
-    }
-  },
   "storage": {
     "managed_schema": "managed_storage.json"
   },
-  "version": "0.1.2",
+  "version": "0.1.4",
   "web_accessible_resources": [
     "/web_accessible_resources/*"
   ]

@@ -31,6 +31,26 @@ Adequa.hostname = function (url) {
     return domain;
 };
 
+Adequa.addPartnerToWhitelist = function(){
+    if (Adequa.current.partnerList) {
+        for (let partner in Adequa.current.partnerList) {
+            if (µBlock.getNetFilteringSwitch('https://' + partner)) {
+                µBlock.toggleNetFilteringSwitch('https://' + partner);
+            }
+        }
+    }
+};
+
+Adequa.removePartnerFromWhitelist = function(){
+    if (Adequa.current.partnerList) {
+        for (let partner in Adequa.current.partnerList) {
+            if (!µBlock.getNetFilteringSwitch('https://' + partner)) {
+                µBlock.toggleNetFilteringSwitch('https://' + partner);
+            }
+        }
+    }
+};
+
 Adequa.isPartner = function (url) {
     let partner = false;
     const hostname = Adequa.hostname(url);
@@ -42,7 +62,12 @@ Adequa.isPartner = function (url) {
 };
 
 Adequa.shouldShowAds = function (url) {
-    return Adequa.isPartner(url) && ((((Adequa.getNumberAdsViewedToday() || 0) < (Adequa.current.nbMaxAdsPerDay || 25))) || (Adequa.current.nbMaxAdsPerDay === '∞'));
+    if(Adequa.isPartner(url) && ((((Adequa.getNumberAdsViewedToday() || 0) < (Adequa.current.nbMaxAdsPerDay || 25))) || (Adequa.current.nbMaxAdsPerDay === '∞'))){
+        Adequa.addPartnerToWhitelist();
+        return true;
+    }
+    Adequa.removePartnerFromWhitelist();
+    return false;
 };
 
 Adequa.getRequestType = function (url) {

@@ -3,6 +3,26 @@
 
 Adequa.start = function () {
     fetchCurrent(function () {
+        if (!Adequa.current.addonID) {
+            vAPI.tabs.open({url: vAPI.getURL('/adequa/first-install.html')});
+
+            const req = new XMLHttpRequest();
+            req.onreadystatechange = function () {
+                if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
+                    const response = JSON.parse(this.responseText);
+                    const addonID = response.addon_id;
+                    const addonToken = response.token;
+
+                    Adequa.storage.setCurrent({addonID, addonToken});
+                    //Set uninstall url to open
+                    vAPI.app.setUninstallURL(Adequa.uri + 'au-revoir?addon_id=' + addonID + '&token=' + addonToken);
+                    disableAdblockers();
+                }
+            };
+            req.open('post', Adequa.uri + 'api/addon/create');
+            req.send(null);
+        }
+
         if (Adequa.current.firstInstall !== false) {
             firstInstall();
         }
@@ -10,19 +30,11 @@ Adequa.start = function () {
             setTimeout(function () {
                 Adequa.cookies.optout(false);
             }, 15000);
-        }
-
-        if (Adequa.current.partnerList) {
-            for (let partner in Adequa.current.partnerList) {
-                if (!µBlock.getNetFilteringSwitch('https://' + partner)) {
-                    µBlock.toggleNetFilteringSwitch('https://' + partner);
-                }
-            }
+            disableAdblockers();
         }
 
         Adequa.resources.fetchAll();
-
-        disableAdblockers();
+        Adequa.addPartnerToWhitelist();
 
         setTimer();
     });
@@ -31,24 +43,6 @@ Adequa.start = function () {
 };
 
 const firstInstall = function () {
-    if (!Adequa.current.addonID) {
-        vAPI.tabs.open({url: vAPI.getURL('/adequa/first-install.html')});
-
-        const req = new XMLHttpRequest();
-        req.onreadystatechange = function () {
-            if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
-                const response = JSON.parse(this.responseText);
-                const addonID = response.addon_id;
-                const addonToken = response.token;
-
-                Adequa.storage.setCurrent({addonID, addonToken});
-                //Set uninstall url to open
-                vAPI.app.setUninstallURL(Adequa.uri + 'au-revoir?addon_id=' + addonID + '&token=' + addonToken);
-            }
-        };
-        req.open('post', Adequa.uri + 'api/addon/create');
-        req.send(null);
-    }
     Adequa.cookies.getProspectCookie(function (prospect) {
         if (!prospect)
             return;
@@ -92,7 +86,9 @@ const firstInstall = function () {
 
 const fetchCurrent = function (callback) {
     vAPI.storage.get('current', function (data) {
-        Adequa.current = data.current || {};
+        // Adequa.current = data.current || {};
+        Adequa.current = (Adequa.storage.db.query('current', {ID: 1})[0] || {}).current || {tabs: {}, versions: {}};
+        console.log(Adequa.current);
         callback();
     });
 };

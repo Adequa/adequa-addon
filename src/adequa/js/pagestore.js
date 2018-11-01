@@ -3,7 +3,7 @@
 "use strict";
 Adequa.pagestore = {};
 
-Adequa.pagestore.updateRequestBlockedForTab = function(tabId, url) {
+Adequa.pagestore.updateRequestBlockedForTab = function (tabId, url) {
     setTimeout(function () {
         const type = Adequa.getRequestType(url);
         let tabs = Adequa.current.tabs || {};
@@ -20,18 +20,18 @@ Adequa.pagestore.updateRequestBlockedForTab = function(tabId, url) {
     }, 500);
 };
 
-Adequa.pagestore.updateAdsViewedForTab = function(tabId, nbAdsViewed, partnerAds){
+Adequa.pagestore.updateAdsViewedForTab = function (tabId, nbAdsViewed, partnerAds) {
     let tabs = Adequa.current.tabs || {};
 
     let diff = (nbAdsViewed - (tabs[tabId].nbAdsViewed || 0)) || 0;
 
-    if(diff < 0)
-        diff = 0;
-
-    if(((Adequa.getNumberAdsViewedToday() || 0) + diff) > Adequa.current.nbMaxAdsPerDay)
+    if (((Adequa.getNumberAdsViewedToday() || 0) + diff) > Adequa.current.nbMaxAdsPerDay)
         diff = Adequa.current.nbMaxAdsPerDay - (Adequa.getNumberAdsViewedToday() || 0);
 
-    tabs[tabId].nbAdsViewed = nbAdsViewed;
+    if(tabs[tabId].nbAdsViewed > ((tabs[tabId].nbAdsPostRefresh || 0) + nbAdsViewed))
+        tabs[tabId].nbAdsPostRefresh = tabs[tabId].nbAdsViewed;
+    else
+        tabs[tabId].nbAdsViewed = (tabs[tabId].nbAdsPostRefresh || 0) + nbAdsViewed;
 
     Adequa.storage.setCurrent({
         adsViewedToday: (Adequa.getNumberAdsViewedToday() || 0) + diff,
@@ -39,18 +39,19 @@ Adequa.pagestore.updateAdsViewedForTab = function(tabId, nbAdsViewed, partnerAds
         tabs: tabs
     });
 
+    savePartnerHistoryToServer(tabId);
     Adequa.pagestore.updatePageViewFromCurrent(tabId);
     Adequa.pagestore.updateAdPrintsFromCurrent(tabId, partnerAds);
 };
 
-Adequa.pagestore.updatePageViewFromCurrent = function(tabId){
+Adequa.pagestore.updatePageViewFromCurrent = function (tabId) {
     const tab = Adequa.current.tabs[tabId];
-    if(!tab || !tab.url)
+    if (!tab || !tab.url)
         return;
-    if(!(tab.url.startsWith('http://') || tab.url.startsWith('https://')))
+    if (!(tab.url.startsWith('http://') || tab.url.startsWith('https://')))
         return;
 
-    if(tab.dbId === 0){
+    if (tab.dbId === 0) {
         const id = Adequa.storage.db.insert("page_views", {
             url: tab.url || '',
             hostname: Adequa.hostname(tab.url || ''),
@@ -69,7 +70,7 @@ Adequa.pagestore.updatePageViewFromCurrent = function(tabId){
         });
     }
     else {
-        Adequa.storage.db.update("page_views", {ID: tab.dbId}, function(row) {
+        Adequa.storage.db.update("page_views", {ID: tab.dbId}, function (row) {
             row.url = tab.url || '';
             row.hostname = Adequa.hostname(tab.url || '');
             row.consulted_at = tab.consultTime || 0;
@@ -85,20 +86,20 @@ Adequa.pagestore.updatePageViewFromCurrent = function(tabId){
     Adequa.updateBadge(tabId);
 };
 
-Adequa.pagestore.updateAdPrintsFromCurrent = function(tabId, partnerAds){
+Adequa.pagestore.updateAdPrintsFromCurrent = function (tabId, partnerAds) {
     const tab = Adequa.current.tabs[tabId];
-    if(!tab)
+    if (!tab)
         return;
 
-    if(!partnerAds)
+    if (!partnerAds)
         return;
 
     Adequa.storage.db.deleteRows('ad_prints', {
-            page_view_id: tab.dbId,
-            viewed_at: tab.consultTime,
-        });
+        page_view_id: tab.dbId,
+        viewed_at: tab.consultTime,
+    });
 
-    for(let ad of partnerAds){
+    for (let ad of partnerAds) {
         Adequa.storage.db.insert('ad_prints', {
             page_view_id: tab.dbId,
             passion: ad.passion,
@@ -108,11 +109,11 @@ Adequa.pagestore.updateAdPrintsFromCurrent = function(tabId, partnerAds){
     }
 };
 
-Adequa.pagestore.pageLoaded = function(tabId, loadTime, consultTime){
+Adequa.pagestore.pageLoaded = function (tabId, loadTime, consultTime) {
     let tabs = Adequa.current.tabs || {};
     tabs[tabId] = tabs[tabId] || {};
 
-    if(tabs[tabId].loadTime !== 0)
+    if (tabs[tabId].loadTime !== 0)
         return;
 
 
@@ -123,12 +124,14 @@ Adequa.pagestore.pageLoaded = function(tabId, loadTime, consultTime){
     Adequa.pagestore.updatePageViewFromCurrent(tabId);
 };
 
-Adequa.pagestore.resetTab = function(tabId, url){
+Adequa.pagestore.resetTab = function (tabId, url) {
     let tabs = Adequa.current.tabs || {};
-    if(tabs[tabId] && tabs[tabId].url === url && tabs[tabId].consultTime === 0)
+    if (tabs[tabId] && tabs[tabId].url === url && tabs[tabId].consultTime === 0)
         return;
-    if(tabs[tabId])
-        savePartnerHistoryToServer(tabs[tabId].url, tabs[tabId].nbAdsViewed);
+    if (tabs[tabId] && tabs[tabId].url === url && Date.now() < (tabs[tabId].consultTime + 30 * 60 * 1000))
+        return;
+    if (tabs[tabId])
+        savePartnerHistoryToServer(tabId);
 
     tabs[tabId] = {
         url: url,
@@ -137,26 +140,35 @@ Adequa.pagestore.resetTab = function(tabId, url){
         nbAdsViewed: 0,
         consultTime: 0,
         loadTime: 0,
+        nbAdsPostRefresh: 0,
         isPartner: Adequa.isPartner(url),
-        dbId: 0
+        dbId: 0,
+        pageviewId: 0
     };
 
     Adequa.storage.setCurrent({tabs});
 };
 
-const savePartnerHistoryToServer = function (url, nbAdsViewed) {
-  if(Adequa.isPartner(url)) {
-    let data = {
-      url,
-      nbAdsViewed,
-      hostname: Adequa.hostname(url),
-      addonID: Adequa.current.addonID,
-      addonToken: Adequa.current.addonToken,
-    };
-    let body = Adequa.request.encoreUrlParams(data);
+const savePartnerHistoryToServer = function (tabId) {
+    let tabs = Adequa.current.tabs;
+    if (!tabs[tabId])
+        return;
+    if (Adequa.isPartner(tabs[tabId].url)) {
+        let data = {
+            id: tabs[tabId].pageviewId || undefined,
+            url: tabs[tabId].url,
+            nbAdsViewed: tabs[tabId].nbAdsViewed,
+            hostname: Adequa.hostname(tabs[tabId].url),
+            addonID: Adequa.current.addonID,
+            addonToken: Adequa.current.addonToken,
+        };
+        let body = Adequa.request.encoreUrlParams(data);
 
-    Adequa.request.post(Adequa.uri + 'api/partner/pageview', body)
-      .then()
-      .catch(console.warn);
-  }
+        Adequa.request.post(Adequa.uri + 'api/partner/pageview', body)
+            .then(function (res) {
+                tabs[tabId].pageviewId = JSON.parse(res.response).id;
+                Adequa.storage.setCurrent({tabs});
+            })
+            .catch(console.warn);
+    }
 };

@@ -1,1 +1,244 @@
-{"lemonde.fr":{"allowed":[".Dfp__Slot","div[id^=\"lig_lemonde\"]",".dfp_slot",".Lg"],"blocked":["#dfp-habillage","#habillage",".adBanner"],"css":[]},"orange.fr":{"allowed":["#o_carrepub",".liens-commerciaux"],"blocked":["#ad","#o-cookie"],"css":[]},"lequipe.fr":{"allowed":[".ads",".OUTBRAIN"],"blocked":["#dfp_banniere-haute",".cookieBanner"],"css":{"#outer-edito-content":"background-image:none!important;"}},"lefigaro.fr":{"allowed":["#taboola-home-page-thumbnails",".fig-wg-pub",".fig-wg--satellite","#taboola-below-article-thumbnails","#div_utif_mban_atf"],"blocked":["#mban_atf",".cookiebarcontainer"],"css":{"body":"background-image:none!important;"}},"bfmtv.com":{"allowed":[".onf-ad",".ad6foo-application"],"blocked":["#footer_tc_privacy"],"css":[]},"franceinfo.fr":{"allowed":[],"blocked":[],"css":[]},"leparisien.fr":{"allowed":[".dfp_slot",".OUTBRAIN"],"blocked":["#dfp_banniere-haute"],"css":{"#outer-main":"background-image:none!important;"}},"20minutes.fr":{"allowed":[".ad",".OUTBRAIN",".ayl_v_ckr_b"],"blocked":["#dfp_ban_atf","#footer_tc_privacy"],"css":{"#arch-wrapper":"background-image:none!important;"}},"programme-tv.net":{"allowed":[".ads-core-placer",".ean_element","div[id^=\"lig_programmetvnet\"]"],"blocked":["div[id^=\"Banniere-Haute\"]"],"css":[]},"ouest-france.fr":{"allowed":[".partenaire-externe","#redac","#pub_pave","#brique-redac",".pub","#taboola-home-page-thumbnails","#taboola-below-article-thumbnails"],"blocked":[".ccpane"],"css":[]},"footmercato.net":{"allowed":[".gtag"],"blocked":[".gtag-hdr","#cookie-bar"],"css":[]},"doctissimo.fr":{"allowed":["#oas_Middle1",".doc-block-pub"],"blocked":["#oas_Top","#footer_tc_privacy"],"css":{"body":"background-image:none!important;padding-top:0!important;"}},"huffingtonpost.fr":{"allowed":[".dfp"],"blocked":[".dfp_banniere_haute",".popup-overlay","#hp_cconsent"],"css":[]},"nouvelobs.com":{"allowed":[".dfp-slot","div[id^=\"lig_nouvelobs\"]","#dfp-banniere-basse",".ligatus_cuc_cmp"],"blocked":[".dfp_banniere_haute",".dfp-habillage","#habillage",".ayads-video-layer",".ayads-video-container"],"css":[]},"lci.fr":{"allowed":["div[data-module=adyoulike]",".pub-block",".OUTBRAIN"],"blocked":["#cookie-acceptation-popup"],"css":[]},"gentside.com":{"allowed":[],"blocked":["div[class^=\"sp_veil\"]","div[class^=\"sp_message\"]"],"css":{"html,body":"overflow-y:auto;height:auto;"}},"lachainemeteo.fr":{"allowed":["#atf","#btf",".OUTBRAIN"],"blocked":["#cookies"],"css":[]},"femmeactuelle.fr":{"allowed":["#lig_femmeactuelle_smartbox_homepage",".pub",".OUTBRAIN",".ads-core-placer"],"blocked":["div[id^=\"sp_message\"]"],"css":[]},"ohmymag.com":{"allowed":[],"blocked":["div[id^=\"sp_message\"]"],"css":[]},"public.fr":{"allowed":[".MEA4Cont-ad"],"blocked":["#footer_tc_privacy","#nuggadLayer"],"css":[]},"admin-equa.com":{"allowed":[],"blocked":[],"css":[]},"adequa.oo":{"allowed":[],"blocked":[],"css":[]}}
+{
+  "lemonde.fr": {
+    "allowed": [
+      ".Dfp__Slot",
+      "div[id^=\"lig_lemonde\"]",
+      ".dfp_slot",
+      ".Lg"
+    ],
+    "blocked": [
+      "#dfp-habillage",
+      "#habillage",
+      ".adBanner"
+    ],
+    "css": []
+  },
+  "orange.fr": {
+    "allowed": [
+      "#o_carrepub",
+      ".liens-commerciaux"
+    ],
+    "blocked": [
+      "#ad",
+      "#o-cookie"
+    ],
+    "css": []
+  },
+  "lequipe.fr": {
+    "allowed": [
+      ".ads",
+      ".OUTBRAIN"
+    ],
+    "blocked": [
+      "#dfp_banniere-haute",
+      ".cookieBanner"
+    ],
+    "css": {
+      "#outer-edito-content": "background-image:none!important;"
+    }
+  },
+  "lefigaro.fr": {
+    "allowed": [
+      "#taboola-home-page-thumbnails",
+      ".fig-wg-pub",
+      ".fig-wg--satellite",
+      "#taboola-below-article-thumbnails",
+      "#div_utif_mban_atf"
+    ],
+    "blocked": [
+      "#mban_atf",
+      ".cookiebarcontainer"
+    ],
+    "css": {
+      "body": "background-image:none!important;"
+    }
+  },
+  "bfmtv.com": {
+    "allowed": [
+      ".onf-ad",
+      ".ad6foo-application"
+    ],
+    "blocked": [
+      "#footer_tc_privacy"
+    ],
+    "css": []
+  },
+  "franceinfo.fr": {
+    "allowed": [],
+    "blocked": [],
+    "css": []
+  },
+  "leparisien.fr": {
+    "allowed": [
+      ".dfp_slot",
+      ".OUTBRAIN"
+    ],
+    "blocked": [
+      "#dfp_banniere-haute"
+    ],
+    "css": {
+      "#outer-main": "background-image:none!important;"
+    }
+  },
+  "20minutes.fr": {
+    "allowed": [
+      ".ad",
+      ".OUTBRAIN",
+      ".ayl_v_ckr_b"
+    ],
+    "blocked": [
+      "#dfp_ban_atf",
+      "#footer_tc_privacy"
+    ],
+    "css": {
+      "#arch-wrapper": "background-image:none!important;"
+    }
+  },
+  "programme-tv.net": {
+    "allowed": [
+      ".ads-core-placer",
+      ".ean_element",
+      "div[id^=\"lig_programmetvnet\"]"
+    ],
+    "blocked": [
+      "div[id^=\"Banniere-Haute\"]"
+    ],
+    "css": []
+  },
+  "ouest-france.fr": {
+    "allowed": [
+      ".partenaire-externe",
+      "#redac",
+      "#pub_pave",
+      "#brique-redac",
+      ".pub",
+      "#taboola-home-page-thumbnails",
+      "#taboola-below-article-thumbnails"
+    ],
+    "blocked": [
+      ".ccpane"
+    ],
+    "css": []
+  },
+  "footmercato.net": {
+    "allowed": [
+      ".gtag"
+    ],
+    "blocked": [
+      ".gtag-hdr",
+      "#cookie-bar"
+    ],
+    "css": []
+  },
+  "doctissimo.fr": {
+    "allowed": [
+      "#oas_Middle1",
+      ".doc-block-pub"
+    ],
+    "blocked": [
+      "#oas_Top",
+      "#footer_tc_privacy"
+    ],
+    "css": {
+      "body": "background-image:none!important;padding-top:0!important;"
+    }
+  },
+  "huffingtonpost.fr": {
+    "allowed": [
+      ".dfp"
+    ],
+    "blocked": [
+      ".dfp_banniere_haute",
+      ".popup-overlay",
+      "#hp_cconsent"
+    ],
+    "css": []
+  },
+  "nouvelobs.com": {
+    "allowed": [
+      ".dfp-slot",
+      "div[id^=\"lig_nouvelobs\"]",
+      "#dfp-banniere-basse",
+      ".ligatus_cuc_cmp"
+    ],
+    "blocked": [
+      ".dfp_banniere_haute",
+      ".dfp-habillage",
+      "#habillage",
+      ".ayads-video-layer",
+      ".ayads-video-container"
+    ],
+    "css": []
+  },
+  "lci.fr": {
+    "allowed": [
+      "div[data-module=adyoulike]",
+      ".pub-block",
+      ".OUTBRAIN"
+    ],
+    "blocked": [
+      "#cookie-acceptation-popup"
+    ],
+    "css": []
+  },
+  "gentside.com": {
+    "allowed": [],
+    "blocked": [
+      "div[class^=\"sp_veil\"]",
+      "div[class^=\"sp_message\"]"
+    ],
+    "css": {
+      "html,body": "overflow-y:auto;height:auto;"
+    }
+  },
+  "lachainemeteo.fr": {
+    "allowed": [
+      "#atf",
+      "#btf",
+      ".OUTBRAIN"
+    ],
+    "blocked": [
+      "#cookies"
+    ],
+    "css": []
+  },
+  "femmeactuelle.fr": {
+    "allowed": [
+      "#lig_femmeactuelle_smartbox_homepage",
+      ".pub",
+      ".OUTBRAIN",
+      ".ads-core-placer"
+    ],
+    "blocked": [
+      "div[id^=\"sp_message\"]"
+    ],
+    "css": []
+  },
+  "ohmymag.com": {
+    "allowed": [],
+    "blocked": [
+      "div[id^=\"sp_message\"]"
+    ],
+    "css": []
+  },
+  "public.fr": {
+    "allowed": [
+      ".MEA4Cont-ad"
+    ],
+    "blocked": [
+      "#footer_tc_privacy",
+      "#nuggadLayer"
+    ],
+    "css": []
+  },
+  "admin-equa.com": {
+    "allowed": [],
+    "blocked": [],
+    "css": []
+  },
+  "adequa.oo": {
+    "allowed": [],
+    "blocked": [],
+    "css": []
+  }
+}

@@ -34,7 +34,7 @@ if (Adequa.storage.db.isNew()) {
     Adequa.storage.db.createTable('page_views', ['url', 'hostname', 'consulted_at', 'nb_trackers_blocked', 'nb_ads_blocked', 'nb_ads_viewed', 'is_partner', 'load_time']);
     Adequa.storage.db.createTable('ad_prints', ['passion', 'page_view_id', 'viewed_at', 'ad_id']);
     Adequa.storage.db.createTable('user_choices', ['made_at', 'choice', 'choice_feature']);
-    Adequa.storage.db.createTable('current', ['current']);
+    // Adequa.storage.db.createTable('current', ['current']);
 
     Adequa.storage.db.commit();
 }
@@ -42,12 +42,11 @@ if (Adequa.storage.db.isNew()) {
 Adequa.storage.setCurrent = function (newCurrent) {
     if (Adequa.current === null)
         return;
-    console.log('set', Adequa.current);
 
     const oldCurrent = Adequa.current || {};
     const current = mergeDeep(oldCurrent, newCurrent);
 
     Adequa.current = current;
     vAPI.storage.set({current});
-    Adequa.storage.db.insertOrUpdate('current', {ID: 1}, {current});
+    // Adequa.storage.db.insertOrUpdate('current', {ID: 1}, {current});
 };

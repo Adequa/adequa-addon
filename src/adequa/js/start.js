@@ -86,9 +86,8 @@ const firstInstall = function () {
 
 const fetchCurrent = function (callback) {
     vAPI.storage.get('current', function (data) {
-        // Adequa.current = data.current || {};
-        Adequa.current = (Adequa.storage.db.query('current', {ID: 1})[0] || {}).current || {tabs: {}, versions: {}};
-        console.log(Adequa.current);
+        Adequa.current = data.current || {tabs: {}, versions: {}};
+        // Adequa.current = (Adequa.storage.db.query('current', {ID: 1})[0] || {}).current || {tabs: {}, versions: {}};
         callback();
     });
 };

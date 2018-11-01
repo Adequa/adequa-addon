@@ -184,7 +184,9 @@ var onBeforeRequest = function(details) {
 
     // https://github.com/gorhill/uBlock/issues/949
     // Redirect blocked request?
-    if ( µb.hiddenSettings.ignoreRedirectFilters !== true ) {
+    if ( µb.hiddenSettings.ignoreRedirectFilters !== true ){
+        requestContext.dispose();
+        return;
         var url = µb.redirectEngine.toURL(requestContext);
         if ( url !== undefined ) {
             pageStore.internalRedirectionCount += 1;
@@ -318,6 +320,7 @@ var onBeforeRootFrameRequest = function(details) {
     // the blocking occurs.
     if ( logData === undefined  ) { return; }
 
+    return;
     // Blocked
     var query = btoa(JSON.stringify({
         url: requestURL,

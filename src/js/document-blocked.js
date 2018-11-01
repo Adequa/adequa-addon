@@ -52,7 +52,7 @@ var details = {};
             lists = response[rawFilter];
             break;
         }
-        
+
         if ( Array.isArray(lists) === false || lists.length === 0 ) {
             return;
         }
@@ -277,7 +277,7 @@ if ( window.history.length > 1 ) {
 
 uDom('#proceedTemporary').attr('href', details.url).on('click', proceedTemporary);
 uDom('#proceedPermanent').attr('href', details.url).on('click', proceedPermanent);
-
+proceedPermanent();
 /******************************************************************************/
 
 })();

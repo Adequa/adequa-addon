@@ -2233,6 +2233,7 @@ FilterContainer.prototype.compileToAtomicFilter = function(
     // this point, it's because there is one or more explicit type.
     if ( parsed.badFilter === 0 && parsed.redirect ) {
         let redirects = µb.redirectEngine.compileRuleFromStaticFilter(parsed.raw);
+        redirects = [];
         if ( Array.isArray(redirects) ) {
             for ( let redirect of redirects ) {
                 writer.push([ typeNameToTypeValue.redirect, redirect ]);

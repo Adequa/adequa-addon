@@ -236,6 +236,7 @@
             }
         );
         renderHeader();
+        renderMain();
     };
 
     getData(function (data) {

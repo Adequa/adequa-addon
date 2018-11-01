@@ -13,7 +13,7 @@
         let totalAdsSeen = 0;
         let totalAdsBlocked = 0;
 
-        for(let element of data) {
+        for(let element of data.reverse()) {
             if(!element)
                 continue;
             row = table.insertRow(-1);

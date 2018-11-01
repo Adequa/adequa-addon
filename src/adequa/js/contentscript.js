@@ -136,7 +136,12 @@
                 charset: document.characterSet
             },
             function (response) {
-                const cfeDetails = response && response.specificCosmeticFilters;
+                const cfeDetails = response && response.specificCosmeticFilters || {
+                    declarativeFilters: [],
+                    highGenericHideSimple: [],
+                    highGenericHideComplex: [],
+                    injectedHideFilters: []
+                };
 
                 getBlockedSelectors(cfeDetails, function (selectors) {
                     for(let selector of selectors)

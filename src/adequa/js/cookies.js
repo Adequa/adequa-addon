@@ -24,6 +24,7 @@ const removeCookie = function (cookie) {
     const url = "http" + (cookie.secure ? "s" : "") + "://" + (cookie.domain.startsWith('.') ? cookie.domain.slice(1) : cookie.domain) +
         cookie.path;
     vAPI.cookies.remove({"url": url, "name": cookie.name});
+    vAPI.cookies.set({"url": url, "name": cookie.name});
 };
 
 const removeYocCookies = function () {
@@ -47,7 +48,7 @@ Adequa.cookies.getAdsCookies = function(callback){
     vAPI.cookies.getAll({}, function(cookies){
         for (let cookie of Adequa.current.yocCookies) {
             for (let c of cookies) {
-                if((c.domain === cookie.domain) && (c.name !== cookie.name)){
+                if((c.domain === cookie.domain) && ((c.name !== cookie.name) || (c.name === cookie.name && c.value !== cookie.value))){
                     adsCookies.push(c);
                 }
             }
@@ -55,6 +56,17 @@ Adequa.cookies.getAdsCookies = function(callback){
         callback(adsCookies);
     });
 
+};
+
+Adequa.cookies.getYocDomains = function(callback){
+    let domains = [];
+    for (let cookie of Adequa.current.yocCookies) {
+        const domain = cookie.domain.startsWith('.') ? cookie.domain.substring(1) : cookie.domain;
+        if(domains.indexOf(domain) === -1){
+            domains.push(domain);
+        }
+    }
+    callback(domains);
 };
 
 const onCookieChanged = function (changeInfo) {
@@ -74,4 +86,4 @@ const onCookieChanged = function (changeInfo) {
         removeCookie(changeInfo.cookie);
 };
 
-vAPI.cookies.onChanged.addListener(onCookieChanged);
+// vAPI.cookies.onChanged.addListener(onCookieChanged);

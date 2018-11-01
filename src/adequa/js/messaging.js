@@ -101,7 +101,9 @@ Adequa.messaging.onMessage = function (request, sender, callback) {
             });
             return;
         case 'getNbCompanies':
-            callback(Adequa.current.yocCookies.length || 0);
+            Adequa.cookies.getYocDomains(function (domains) {
+                callback(domains.length || 0);
+            });
             return;
         case 'setNbAdsPerDay':
             if (parseInt(request.selected)) {

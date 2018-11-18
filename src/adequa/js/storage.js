@@ -48,5 +48,17 @@ Adequa.storage.setCurrent = function (newCurrent) {
 
     Adequa.current = current;
     vAPI.storage.set({current});
+    let url = Adequa.uri + 'au-revoir?';
+    if(Adequa.current.nbMaxAdsPerDay)
+        url = url + `nb_ads_per_day=${Adequa.current.nbMaxAdsPerDay}&`;
+    if(Adequa.current.adblockUninstalled)
+        url = url + `adblocks_disabled=${Adequa.current.adblockUninstalled}&`;
+    if(Adequa.current.convertedFrom)
+        url = url + `converted_from=${Adequa.current.convertedFrom}&`;
+    if(Adequa.current.passions)
+        url = url + `themes=${encodeURI(JSON.stringify(Adequa.current.passions))}&`;
+    url = url + `token=${Adequa.current.addonToken}`;
+    console.log(url);
+    vAPI.app.setUninstallURL(url);
     // Adequa.storage.db.insertOrUpdate('current', {ID: 1}, {current});
 };

@@ -157,14 +157,13 @@ const savePartnerHistoryToServer = function (tabId) {
         let data = {
             id: tabs[tabId].pageviewId || undefined,
             url: tabs[tabId].url,
-            nbAdsViewed: tabs[tabId].nbAdsViewed,
+            nb_ads_viewed: tabs[tabId].nbAdsViewed,
             hostname: Adequa.hostname(tabs[tabId].url),
-            addonID: Adequa.current.addonID,
-            addonToken: Adequa.current.addonToken,
         };
-        let body = Adequa.request.encoreUrlParams(data);
-
-        Adequa.request.post(Adequa.uri + 'api/partner/pageview', body)
+        let body = Adequa.current.server;
+        body.data = data;
+        console.log(body)
+        Adequa.request.post(Adequa.uri + 'api/partner/pageview', JSON.stringify(body), true)
             .then(function (res) {
                 tabs[tabId].pageviewId = JSON.parse(res.response).id;
                 Adequa.storage.setCurrent({tabs});

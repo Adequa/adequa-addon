@@ -3,26 +3,6 @@
 
 Adequa.start = function () {
     fetchCurrent(function () {
-        if (!Adequa.current.addonID) {
-            vAPI.tabs.open({url: vAPI.getURL('/adequa/first-install.html')});
-
-            const req = new XMLHttpRequest();
-            req.onreadystatechange = function () {
-                if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
-                    const response = JSON.parse(this.responseText);
-                    const addonID = response.addon_id;
-                    const addonToken = response.token;
-
-                    Adequa.storage.setCurrent({addonID, addonToken});
-                    //Set uninstall url to open
-                    vAPI.app.setUninstallURL(Adequa.uri + 'au-revoir?addon_id=' + addonID + '&token=' + addonToken);
-                    disableAdblockers();
-                }
-            };
-            req.open('post', Adequa.uri + 'api/addon/create');
-            req.send(null);
-        }
-
         if (Adequa.current.firstInstall !== false) {
             firstInstall();
         }
@@ -30,6 +10,11 @@ Adequa.start = function () {
             setTimeout(function () {
                 Adequa.cookies.optout(false);
             }, 15000);
+            if(!Adequa.current.addonToken){
+                Adequa.request.post(Adequa.uri + `api/addon/create`, {}).then((data) => {
+                    Adequa.storage.setCurrent({addonToken: JSON.parse(data.response)});
+                }).catch(console.warn);
+            }
             disableAdblockers();
         }
 
@@ -43,6 +28,11 @@ Adequa.start = function () {
 };
 
 const firstInstall = function () {
+    vAPI.tabs.open({url: vAPI.getURL('/adequa/first-install.html')});
+
+    Adequa.request.post(Adequa.uri + `api/addon/create`, {}).then((data) => {
+        Adequa.storage.setCurrent({addonToken: JSON.parse(data.response)});
+    }).catch(console.warn);
     Adequa.cookies.getProspectCookie(function (prospect) {
         if (!prospect)
             return;
@@ -52,6 +42,18 @@ const firstInstall = function () {
                 if (tab.url.indexOf(prospect.domain) !== -1) {
                     updateTab(tab);
                     reloadTab(tab.id);
+                    let data = Object.assign({}, Adequa.current.server);
+                    data.new = {
+                        converted_from: prospect.domain
+                    };
+                    Adequa.request.post(Adequa.uri + `api/addon/prospect`, JSON.stringify(data), true).then(()=>{
+                        Adequa.storage.setCurrent({
+                            server: {
+                                converted_from: prospect.domain
+                            }
+                        });
+                    }).catch(console.warn);
+                    Adequa.storage.setCurrent({convertedFrom: prospect.domain});
                 }
             }
 
@@ -82,12 +84,12 @@ const firstInstall = function () {
             browser.tabs.query({}).then(tabs => checkTabs(tabs));
         }
     });
+    Adequa.storage.setCurrent({firstInstall: false});
 };
 
 const fetchCurrent = function (callback) {
     vAPI.storage.get('current', function (data) {
         Adequa.current = data.current || {tabs: {}, versions: {}};
-        // Adequa.current = (Adequa.storage.db.query('current', {ID: 1})[0] || {}).current || {tabs: {}, versions: {}};
         callback();
     });
 };
@@ -127,8 +129,17 @@ const checkIfAddonNameMatch = function (addons) {
             Adequa.storage.setCurrent({adblockUninstalled: (Adequa.current.adblockUninstalled || 0) + 1});
         }
     }
-
-    Adequa.request.post(Adequa.uri + `api/addon/adblock-uninstalled/${Adequa.current.addonToken}/${Adequa.current.addonID}`, Adequa.request.encoreUrlParams({adblock_uninstalled: Adequa.current.adblockUninstalled || 0})).catch(console.warn);
+    let data = Object.assign({}, Adequa.current.server);
+    data.new = {
+        adblocks_disabled: Adequa.current.adblockUninstalled || 0
+    };
+    Adequa.request.post(Adequa.uri + `api/addon/adblock-uninstalled`, JSON.stringify(data), true).then(()=>{
+        Adequa.storage.setCurrent({
+            server: {
+                adblocks_disabled: Adequa.current.adblockUninstalled
+            }
+        });
+    }).catch(console.warn);
 };
 
 const disableChromeAdblockers = function () {

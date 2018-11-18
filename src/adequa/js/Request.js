@@ -7,15 +7,15 @@ class XMLRequest {
     return XMLRequest.ajax('get', url, body);
   }
 
-  static put(url, body) {
-    return XMLRequest.ajax('put', url, body);
+  static put(url, body, json = false) {
+    return XMLRequest.ajax('put', url, body, json);
   }
 
-  static post(url, body) {
-    return XMLRequest.ajax('post', url, body);
+  static post(url, body, json = false) {
+    return XMLRequest.ajax('post', url, body, json);
   }
 
-  static ajax(method, url, body = null) {
+  static ajax(method, url, body = null, json = false) {
     return new Promise(function (resolve, reject) {
       const req = new XMLHttpRequest();
       req.onreadystatechange = function () {
@@ -27,7 +27,12 @@ class XMLRequest {
         }
       };
       req.open(method, url);
-      req.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+      if(json)
+        req.setRequestHeader('Content-type', 'application/json');
+      else
+        req.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+
+      req.setRequestHeader('Adequa-Token', Adequa.current.addonToken);
       req.send(body);
     });
   }

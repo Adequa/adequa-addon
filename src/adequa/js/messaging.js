@@ -40,11 +40,11 @@ Adequa.messaging.onMessage = function (request, sender, callback) {
         case 'getCurrent':
             callback(Adequa.current);
             return;
-        case 'isFirstInstall':
-            callback(Adequa.current.firstInstall);
+        case 'isNotConfigured':
+            callback(Adequa.current.isNotConfigured);
             return;
         case 'firstInstallFinished':
-            Adequa.storage.setCurrent({firstInstall: false});
+            Adequa.storage.setCurrent({isNotConfigured: false});
             callback();
             return;
 
@@ -117,20 +117,35 @@ Adequa.messaging.onMessage = function (request, sender, callback) {
             Adequa.storage.setCurrent({});
             return;
         case 'themesChanged':
-            const data = {
-                addon_id: Adequa.current.addonID,
-                themes: (Adequa.current.passions || []).toString()
+            let data = Object.assign({}, Adequa.current.server);
+            data.new = {
+                themes: Adequa.current.passions || []
             };
-            Adequa.request.post(Adequa.uri + 'api/store/themes', Adequa.request.encoreUrlParams(data)).catch(console.warn);
-            if(typeof callback === "function")
+            Adequa.request.post(Adequa.uri + 'api/store/themes', JSON.stringify(data), true).then(()=>{
+                Adequa.current.server.themes = JSON.parse(JSON.stringify(Adequa.current.passions));
+                Adequa.storage.setCurrent({});
+            }).catch(console.warn);
+
+            if (typeof callback === "function")
                 callback(Adequa.current.passions || []);
             return;
         case 'nbAdsPerDayChanged':
-            const body = {
-                addon_id: Adequa.current.addonID,
-                nb_ads: parseInt(Adequa.current.nbMaxAdsPerDay || 25) ? Adequa.current.nbMaxAdsPerDay || 25 : 0
+            let body = Object.assign({}, Adequa.current.server);
+            body.new = {
+                nb_ads_per_day: parseInt(Adequa.current.nbMaxAdsPerDay || 25) ? Adequa.current.nbMaxAdsPerDay || 25 : 0
             };
-            Adequa.request.put(Adequa.uri + 'api/update/nb-ads-per-day', Adequa.request.encoreUrlParams(body)).catch(console.warn);
+
+            Adequa.request.put(Adequa.uri + 'api/update/nb-ads-per-day', JSON.stringify(body), true).then(()=>{
+                console.log({server: {
+                    nb_ads_per_day: Adequa.current.nbMaxAdsPerDay
+                }});
+                Adequa.storage.setCurrent({
+                    server: {
+                        nb_ads_per_day: Adequa.current.nbMaxAdsPerDay
+                    }
+                });
+            }).catch(console.warn);
+
             return;
         case 'getAvailableThemes':
             callback(Adequa.current.availableThemes);
@@ -143,7 +158,7 @@ Adequa.messaging.onMessage = function (request, sender, callback) {
             let firstVisit;
             let nbPages;
 
-            if (!hostnameData.length){
+            if (!hostnameData.length) {
                 firstVisit = Date.now();
                 nbPages = 1;
             } else {
@@ -188,23 +203,23 @@ Adequa.messaging.onMessage = function (request, sender, callback) {
 
             let whitelist = [];
 
-            for(let item in ubWhitelist) {
+            for (let item in ubWhitelist) {
                 let push = true;
-                for(let entry of defaultWhitelist.split('\n'))
-                    if(item === entry)
+                for (let entry of defaultWhitelist.split('\n'))
+                    if (item === entry)
                         push = false;
-                for(let entry in Adequa.current.partnerList)
-                    if(item === entry)
+                for (let entry in Adequa.current.partnerList)
+                    if (item === entry)
                         push = false;
 
-                if(push && item !== "#" && item !== "0") whitelist.push(item);
+                if (push && item !== "#" && item !== "0") whitelist.push(item);
             }
 
             callback(whitelist);
             return;
         case 'disableFiltering':
-            if(request.url)
-            µBlock.toggleNetFilteringSwitch('https://' + request.url);
+            if (request.url)
+                µBlock.toggleNetFilteringSwitch('https://' + request.url);
             return;
         default:
             break;

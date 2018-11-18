@@ -1,9 +1,9 @@
 'use strict';
 
 vAPI.messaging.send('adequa', {
-    what: 'isFirstInstall'
-}, function(isFirstInstall){
-    if(isFirstInstall === false)
+    what: 'isNotConfigured'
+}, function(isNotConfigured){
+    if(isNotConfigured === false)
         return;
 
     vAPI.messaging.send('adequa', {

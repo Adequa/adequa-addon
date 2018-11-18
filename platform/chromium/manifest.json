@@ -1,5 +1,5 @@
 {
-  "author": "__MSG_authorName__",
+  "author": "Adequa",
   "background": {
     "page": "background.html"
   },
@@ -8,7 +8,7 @@
       "16": "adequa/img/icon_16.png",
       "32": "adequa/img/icon_32.png"
     },
-    "default_title": "__MSG_extName__",
+    "default_title": "Adequa",
     "default_popup": "adequa/popup.html"
   },
   "commands": {
@@ -60,7 +60,7 @@
   "incognito": "split",
   "manifest_version": 2,
   "minimum_chrome_version": "51.0",
-  "name": "__MSG_extName__",
+  "name": "Adequa",
   "optional_permissions": [
     "file:///*"
   ],
@@ -81,7 +81,7 @@
     "webRequestBlocking",
     "<all_urls>"
   ],
-  "short_name": "__MSG_extName__",
+  "short_name": "Adequa",
   "version": "0.1.4",
   "web_accessible_resources": [
     "/web_accessible_resources/*"

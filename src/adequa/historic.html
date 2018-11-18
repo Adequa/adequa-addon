@@ -3,14 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <title>Adequa - Historique</title>
+    <link rel="stylesheet" href="css/datatables.min.css">
     <link rel="stylesheet" href="css/historic.css">
 </head>
 <body>
-<table>
+<table class="grid">
     <thead>
     <tr>
-        <th>Date</th>
+        <th>Hostname</th>
         <th>URL</th>
+        <th>Date</th>
         <th>Traceurs bloqués</th>
         <th>Publicités bloquées</th>
         <th>Publicités vues</th>
@@ -24,6 +26,7 @@
 <script src="../js/vapi-client.js"></script>
 <script src="../js/udom.js"></script>
 <script src="js/lib/moment.min.js"></script>
+<script src="js/lib/datatables.min.js"></script>
 <script src="js/historic.js"></script>
 </body>
 </html>

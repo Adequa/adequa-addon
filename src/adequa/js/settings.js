@@ -8,6 +8,7 @@ const end = document.getElementById('end');
 const money = document.getElementById('money');
 
 let timeout = 0, themesTimeout = 0;
+let selected = [];
 
 input.addEventListener('input', function(e){
     money.innerText = input.value;
@@ -53,11 +54,15 @@ messaging.send('adequa', {
         chooseThemes.innerHTML = '';
         for(let theme of themes){
             let elem = document.createElement('span');
-            if(current.passions)
-                for(let passion of current.passions) {
-                    if(theme.id === parseInt(passion))
+            if(current.passions) {
+                for (let passion of current.passions) {
+                    if (theme.id === parseInt(passion)) {
                         elem.classList.add('selected');
+                        if(selected.indexOf(passion) === -1)
+                            selected.push(passion);
+                    }
                 }
+            }
             elem.setAttribute('data-theme-id', theme.id);
             elem.innerText = theme.name;
             elem.addEventListener('click', onClick);
@@ -68,8 +73,6 @@ messaging.send('adequa', {
 });
 
 const chooseThemes = document.querySelector('#themes');
-
-let selected = [];
 
 const onClick = function(event){
     if(event.target.classList.contains('selected')){

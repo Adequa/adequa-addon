@@ -374,7 +374,7 @@ PageStore.prototype.reuse = function(context) {
     }
     this.disposeFrameStores();
     this.netFilteringCache = this.netFilteringCache.dispose();
-    Adequa.pagestore.resetTab(this.tabId, tabContext.rawURL);
+    Adequa.actions.navigation.resetTab(this.tabId, tabContext.rawURL);
 
     this.init(this.tabId, context);
     return this;
@@ -638,7 +638,7 @@ PageStore.prototype.filterRequest = function(context) {
             this.logData = entry.logData;
 
             if(entry.result === 1)
-                Adequa.pagestore.updateRequestBlockedForTab(this.tabId, context.requestURL);
+                Adequa.actions.navigation.updateRequestBlockedForTab(this.tabId, context.requestURL);
 
             return entry.result;
         }
@@ -673,7 +673,7 @@ PageStore.prototype.filterRequest = function(context) {
     }
 
     if(result === 1)
-        Adequa.pagestore.updateRequestBlockedForTab(this.tabId, context.requestURL);
+        Adequa.actions.navigation.updateRequestBlockedForTab(this.tabId, context.requestURL);
 
     return result;
 };

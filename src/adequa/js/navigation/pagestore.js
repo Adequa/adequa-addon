@@ -1,9 +1,9 @@
 /* global Adequa */
 
 "use strict";
-Adequa.pagestore = {};
+Adequa.actions.navigation = {};
 
-Adequa.pagestore.updateRequestBlockedForTab = function (tabId, url) {
+Adequa.actions.navigation.updateRequestBlockedForTab = function (tabId, url) {
     setTimeout(function () {
         const type = Adequa.getRequestType(url);
         let tabs = Adequa.current.tabs || {};
@@ -16,11 +16,11 @@ Adequa.pagestore.updateRequestBlockedForTab = function (tabId, url) {
             tabs[tabId].nbTrackersBlocked = (tabs[tabId].nbTrackersBlocked || 0) + 1;
         }
         Adequa.storage.setCurrent({tabs});
-        Adequa.pagestore.updatePageViewFromCurrent(tabId);
+        Adequa.actions.navigation.updatePageViewFromCurrent(tabId);
     }, 500);
 };
 
-Adequa.pagestore.updateAdsViewedForTab = function (tabId, nbAdsViewed, partnerAds) {
+Adequa.actions.navigation.updateAdsViewedForTab = function (tabId, nbAdsViewed, partnerAds) {
     let tabs = Adequa.current.tabs || {};
 
     let diff = (nbAdsViewed - (tabs[tabId].nbAdsViewed || 0)) || 0;
@@ -40,11 +40,11 @@ Adequa.pagestore.updateAdsViewedForTab = function (tabId, nbAdsViewed, partnerAd
     });
 
     savePartnerHistoryToServer(tabId);
-    Adequa.pagestore.updatePageViewFromCurrent(tabId);
-    Adequa.pagestore.updateAdPrintsFromCurrent(tabId, partnerAds);
+    Adequa.actions.navigation.updatePageViewFromCurrent(tabId);
+    Adequa.actions.navigation.updateAdPrintsFromCurrent(tabId, partnerAds);
 };
 
-Adequa.pagestore.updatePageViewFromCurrent = function (tabId) {
+Adequa.actions.navigation.updatePageViewFromCurrent = function (tabId) {
     const tab = Adequa.current.tabs[tabId];
     if (!tab || !tab.url)
         return;
@@ -86,7 +86,7 @@ Adequa.pagestore.updatePageViewFromCurrent = function (tabId) {
     Adequa.updateBadge(tabId);
 };
 
-Adequa.pagestore.updateAdPrintsFromCurrent = function (tabId, partnerAds) {
+Adequa.actions.navigation.updateAdPrintsFromCurrent = function (tabId, partnerAds) {
     const tab = Adequa.current.tabs[tabId];
     if (!tab)
         return;
@@ -109,7 +109,7 @@ Adequa.pagestore.updateAdPrintsFromCurrent = function (tabId, partnerAds) {
     }
 };
 
-Adequa.pagestore.pageLoaded = function (tabId, loadTime, consultTime) {
+Adequa.actions.navigation.pageLoaded = function (tabId, loadTime, consultTime) {
     let tabs = Adequa.current.tabs || {};
     tabs[tabId] = tabs[tabId] || {};
 
@@ -121,10 +121,10 @@ Adequa.pagestore.pageLoaded = function (tabId, loadTime, consultTime) {
     tabs[tabId].consultTime = consultTime;
 
     Adequa.storage.setCurrent({tabs});
-    Adequa.pagestore.updatePageViewFromCurrent(tabId);
+    Adequa.actions.navigation.updatePageViewFromCurrent(tabId);
 };
 
-Adequa.pagestore.resetTab = function (tabId, url) {
+Adequa.actions.navigation.resetTab = function (tabId, url) {
     let tabs = Adequa.current.tabs || {};
     if (tabs[tabId] && tabs[tabId].url === url && tabs[tabId].consultTime === 0)
         return;
@@ -162,7 +162,7 @@ const savePartnerHistoryToServer = function (tabId) {
         };
         let body = Adequa.current.server;
         body.data = data;
-        console.log(body)
+
         Adequa.request.post(Adequa.uri + 'api/partner/pageview', JSON.stringify(body), true)
             .then(function (res) {
                 tabs[tabId].pageviewId = JSON.parse(res.response).id;

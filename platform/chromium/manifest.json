@@ -32,7 +32,7 @@
         "/js/vapi.js",
         "/js/vapi-client.js",
         "/js/contentscript.js",
-        "/adequa/js/contentscript.js"
+        "/adequa/js/page/contentscript.js"
       ],
       "run_at": "document_start",
       "all_frames": true

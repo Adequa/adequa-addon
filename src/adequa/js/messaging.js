@@ -6,8 +6,24 @@ Adequa.messaging.onMessage = function (request, sender, callback) {
     let tabId = sender && sender.tab ? sender.tab.id : 0;
 
     switch (request.what) {
+        case 'cookieChanged':
+            let yoc = false;
+            if (!request.changeInfo.removed) {
+                for (let cookie of Adequa.current.yocCookies) {
+                    if (((request.changeInfo.cookie.domain === cookie.domain) || (request.changeInfo.cookie.domain === '.'+cookie.domain)) && (request.changeInfo.cookie.name === cookie.name)) {
+                        yoc = true;
+                        break;
+                    }
+                }
+                if(!yoc)
+                    Adequa.actions.cookie.logCookie(request.changeInfo.cookie);
+            }
+            return;
+        case 'getCookieHistoric':
+            callback(Adequa.current.cookieList || []);
+            return;
         case 'pageLoadTime':
-            Adequa.pagestore.pageLoaded(tabId, request.loadTime, request.consultTime);
+            Adequa.actions.navigation.pageLoaded(tabId, request.loadTime, request.consultTime);
             return;
         case 'fetchAdsViewed':
             if (!Adequa.current.tabs)
@@ -81,7 +97,7 @@ Adequa.messaging.onMessage = function (request, sender, callback) {
             callback((Adequa.current.partnerList[hostname] || []));
             return;
         case 'setAdsViewed':
-            Adequa.pagestore.updateAdsViewedForTab(tabId, request.nbAdsViewed, request.partnerAds);
+            Adequa.actions.navigation.updateAdsViewedForTab(tabId, request.nbAdsViewed, request.partnerAds);
             return;
         case 'getAddonInfo':
             const addonID = Adequa.current.addonID;
@@ -93,15 +109,15 @@ Adequa.messaging.onMessage = function (request, sender, callback) {
             vAPI.tabs.open({url: request.url});
             return;
         case 'cookiesOptout':
-            Adequa.cookies.optout(true);
+            Adequa.actions.cookie.optout(true);
             return;
         case 'getNbAdsCookies':
-            Adequa.cookies.getAdsCookies(function (cookies) {
+            Adequa.actions.cookie.getAdsCookies(function (cookies) {
                 callback(cookies.length || 0);
             });
             return;
         case 'getNbCompanies':
-            Adequa.cookies.getYocDomains(function (domains) {
+            Adequa.actions.cookie.getYocDomains(function (domains) {
                 callback(domains.length || 0);
             });
             return;
@@ -121,7 +137,7 @@ Adequa.messaging.onMessage = function (request, sender, callback) {
             data.new = {
                 themes: Adequa.current.passions || []
             };
-            Adequa.request.post(Adequa.uri + 'api/store/themes', JSON.stringify(data), true).then(()=>{
+            Adequa.request.post(Adequa.uri + 'api/store/themes', JSON.stringify(data), true).then(() => {
                 Adequa.current.server.themes = JSON.parse(JSON.stringify(Adequa.current.passions));
                 Adequa.storage.setCurrent({});
             }).catch(console.warn);
@@ -135,10 +151,12 @@ Adequa.messaging.onMessage = function (request, sender, callback) {
                 nb_ads_per_day: parseInt(Adequa.current.nbMaxAdsPerDay || 25) ? Adequa.current.nbMaxAdsPerDay || 25 : 0
             };
 
-            Adequa.request.put(Adequa.uri + 'api/update/nb-ads-per-day', JSON.stringify(body), true).then(()=>{
-                console.log({server: {
-                    nb_ads_per_day: Adequa.current.nbMaxAdsPerDay
-                }});
+            Adequa.request.put(Adequa.uri + 'api/update/nb-ads-per-day', JSON.stringify(body), true).then(() => {
+                console.log({
+                    server: {
+                        nb_ads_per_day: Adequa.current.nbMaxAdsPerDay
+                    }
+                });
                 Adequa.storage.setCurrent({
                     server: {
                         nb_ads_per_day: Adequa.current.nbMaxAdsPerDay
@@ -225,3 +243,5 @@ Adequa.messaging.onMessage = function (request, sender, callback) {
             break;
     }
 };
+
+Adequa.messaging.send = Adequa.messaging.onMessage;

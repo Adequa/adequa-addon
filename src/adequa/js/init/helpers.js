@@ -1,8 +1,8 @@
 "use strict";
-const env = 'prod';
+const env = 'local';
 
 let Adequa = {
-    uri: env.match('dev') ? 'http://localhost:3000/' : 'https://admin-equa.com/'
+    uri: env.match('dev') ? 'http://dev.admin-equa.com/' : env.match('prod') ? 'https://admin-equa.com/' : 'http://localhost:8000/'
 };
 
 Adequa.hostname = function (url) {

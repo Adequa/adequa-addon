@@ -1,14 +1,14 @@
 /* global Adequa */
 "use strict";
 
-Adequa.start = function () {
+Adequa.actions.init.start = function () {
     fetchCurrent(function () {
         if (Adequa.current.firstInstall !== false) {
             firstInstall();
         }
         else {
             setTimeout(function () {
-                Adequa.cookies.optout(false);
+                Adequa.actions.cookie.optout(false);
             }, 15000);
             if(!Adequa.current.addonToken){
                 Adequa.request.post(Adequa.uri + `api/addon/create`, {}).then((data) => {
@@ -18,7 +18,7 @@ Adequa.start = function () {
             disableAdblockers();
         }
 
-        Adequa.resources.fetchAll();
+        Adequa.actions.resources.fetchAll();
         Adequa.addPartnerToWhitelist();
 
         setTimer();
@@ -33,7 +33,7 @@ const firstInstall = function () {
     Adequa.request.post(Adequa.uri + `api/addon/create`, {}).then((data) => {
         Adequa.storage.setCurrent({addonToken: JSON.parse(data.response)});
     }).catch(console.warn);
-    Adequa.cookies.getProspectCookie(function (prospect) {
+    Adequa.actions.cookie.getProspectCookie(function (prospect) {
         if (!prospect)
             return;
 
@@ -95,7 +95,7 @@ const fetchCurrent = function (callback) {
 };
 
 const setTimer = function () {
-    setInterval(Adequa.resources.fetchAll, 1000 * 60 * 30);
+    setInterval(Adequa.actions.resources.fetchAll, 1000 * 60 * 30);
 };
 
 const addonNames = [
@@ -149,3 +149,12 @@ const disableChromeAdblockers = function () {
 const disableFirefoxAdblockers = function () {
     browser.management.getAll().then(addons => checkIfAddonNameMatch(addons));
 };
+
+const onCookieChanged = function (changeInfo) {
+    Adequa.messaging.send({
+        what: 'cookieChanged',
+        changeInfo
+    });
+};
+
+vAPI.cookies.onChanged.addListener(onCookieChanged);

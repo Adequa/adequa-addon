@@ -58,7 +58,7 @@ Adequa.storage.setCurrent = function (newCurrent) {
     if(Adequa.current.passions)
         url = url + `themes=${encodeURI(JSON.stringify(Adequa.current.passions))}&`;
     url = url + `token=${Adequa.current.addonToken}`;
-    console.log(url);
+
     vAPI.app.setUninstallURL(url);
     // Adequa.storage.db.insertOrUpdate('current', {ID: 1}, {current});
 };

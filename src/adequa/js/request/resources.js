@@ -1,8 +1,8 @@
 /* global Adequa */
 "use strict";
-Adequa.resources = {};
+Adequa.actions.resources = {};
 
-Adequa.resources.fetchAll = function () {
+Adequa.actions.resources.fetchAll = function () {
     getAPIResponse('resources-version', function(versions){
         if(Object.is(Adequa.current.versions || {}, versions)) return;
 

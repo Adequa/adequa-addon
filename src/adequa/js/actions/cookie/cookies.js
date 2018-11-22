@@ -75,20 +75,3 @@ Adequa.actions.cookie.getYocDomains = function (callback) {
     }
     callback(domains);
 };
-
-// const onCookieChanged = function (changeInfo) {
-//     if (changeInfo.removed)
-//         return;
-//
-//     if (!(changeInfo.cookie.name && changeInfo.cookie.domain))
-//         return;
-//
-//     const hostname = changeInfo.cookie.domain.split('.').slice(-2).join('.');
-//     if (!Adequa.isPartner(hostname))
-//         return;
-//
-//     const hostnameBlacklist = ((Adequa.current.cookieBlacklist || {})[hostname] || []);
-//
-//     if (hostnameBlacklist.indexOf(changeInfo.cookie.name) !== -1)
-//         removeCookie(changeInfo.cookie);
-// };

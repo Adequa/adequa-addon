@@ -1,5 +1,5 @@
 "use strict";
-const env = 'local';
+const env = 'dev';
 
 let Adequa = {
     uri: env.match('dev') ? 'http://dev.admin-equa.com/' : env.match('prod') ? 'https://admin-equa.com/' : 'http://localhost:8000/'

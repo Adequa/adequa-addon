@@ -129,3 +129,21 @@ Adequa.getTotalNumberAdsViewed = function(){
 
     return adsViewed;
 };
+
+Adequa.shouldRemoveCookie = function(cookie){
+    const rules = Adequa.current.cookieRules;
+    if(!rules) return false;
+
+    const domain = Adequa.hostname(cookie.domain);
+
+    return (rules[domain] || {}).disabled || false;
+};
+
+Adequa.getCookieRule = function(cookie){
+    const rules = Adequa.current.cookieRules;
+    if(!rules) return false;
+
+    const domain = Adequa.hostname(cookie.domain);
+
+    return rules[domain] || false;
+};

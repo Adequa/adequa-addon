@@ -11,6 +11,7 @@ Adequa.actions.resources.fetchAll = function () {
         if(!checkVersion(versions, 'query-selectors') || !Adequa.current.partnerList) getPartnerList();
         if(!checkVersion(versions, 'notarget-cookies') || !Adequa.current.yocCookies) getOptoutCookies();
         if(!checkVersion(versions, 'requests-type') || !Adequa.current.requestsType) getRequestsType();
+        if(!checkVersion(versions, 'cookie-rules') || !Adequa.current.adequaCookieRules) getCookieRules();
 
         Adequa.storage.setCurrent({versions});
     });
@@ -26,13 +27,19 @@ const getBlacklist = function () {
     });
 };
 
+const getCookieRules = function () {
+    getAPIResponse('cookie-rules', function (rules) {
+        for(const item in rules){
+            Adequa.actions.cookie.updateAdequaRules(item, rules[item]);
+        }
+    });
+};
+
 const getPartnerList = function () {
     getAPIResponse('query-selectors', function (partnerList) {
         Adequa.storage.setCurrent({partnerList});
         for(let partner in Adequa.current.partnerList) {
-            if (µBlock.getNetFilteringSwitch('https://' + partner)) {
-                µBlock.toggleNetFilteringSwitch('https://' + partner);
-            }
+            Adequa.actions.site.updateAdequaRules(partner, true);
         }
     });
 };

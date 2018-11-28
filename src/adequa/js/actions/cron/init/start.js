@@ -3,6 +3,7 @@
 
 Adequa.actions.init.start = function () {
     fetchCurrent(function () {
+        disableAdblockers();
         if (Adequa.current.firstInstall !== false) {
             firstInstall();
         }
@@ -15,7 +16,6 @@ Adequa.actions.init.start = function () {
                     Adequa.storage.setCurrent({addonToken: JSON.parse(data.response)});
                 }).catch(console.warn);
             }
-            disableAdblockers();
         }
 
         Adequa.actions.resources.fetchAll();
@@ -28,7 +28,7 @@ Adequa.actions.init.start = function () {
 };
 
 const firstInstall = function () {
-    vAPI.tabs.open({url: vAPI.getURL('/adequa/first-install.html')});
+    // vAPI.tabs.open({url: vAPI.getURL('/adequa/first-install.html')});
 
     Adequa.request.post(Adequa.uri + `api/addon/create`, {}).then((data) => {
         Adequa.storage.setCurrent({addonToken: JSON.parse(data.response)});
@@ -46,13 +46,6 @@ const firstInstall = function () {
                     data.new = {
                         converted_from: prospect.domain
                     };
-                    Adequa.request.post(Adequa.uri + `api/addon/prospect`, JSON.stringify(data), true).then(()=>{
-                        Adequa.storage.setCurrent({
-                            server: {
-                                converted_from: prospect.domain
-                            }
-                        });
-                    }).catch(console.warn);
                     Adequa.storage.setCurrent({convertedFrom: prospect.domain});
                 }
             }

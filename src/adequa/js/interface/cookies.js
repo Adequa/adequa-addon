@@ -1,10 +1,16 @@
 /* global moment */
 'use strict';
-(function(){
+(function () {
     const messaging = vAPI.messaging;
 
+    let domainDisabled = [];
+
+    messaging.send('adequa', {what: 'fetchCookieDomainBlocked'}, function(domains){
+        domainDisabled = domains || [];
+    });
+
     const toHostname = function (url) {
-        if(!url)
+        if (!url)
             return false;
 
         let hostname = url;
@@ -31,34 +37,32 @@
 
     messaging.send('adequa', {
         what: 'getCookieHistoric'
-    }, function(data){
-        let groupby, domain, name, value, date, row;
+    }, function (data) {
+        let domain, name, type, date, row;
         let table = document.getElementById("pages");
 
-        for(let element of data.reverse()) {
-            if(!element)
+        for (let element of data) {
+            if (!element)
                 continue;
             row = table.insertRow(-1);
 
             domain = row.insertCell(0);
             name = row.insertCell(1);
-            value = row.insertCell(2);
+            type = row.insertCell(2);
             date = row.insertCell(3);
+            row.insertCell(4);
 
             date.innerText = moment(element.date).format('DD/MM/YYYY HH:mm');
             domain.innerText = element.domain;
             name.innerText = element.name;
-            value.innerText = element.value;
+            type.innerText = element.type;
         }
 
-        (function() {
+        (function () {
             var table = $('.grid').not('.initialized').addClass('initialized').show().DataTable({
-                "columnDefs": [
-                    { "visible": false, "targets": 0 }
-                ],
-                "order": [[ 0, 'asc' ]],
+                "order": [[0, 'asc']],
                 "stateSave": false,
-                "stateDuration": 60*60*24*365,
+                "stateDuration": 60 * 60 * 24 * 365,
                 "displayLength": 100,
                 "sScrollX": "100%",
                 "paging": false,
@@ -66,61 +70,67 @@
                 "searching": false,
                 "dom": 'lfTrtip',
                 "drawCallback": function ( settings ) {
-                    var api = this.api();
-                    var rows = api.rows( {page:'current'} ).nodes();
-                    var last=null;
-                    var colonne = api.row(0).data().length;
-                    var totale = new Array();
-                    var groupid = -1;
-                    var subtotale = new Array();
+                    const api = this.api();
+                    const rows = api.rows({page: 'current'}).nodes();
+                    let last = null;
+                    const colonne = api.row(0).data().length;
+                    let groupid = -1;
+                    let subtotale = [];
 
 
                     api.column(0, {page:'current'} ).data().each( function ( group, i ) {
                         if ( last !== group ) {
                             groupid++;
                             $(rows).eq( i ).before(
-                                '<tr class="group"><td colspan="4">'+group+'</td></tr>'
+                                '<tr class="group"><td>'+group+'</td></tr>'
                             );
                             last = group;
                         }
 
-
                         var val = api.row(api.row($(rows).eq( i )).index()).data();      //current order index
                         $.each(val,function(index2,val2){
                             if (!subtotale[groupid]){
-
                                 subtotale[groupid] = {
-                                    domain: val[1],
+                                    type: val[2],
                                 };
                             }
                         });
-
-
-
                     } );
-                    // $('tbody').find('.group').each(function (i,v) {
-                    //     var subtd = '';
-                    //     subtd += '<td></td>';
-                    //     subtd += '<td></td>';
-                    //     subtd += '<td></td>';
-                    //     subtd += '<td></td>';
-                    //
-                    //     $(this).append(subtd);
-                    // });
+
+                    $('tbody').find('.group').each(function (i,v) {
+                        console.log(subtotale[i])
+                        const domain = toHostname(v.childNodes[0].outerText);
+                        let subtd = '';
+                        subtd += '<td></td>';
+                        subtd += `<td>${subtotale[i].type}</td>`;
+                        subtd += '<td></td>';
+                        subtd += `<td><input type="checkbox" id="switch${i}" data-domain="${domain}" ${domainDisabled.indexOf(domain) !== -1 ? '' : 'checked'} /><label for="switch${i}">Toggle</label></td>`;
+
+                        $(this).append(subtd);
+                    });
+
+                    for(const elem of document.querySelectorAll('tr.group')) {
+                        const rowsCollapse = $(elem).nextUntil('.group');
+                        $(rowsCollapse).toggleClass('hidden');
+                    }
+                    // Collapse / Expand Click Groups
+                    $('.grid tbody').on( 'click', 'tr.group', function () {
+                        const rowsCollapse = $(this).nextUntil('.group');
+                        $(rowsCollapse).toggleClass('hidden');
+                    });
+
+                    for(const elem of document.querySelectorAll('input[id^="switch"]')) {
+                        elem.addEventListener('input', function(e){
+                            messaging.send('adequa', {
+                                what: 'updateUserCookieRules',
+                                domain: e.target.getAttribute('data-domain'),
+                                accept: e.target.checked
+                            });
+                        });
+                    }
 
                 }
-            } );
-
-            for(const elem of document.querySelectorAll('tr.group')) {
-                var rowsCollapse = $(elem).nextUntil('.group');
-                $(rowsCollapse).toggleClass('hidden');
-            }
-            // Collapse / Expand Click Groups
-            $('.grid tbody').on( 'click', 'tr.group', function () {
-                var rowsCollapse = $(this).nextUntil('.group');
-                $(rowsCollapse).toggleClass('hidden');
             });
-
         })();
     });
 })();

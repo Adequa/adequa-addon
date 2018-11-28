@@ -3,6 +3,9 @@
 (function(){
     const messaging = vAPI.messaging;
 
+    const partnerList = [];
+    let whitelist = [];
+
     const toHostname = function (url) {
         if(!url)
             return false;
@@ -30,6 +33,12 @@
     };
 
     messaging.send('adequa', {
+        what: 'getWhitelist'
+    }, function(data) {
+        whitelist = data.map((item) => toHostname(item));
+    });
+
+    messaging.send('adequa', {
         what: 'fetchAllPageViewed'
     }, function(data){
         let ads_seen, partner, url, ads, tracker, date, row, hostname, groupby;
@@ -50,13 +59,15 @@
             tracker = row.insertCell(3);
             ads = row.insertCell(4);
             ads_seen = row.insertCell(5);
-            partner = row.insertCell(6);
+            row.insertCell(6);
 
             totalAdsBlocked += element.nb_ads_blocked;
             totalAdsSeen += element.nb_ads_viewed;
             totalTrackers += element.nb_trackers_blocked;
 
-            groupby.innerText = toHostname(element.url);
+            const hostname = toHostname(element.url);
+
+            groupby.innerText = hostname;
             date.innerText = moment(element.consulted_at).format('DD/MM/YYYY HH:mm');
             url.innerHTML = element.url.link(element.url);
             url.children[0].setAttribute('target', '_blank');
@@ -64,7 +75,9 @@
             tracker.innerText = element.nb_trackers_blocked;
             ads.innerText = element.nb_ads_blocked;
             ads_seen.innerText = element.nb_ads_viewed;
-            partner.innerText = element.is_partner ? 'Oui' : 'Non';
+            if(element.is_partner)
+                if(partnerList.indexOf(hostname) === -1)
+                    partnerList.push(hostname);
         }
 
         (function() {
@@ -124,7 +137,15 @@
                         subtd += '<td>'+subtotale[i].trackers+'</td>';
                         subtd += '<td>'+subtotale[i].viewed+'</td>';
                         subtd += '<td>'+subtotale[i].blocked+'</td>';
-                        subtd += '<td>'+subtotale[i].partner+'</td>';
+
+                        const hostname = toHostname(subtotale[i].hostname.split('>')[1].split('<')[0]);
+
+                        if(partnerList.indexOf(hostname) !== -1)
+                            subtd += `<td align="center">Site partenaire</td>`;
+                        else if(whitelist.indexOf(hostname) !== -1)
+                            subtd += `<td><input type="checkbox" data-hostname="${hostname}" id="switch${i}" checked /><label for="switch${i}">Toggle</label></td>`;
+                        else
+                            subtd += `<td><input type="checkbox" data-hostname="${hostname}" id="switch${i}" /><label for="switch${i}">Toggle</label></td>`;
 
                         $(this).append(subtd);
                     });
@@ -141,6 +162,17 @@
                 var rowsCollapse = $(this).nextUntil('.group');
                 $(rowsCollapse).toggleClass('hidden');
             });
+
+            for (const elem of document.querySelectorAll('input[id^="switch"]')) {
+                elem.addEventListener('input', function(e){
+                    messaging.send('adequa', {
+                        what: 'updateUserSiteRules',
+                        hostname: e.target.getAttribute('data-hostname'),
+                        support: e.target.checked
+                    });
+                });
+
+            }
 
         })();
     });

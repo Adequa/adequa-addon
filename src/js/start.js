@@ -85,8 +85,7 @@ var onAllReady = function() {
     µb.contextMenu.update(null);
     µb.firstInstall = false;
 
-    Adequa.actions.init.start();
-
+    Adequa.messaging.send({what: 'adequaStart'});
     processCallbackQueue(µb.onStartCompletedQueue);
 };
 

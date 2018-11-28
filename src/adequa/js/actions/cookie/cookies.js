@@ -19,7 +19,7 @@ Adequa.actions.cookie.logCookie = function (cookie) {
 Adequa.actions.cookie.getProspectCookie = function (callback) {
     vAPI.cookies.getAll({}, function (cookies) {
         for (let cookie of cookies) {
-            if (cookie.name === "adequa_prospect") {
+            if (cookie.name === "adequa-hasadblock") {
                 return callback(cookie);
             }
         }
@@ -27,17 +27,16 @@ Adequa.actions.cookie.getProspectCookie = function (callback) {
     });
 };
 
-const removeCookie = function (cookie) {
+Adequa.actions.cookie.remove = function (cookie) {
     const url = "http" + (cookie.secure ? "s" : "") + "://" + (cookie.domain.startsWith('.') ? cookie.domain.slice(1) : cookie.domain) +
         cookie.path;
     vAPI.cookies.remove({"url": url, "name": cookie.name});
-    vAPI.cookies.set({"url": url, "name": cookie.name});
 };
 
 const removeYocCookies = function () {
     Adequa.actions.cookie.getAdsCookies(function (adsCookies) {
         for (let cookie of adsCookies) {
-            removeCookie(cookie);
+            Adequa.actions.cookie.remove(cookie);
         }
     });
 };

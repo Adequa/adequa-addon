@@ -6,21 +6,66 @@ Adequa.messaging.onMessage = function (request, sender, callback) {
     let tabId = sender && sender.tab ? sender.tab.id : 0;
 
     switch (request.what) {
+        case 'toggleNetFiltering':
+            Adequa.actions.site.updateUserRules(Adequa.hostname(request.url), !request.state);
+            return;
+        case 'fetchCookieDomainBlocked':
+            const domainBlocked = [];
+            for(const domain in Adequa.current.cookieRules){
+                if(Adequa.current.cookieRules[domain].disabled)
+                    domainBlocked.push(domain);
+            }
+            callback(domainBlocked);
+            return;
+        case 'adequaStart':
+            Adequa.actions.init.start();
+            return;
+        case 'updateUserCookieRules':
+            Adequa.actions.cookie.updateUserRules(request.domain, !request.accept);
+            return;
+        case 'updateUserSiteRules':
+            Adequa.actions.site.updateUserRules(request.hostname, request.support);
+            return;
         case 'cookieChanged':
+            if (request.changeInfo.removed) return;
+
             let yoc = false;
-            if (!request.changeInfo.removed) {
-                for (let cookie of Adequa.current.yocCookies) {
-                    if (((request.changeInfo.cookie.domain === cookie.domain) || (request.changeInfo.cookie.domain === '.'+cookie.domain)) && (request.changeInfo.cookie.name === cookie.name)) {
+
+            if (Adequa.shouldRemoveCookie(request.changeInfo.cookie))
+                Adequa.actions.cookie.remove(request.changeInfo.cookie);
+            else {
+
+                for (let cookie of (Adequa.current.yocCookies || [])) {
+                    if (((request.changeInfo.cookie.domain === cookie.domain) || (request.changeInfo.cookie.domain === '.' + cookie.domain)) && (request.changeInfo.cookie.name === cookie.name)) {
                         yoc = true;
                         break;
                     }
                 }
-                if(!yoc)
+                if (!yoc)
                     Adequa.actions.cookie.logCookie(request.changeInfo.cookie);
             }
             return;
         case 'getCookieHistoric':
-            callback(Adequa.current.cookieList || []);
+            const historic = {};
+            (Adequa.current.cookieList || []).reduce(function (r, o) {
+                const key = o.domain + '-' + o.name;
+
+                if (!historic[key]) {
+                    historic[key] = Object.assign({}, o); // create a copy of o
+
+                    const rule = Adequa.getCookieRule(o);
+
+                    historic[key].disabled = rule.disabled;
+                    historic[key].type = rule.type || "Non classé";
+
+                    r.push(historic[key]);
+                } else {
+                    historic[key].count = (historic[key].count || 0) + 1;
+                }
+
+                return r;
+            }, []);
+            callback(Object.values(historic));
             return;
         case 'pageLoadTime':
             Adequa.actions.navigation.pageLoaded(tabId, request.loadTime, request.consultTime);
@@ -152,11 +197,6 @@ Adequa.messaging.onMessage = function (request, sender, callback) {
             };
 
             Adequa.request.put(Adequa.uri + 'api/update/nb-ads-per-day', JSON.stringify(body), true).then(() => {
-                console.log({
-                    server: {
-                        nb_ads_per_day: Adequa.current.nbMaxAdsPerDay
-                    }
-                });
                 Adequa.storage.setCurrent({
                     server: {
                         nb_ads_per_day: Adequa.current.nbMaxAdsPerDay
@@ -216,21 +256,11 @@ Adequa.messaging.onMessage = function (request, sender, callback) {
             });
             return;
         case 'getWhitelist':
-            const ubWhitelist = µBlock.netWhitelist;
-            const defaultWhitelist = µBlock.netWhitelistDefault;
-
             let whitelist = [];
 
-            for (let item in ubWhitelist) {
-                let push = true;
-                for (let entry of defaultWhitelist.split('\n'))
-                    if (item === entry)
-                        push = false;
-                for (let entry in Adequa.current.partnerList)
-                    if (item === entry)
-                        push = false;
-
-                if (push && item !== "#" && item !== "0") whitelist.push(item);
+            for (let item in Adequa.current.siteRules) {
+                if((Adequa.current.siteRules[item] || {}).support)
+                    whitelist.push(item);
             }
 
             callback(whitelist);

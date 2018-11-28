@@ -226,13 +226,11 @@
             return;
         }
         messaging.send(
-            'popupPanel',
+            'adequa',
             {
                 what: 'toggleNetFiltering',
                 url: popupData.pageURL,
-                scope: event.ctrlKey || event.metaKey ? 'page' : '',
                 state: !uDom('body').toggleClass('off').hasClass('off'),
-                tabId: popupData.tabId
             }
         );
         renderHeader();

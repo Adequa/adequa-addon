@@ -16,88 +16,10 @@ header {
 main {
     padding-top: 4vh;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    align-items: center;
     width: 100vw;
     height: 60vh;
-}
-
-main > div {
-    width: 50vw;
-}
-
-main > div:last-child {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-evenly;
-    padding-right: 80px;
-}
-
-main > div:last-child > div {
-    display: flex;
-    align-items: center;
-
-}
-
-main > div:last-child > div:first-child {
-    padding-bottom: 10px;
-    border-bottom: 3px solid #64A19D;
-    border-right: 3px solid #64A19D;
-}
-
-main > div:last-child > div:last-child img {
-    margin-left: 30px;
-    border: 2px solid #64A19D;
-    height: 120px;
-}
-
-main > div:last-child > div span {
-    width: 50px;
-    height: 50px;
-    border: 6px solid #64A19D;
-    border-radius: 50px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-right: 25px;
-    color: #64A19D;
-    font-family: "Montserrat", sans-serif;
-    font-weight: bold;
-}
-
-main strong {
-    font-family: "Josefin Sans", sans-serif;
-}
-
-#astronaut {
-    margin-right: 50px;
-    padding-right: 80px;
-    border-right: 5px solid #64A19D;
-}
-
-#astronaut > div {
-    transform: scaleX(-1);
-    width: 250px;
-    height: 100%;
-    background-image: url("../img/astronaut.jpg");
-    background-size: cover;
-    background-position: 80% center;
-    float: right;
-}
-
-#arrow {
-    top: 5px;
-    right: 80px;
-    position: absolute;
-    height: 28vh;
-    border-left: 3px solid #64A19D;
-    background-color: white;
-}
-
-#arrow img {
-    width: 20px;
-    position: absolute;
-    top: -5px;
-    left: -12px;
 }
 
 h1 {
@@ -110,4 +32,30 @@ h2 {
     font-family: "Josefin Slab", serif;
     font-weight: normal;
     font-size: 1.4em;
+}
+
+main > *:first-child{
+    margin-top: 50px;
+    margin-bottom: 30px;
+}
+
+
+#now {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    color: white;
+    font-size: 1.4em;
+    font-weight: bold;
+    width: 200px;
+    height: 100px;
+    background-color: #98D1A9;
+    padding: 50px;
+    text-decoration: none;
+    margin: 15px;
+}
+
+#later {
+    color: #4f4f4f;
 }

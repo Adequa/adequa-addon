@@ -12,19 +12,19 @@ const setBlock = function(color){
     switch(color){
         case 'red':
             block.style.backgroundColor = 'var(--red)';
-            block.style.left = '45px';
+            block.style.left = 'calc(calc((100% - 200px) / 5) + 5px)';
             return;
         case 'yellow':
             block.style.backgroundColor = 'var(--yellow)';
-            block.style.left = '135px';
+            block.style.left = 'calc(calc((100% - 200px) / 5) * 2 + 55px)';
             return;
         case 'green':
             block.style.backgroundColor = 'var(--green)';
-            block.style.left = '225px';
+            block.style.left = 'calc(calc((100% - 200px) / 5) * 3 + 105px)';
             return;
         case 'blue':
             block.style.backgroundColor = 'var(--blue)';
-            block.style.left = '315px';
+            block.style.left = 'calc(calc((100% - 200px) / 5) * 4 + 155px)';
             return;
     }
 };
@@ -48,23 +48,20 @@ const onValidate = function(e){
 };
 
 const cookieValidate = function(callback){
-    messaging.send('adequa', {what: 'cookiesOptout'});
+    setTimeout(() => messaging.send('adequa', {what: 'cookiesOptout'}), 50);
     callback(true);
 };
 
 const adsValidate = function(callback){
-    messaging.send('adequa', {what: 'nbAdsPerDayChanged'});
+    setTimeout(() => messaging.send('adequa', {what: 'nbAdsPerDayChanged'}), 50);
     callback(true);
 };
 
 const themesValidate = function(callback){
-    messaging.send('adequa', {what: 'themesChanged'}, function(){
+    setTimeout(() => messaging.send('adequa', {what: 'themesChanged'}, function(){
         messaging.send('adequa', {what: 'firstInstallFinished'});
-        callback(true);
-        setTimeout(function(){
-            location.href = 'cockpit.html';
-        }, 500);
-    });
+    }), 50);
+    callback(true);
 };
 
 validate.addEventListener('click', onValidate);
@@ -110,6 +107,9 @@ const checkState = function(){
             validate.removeEventListener("click", validateAction);
             validateAction = themesValidate;
             setBlock('blue');
+            break;
+        case 6:
+            location.href = '/adequa/installation-finished.html';
             break;
     }
 };

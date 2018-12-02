@@ -31,3 +31,45 @@ th, td {
 .hidden {
     display: none;
 }
+input[type=checkbox]{
+    height: 0;
+    width: 0;
+    visibility: hidden;
+    position: absolute;
+}
+
+label {
+    cursor: pointer;
+    text-indent: -9999px;
+    width: 50px;
+    height: 25px;
+    background: grey;
+    display: block;
+    border-radius: 25px;
+    position: relative;
+}
+
+label:after {
+    content: '';
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 20px;
+    height: 20px;
+    background: #fff;
+    border-radius: 20px;
+    transition: 0.3s;
+}
+
+input:checked + label {
+    background: #bada55;
+}
+
+input:checked + label:after {
+    left: calc(100% - 3px);
+    transform: translateX(-100%);
+}
+
+label:active:after {
+    width: 30px;
+}

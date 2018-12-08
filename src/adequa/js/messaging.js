@@ -24,7 +24,7 @@ Adequa.messaging.onMessage = function (request, sender, callback) {
             Adequa.actions.cookie.updateUserRules(request.domain, !request.accept);
             return;
         case 'updateUserSiteRules':
-            Adequa.actions.site.updateUserRules(request.hostname, request.support);
+            Adequa.actions.site.updateUserRules(Adequa.hostname(request.hostname), request.support);
             return;
         case 'cookieChanged':
             if (request.changeInfo.removed) return;
@@ -253,6 +253,7 @@ Adequa.messaging.onMessage = function (request, sender, callback) {
                 totalAdsBlocked: adsBlocked || 0,
                 totalTrackersBlocked: trackersBlocked || 0,
                 siteIsPartner: Adequa.isPartner(request.url || ''),
+                whitelisted: (Adequa.current.siteRules[Adequa.hostname(request.url || '')] || {}).support,
                 totalNbAdsViewed: Adequa.getTotalNumberAdsViewed() || 0
             });
             return;

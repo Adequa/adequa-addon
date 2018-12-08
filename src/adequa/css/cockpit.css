@@ -27,7 +27,6 @@
 }
 
 *, *::before, *::after {
-    font-family: "Josefin Slab", serif;
     font-size: 18px;
     box-sizing: border-box;
     margin: 0;
@@ -44,167 +43,79 @@ html, :root {
 html {
     width: 100%;
     height: 100%;
-}
-
-body {
-    box-sizing: border-box;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-}
-
-header {
-    width: 100%;
-    display: flex;
-    align-items: center;
-    height: 80px;
-    padding: 0 30px;
-}
-
-header > div {
-    position: relative;
-    z-index: 2;
-}
-
-header img {
-    position: relative;
-    z-index: 2;
-    height: 60px;
-}
-
-header .red-block {
-    position: absolute;
-    background-color: var(--red);
-    height: 60px;
-    width: 60px;
-    top: 8px;
-    left: 8px;
-    z-index: 1;
-}
-header .green-block {
-    position: absolute;
-    background-color: var(--green);
-    height: 60px;
-    width: 60px;
-    top: 8px;
-    left: 8px;
-    z-index: 1;
-}
-
-header > h2 {
-    margin-left: 20px;
-    font-size: 22px !important;
-}
-
-h2 {
-    font-family: "Montserrat", sans-serif;
-}
-
-header > p {
-    position: absolute;
-    bottom: 0;
-    right: 30px;
-    color: rgb(124, 172, 140);
-    cursor: pointer;
-}
-
-.bold {
-    font-weight: bold;
-}
-
-.site {
-    margin-left: 35px;
-    width: calc(100% - 35px);
-    padding: 15px;
-}
-
-.site > div {
-    display: flex;
-    align-items: flex-end;
-}
-
-.site > div span {
-    font-family: "Montserrat", sans-serif;
-    font-weight: bold;
-    width: 90px;
-    text-align: center;
-}
-
-.site > div p {
-    font-size: 16px !important;
-}
-
-.site > div p:first-child {
-    width: 82px;
-}
-
-.stats {
-    display: flex;
-    margin: 25px 35px 0;
-    padding: 15px 5px;
-    justify-content: space-between;
-    border-top: 3px solid black;
-    border-bottom: 3px solid black;
-    width: calc(100% - 70px);
-    position: relative;
-}
-
-.stat {
-    width: 25%;
-    position: relative;
-}
-
-.stat > div {
-    position: absolute;
-    top: 5px;
-    left: 5px;
-    height: 40px;
-    width: 40px;
-    z-index: 1;
-}
-
-.stat img {
-    height: 40px;
-    position: relative;
-    z-index: 2;
-}
-
-.stat h2, .stat p {
-    font-size: 16px;
-}
-
-#settings {
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    color: var(--blue);
-    font-size: 16px;
-    cursor: pointer;
-}
-
-footer {
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
-footer > img {
-    height: 80px;
+body {
+    box-sizing: border-box;
+    width: 95%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    font-family: "Montserrat", sans-serif;
+}
+
+hr {
+    border-color: black;
+    background-color: black;
+}
+
+.clickable {
+    cursor: pointer;
+    color: #7F7F7F;
+    font-family: "Josefin Sans", sans-serif;
+}
+
+header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#switch {
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    text-align: center;
+    height: 90px;
+}
+
+#switch > * {
+    width: 135px;
+    font-size: 12px;
+}
+
+#switch > *.active {
+    font-weight: bold;
+    color: black;
+    cursor: default;
+    font-size: 18px;
+}
+
+#switch img {
+    width: 45px;
+    cursor: pointer;
+}
+
+header img {
+    width: 150px;
 }
 
 #progress {
     position: relative;
-    margin: 10px 35px;
     padding: 5px 0;
     text-align: center;
-    border: 3px solid black;
 }
 
 #progress > p {
     position: relative;
     z-index: 2;
+    font-family: "Montserrat", sans-serif;
+    font-weight: bold;
+    font-size: 14px;
 }
 
 #progress > div {
@@ -220,13 +131,85 @@ footer > img {
     font-weight: bold;
     font-family: "Montserrat", sans-serif;
 }
-
-.full {
-    color: var(--red);
-    border: 3px solid var(--red)!important;
+#stats {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    height: 210px;
 }
-.full p {
+#stats p {
+    font-size: 12px;
     font-family: "Montserrat", sans-serif;
-    font-size: 16px;
     font-weight: bold;
+    text-align: center;
+}
+#stats > div:first-child {
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    position: relative;
+}
+#stats > div > div p {
+    font-family: "Josefin Sans", sans-serif;
+    font-weight: normal;
+}
+#stats > div > div {
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    flex-direction: column;
+    text-align: center;
+    width: 70px;
+    height: 120px;
+    z-index: 2;
+}
+#stats img {
+    width: 50px;
+}
+
+#stats strong {
+    font-size: 28px;
+}
+#control {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+#control > div{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+    height: 100px;
+    width: 80px;
+}
+
+#control p{
+    font-size: 12px;
+}
+
+#control img {
+    width: 50px;
+}
+
+#block {
+    position: absolute;
+    top: 20px;
+    left: calc((100% - (3 * 50px)) / 4);
+    height: 50px!important;
+    width: 50px!important;
+    z-index: 1!important;
+    background-color: var(--green);
+    transition: background-color 1s, left 1s;
+}
+
+.rotate {
+    transform: rotateY(180deg);
+}
+
+.notransition {
+    -webkit-transition: none !important;
+    -moz-transition: none !important;
+    -o-transition: none !important;
+    transition: none !important;
 }

@@ -27,10 +27,10 @@ Adequa.actions.cookie.updateCookieRules = function (domain) {
 
 
     const rule = {};
-    rule[domain] = {
-        disabled: (userRule || adequaRule).disabled,
-        type: (userRule || adequaRule).type
-    };
-
+    rule[domain] = Object.assign({}, adequaRule, userRule);
+    // {
+    //     disabled: (userRule || adequaRule).disabled,
+    //         type: (userRule || adequaRule).type
+    // }
     Adequa.storage.setCurrent({cookieRules: rule});
 };

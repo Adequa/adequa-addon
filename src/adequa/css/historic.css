@@ -14,7 +14,7 @@ th {
 th, td {
     padding: 8px;
     text-align: left;
-    border-bottom: 1px solid #ddd;
+    border-bottom: 1px solid #848484;
 }
 
 /*tbody > tr:hover {background-color:#f5f5f5;}*/
@@ -23,9 +23,8 @@ th, td {
     visibility:hidden;
 }
 .group{
-    background-color:#333!important;
+    background-color: #e4e4e4 !important;
     font-size:11px;
-    color:#fff!important;
     opacity:0.7;
 }
 .hidden {

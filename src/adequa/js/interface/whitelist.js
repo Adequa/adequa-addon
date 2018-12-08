@@ -2,7 +2,7 @@
 const messaging = vAPI.messaging;
 
 messaging.send('adequa', {
-    what: 'getWhitelist'
+    what: 'getUserWhitelist'
 }, function (data) {
     let row, site, disable;
     let table = document.querySelector("tbody");

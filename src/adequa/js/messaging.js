@@ -51,7 +51,7 @@ Adequa.messaging.onMessage = function (request, sender, callback) {
                 const key = o.domain + '-' + o.name;
 
                 if (!historic[key]) {
-                    historic[key] = Object.assign({}, o); // create a copy of o
+                    historic[key] = Object.assign({}, o);
 
                     const rule = Adequa.getCookieRule(o);
 
@@ -65,6 +65,7 @@ Adequa.messaging.onMessage = function (request, sender, callback) {
 
                 return r;
             }, []);
+            console.log(historic)
             callback(Object.values(historic));
             return;
         case 'pageLoadTime':
@@ -265,9 +266,19 @@ Adequa.messaging.onMessage = function (request, sender, callback) {
 
             callback(whitelist);
             return;
+        case 'getUserWhitelist':
+            let userWhitelist = [];
+
+            for (let item in Adequa.current.userSiteRules) {
+                if((Adequa.current.userSiteRules[item] || {}).support)
+                    userWhitelist.push(item);
+            }
+
+            callback(userWhitelist);
+            return;
         case 'disableFiltering':
             if (request.url)
-                µBlock.toggleNetFilteringSwitch('https://' + request.url);
+                Adequa.actions.site.updateUserRules(Adequa.hostname(request.url), false);
             return;
         default:
             break;

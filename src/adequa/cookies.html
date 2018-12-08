@@ -7,6 +7,10 @@
     <link rel="stylesheet" href="css/cookies.css">
 </head>
 <body>
+<div>
+    <h3>Ciblage</h3>
+    <input type="checkbox" id="switch-ciblage" /><label for="switch-ciblage">Toggle</label>
+</div>
 <table class="grid">
     <thead>
     <tr>
@@ -17,7 +21,39 @@
         <th>Accepter</th>
     </tr>
     </thead>
-    <tbody id="pages"></tbody>
+    <tbody id="ciblage"></tbody>
+</table>
+<div>
+    <h3>Analytique</h3>
+    <input type="checkbox" id="switch-analytique" /><label for="switch-analytique">Toggle</label>
+</div>
+<table class="grid">
+    <thead>
+    <tr>
+        <th>Domaine</th>
+        <th>Nom</th>
+        <th>Type</th>
+        <th>Date</th>
+        <th>Accepter</th>
+    </tr>
+    </thead>
+    <tbody id="analytique"></tbody>
+</table>
+<div>
+    <h3>Autre</h3>
+    <input type="checkbox" id="switch-autre" /><label for="switch-autre">Toggle</label>
+</div>
+<table class="grid">
+    <thead>
+    <tr>
+        <th>Domaine</th>
+        <th>Nom</th>
+        <th>Type</th>
+        <th>Date</th>
+        <th>Accepter</th>
+    </tr>
+    </thead>
+    <tbody id="autres"></tbody>
 </table>
 <script src="../js/vapi.js"></script>
 <script src="../js/vapi-common.js"></script>

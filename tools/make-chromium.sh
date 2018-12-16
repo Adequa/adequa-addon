@@ -36,21 +36,7 @@ rm $DES/js/vapi-usercss.js
 rm $DES/js/vapi-usercss.real.js
 rm $DES/js/vapi-usercss.pseudo.js
 
-# Chrome store-specific
-cp -R $DES/_locales/nb $DES/_locales/no
-
-echo "*** uBlock0.chromium: Generating web accessible resources..."
-cp -R src/web_accessible_resources $DES/
-python tools/import-war.py $DES/
-
 echo "*** uBlock0.chromium: Generating meta..."
 python tools/make-chromium-meta.py $DES/
-
-if [ "$1" = all ]; then
-    echo "*** uBlock0.chromium: Creating package..."
-    pushd $(dirname $DES/) > /dev/null
-    zip uBlock0.chromium.zip -qr $(basename $DES/)/*
-    popd > /dev/null
-fi
 
 echo "*** uBlock0.chromium: Package done."

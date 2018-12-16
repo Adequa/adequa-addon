@@ -15,12 +15,9 @@ Adequa.actions.init.start = function () {
         }
 
         Adequa.actions.resources.fetchAll();
-        Adequa.addPartnerToWhitelist();
 
         setTimer();
     });
-    µBlock.hiddenSettings.ignoreRedirectFilters = true;
-    µBlock.scheduleAssetUpdater(0);
 };
 
 const firstInstall = function () {
@@ -150,3 +147,5 @@ const onCookieChanged = function (changeInfo) {
 };
 
 vAPI.cookies.onChanged.addListener(onCookieChanged);
+
+Adequa.actions.init.start();

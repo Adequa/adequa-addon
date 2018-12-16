@@ -1006,7 +1006,7 @@
             }
 
             // Auxiliary process to main process: no handler
-            console.error(
+            console.warn(
                 'vAPI.messaging.onPortMessage > unhandled request: %o',
                 request
             );

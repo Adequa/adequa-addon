@@ -2,13 +2,6 @@
 "use strict";
 Adequa.actions.cookie = {};
 
-Adequa.actions.cookie.optout = function (shouldRemoveCookies) {
-    if (shouldRemoveCookies)
-        removeYocCookies();
-
-    addYocCookies();
-};
-
 Adequa.actions.cookie.logCookie = function (cookie) {
     Adequa.current.cookieList = Adequa.current.cookieList || [];
     cookie.date = Date.now();
@@ -28,49 +21,17 @@ Adequa.actions.cookie.getProspectCookie = function (callback) {
 };
 
 Adequa.actions.cookie.remove = function (cookie) {
+    if(cookie.value === "") return;
+    if(!Array.isArray(Adequa.current.cookieRemovedList)) Adequa.current.cookieRemovedList = [];
+
+    Adequa.current.cookieRemovedList.push(Object.assign({}, cookie));
+
     const url = "http" + (cookie.secure ? "s" : "") + "://" + (cookie.domain.startsWith('.') ? cookie.domain.slice(1) : cookie.domain) +
         cookie.path;
+    cookie.url = url;
+    cookie.value = "";
+    delete cookie.session;
+    delete cookie.hostOnly;
     vAPI.cookies.remove({"url": url, "name": cookie.name});
-};
-
-const removeYocCookies = function () {
-    Adequa.actions.cookie.getAdsCookies(function (adsCookies) {
-        for (let cookie of adsCookies) {
-            Adequa.actions.cookie.remove(cookie);
-        }
-    });
-};
-
-const addYocCookies = function () {
-    for (let cookie of Adequa.current.yocCookies) {
-        if (vAPI.firefox)
-            cookie.storeId = "firefox-default";
-        vAPI.cookies.set(cookie);
-    }
-};
-
-Adequa.actions.cookie.getAdsCookies = function (callback) {
-    let adsCookies = [];
-    vAPI.cookies.getAll({}, function (cookies) {
-        for (let cookie of Adequa.current.yocCookies) {
-            for (let c of cookies) {
-                if (((c.domain === cookie.domain) || (c.domain === '.'+cookie.domain)) && ((c.name !== cookie.name) || (c.name === cookie.name && c.value !== cookie.value))) {
-                    adsCookies.push(c);
-                }
-            }
-        }
-        callback(adsCookies);
-    });
-
-};
-
-Adequa.actions.cookie.getYocDomains = function (callback) {
-    let domains = [];
-    for (let cookie of Adequa.current.yocCookies) {
-        const domain = cookie.domain.startsWith('.') ? cookie.domain.substring(1) : cookie.domain;
-        if (domains.indexOf(domain) === -1) {
-            domains.push(domain);
-        }
-    }
-    callback(domains);
+    vAPI.cookies.set(cookie);
 };

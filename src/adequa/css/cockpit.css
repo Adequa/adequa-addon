@@ -74,6 +74,9 @@ header {
     align-items: center;
     justify-content: center;
 }
+header img {
+    width: 150px;
+}
 
 #switch {
     display: flex;
@@ -98,10 +101,6 @@ header {
 #switch img {
     width: 45px;
     cursor: pointer;
-}
-
-header img {
-    width: 150px;
 }
 
 #progress {

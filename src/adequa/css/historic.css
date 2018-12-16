@@ -24,8 +24,18 @@ th, td {
 }
 .group{
     background-color: #e4e4e4 !important;
-    font-size:11px;
     opacity:0.7;
+    font-family: 'Josefin Sans', sans-serif;
+}
+.group td:first-child::after {
+    margin-left: 10px;
+    content: '▼';
+    display: inline-block;
+    transition: 0.3s ease-in-out;
+    transform: rotate(-90deg);
+}
+.expanded td:first-child::after{
+    transform: rotate(0deg);
 }
 .hidden {
     display: none;

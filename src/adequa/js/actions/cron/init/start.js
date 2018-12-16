@@ -7,9 +7,6 @@ Adequa.actions.init.start = function () {
         if (Adequa.current.firstInstall !== false) {
             firstInstall();
         } else {
-            setTimeout(function () {
-                Adequa.actions.cookie.optout(false);
-            }, 15000);
             if (!Adequa.current.addonToken) {
                 Adequa.request.post(Adequa.uri + `api/addon/create`, {}).then((data) => {
                     Adequa.storage.setCurrent({addonToken: JSON.parse(data.response)});
@@ -29,6 +26,7 @@ Adequa.actions.init.start = function () {
 const firstInstall = function () {
     Adequa.storage.setCurrent({
         installDate: Date.now(),
+        nbMaxAdsPerDay: 25,
         server: {
             installDate: Date.now(),
             browser: vAPI.firefox ? 'firefox' : 'chrome'
@@ -38,8 +36,10 @@ const firstInstall = function () {
         Adequa.storage.setCurrent({addonToken: JSON.parse(data.response)});
     }).catch(console.warn);
     Adequa.actions.cookie.getProspectCookie(function (prospect) {
-        if (!prospect)
-            return vAPI.tabs.open({url: vAPI.getURL('/adequa/first-install.html')});
+        if (!prospect) {
+            Adequa.storage.setCurrent({postInstallOpened: true})
+            return vAPI.tabs.open({url: vAPI.getURL('/adequa/post-installation.html')});
+        }
 
         const checkTabs = function (tabs) {
             for (let tab of tabs) {

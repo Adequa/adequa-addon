@@ -135,7 +135,10 @@ Adequa.shouldRemoveCookie = function(cookie){
     if(!rules) return false;
 
     const domain = Adequa.hostname(cookie.domain);
-
+    if(!rules[domain]){
+        Adequa.actions.cookie.updateUserRules(cookie.domain, false);
+        return false;
+    }
     return (rules[domain] || {}).disabled || false;
 };
 

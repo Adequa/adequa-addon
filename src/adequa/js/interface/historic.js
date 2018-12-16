@@ -159,6 +159,7 @@
             }
             // Collapse / Expand Click Groups
             $('.grid tbody').on( 'click', 'tr.group', function () {
+                $(this).toggleClass('expanded');
                 var rowsCollapse = $(this).nextUntil('.group');
                 $(rowsCollapse).toggleClass('hidden');
             });

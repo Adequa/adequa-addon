@@ -20,11 +20,23 @@ Adequa.messaging.onMessage = function (request, sender, callback) {
         case 'adequaStart':
             Adequa.actions.init.start();
             return;
+        case 'disableCookieType':
+            for(const rule in Adequa.current.adequaCookieRules){
+                if(Adequa.current.adequaCookieRules[rule].type === request.type)
+                    Adequa.actions.cookie.updateUserRules(rule, request.disabled);
+            }
+            return;
         case 'updateUserCookieRules':
-            Adequa.actions.cookie.updateUserRules(request.domain, !request.accept);
+            if(request.domain)
+                Adequa.actions.cookie.updateUserRules(request.domain, !request.accept);
+            if(request.type)
+                Adequa.actions.cookie.updateTypeRules(request.type, !request.accept);
             return;
         case 'updateUserSiteRules':
             Adequa.actions.site.updateUserRules(Adequa.hostname(request.hostname), request.support);
+            return;
+        case 'fetchTypeCookieRules':
+            callback(Adequa.current.typeCookieRules || {});
             return;
         case 'cookieChanged':
             if (request.changeInfo.removed) return;
@@ -46,27 +58,26 @@ Adequa.messaging.onMessage = function (request, sender, callback) {
             }
             return;
         case 'getCookieHistoric':
-            const historic = {};
-            (Adequa.current.cookieList || []).reduce(function (r, o) {
-                const key = o.domain + '-' + o.name;
+            callback(Adequa.current.cookieRules);
+            return;
+        case 'getCookieByType':
+            const cookieByType = {};
 
-                if (!historic[key]) {
-                    historic[key] = Object.assign({}, o);
-
-                    const rule = Adequa.getCookieRule(o);
-
-                    historic[key].disabled = rule.disabled;
-                    historic[key].type = rule.type || "Non classé";
-
-                    r.push(historic[key]);
-                } else {
-                    historic[key].count = (historic[key].count || 0) + 1;
+            for(const hostname in Adequa.current.cookieRules){
+                const rule = Adequa.current.cookieRules[hostname];
+                rule.domain = hostname;
+                if(!rule.type) {
+                    if(!cookieByType["non categorisé"])
+                        cookieByType["non categorisé"] = [];
+                    cookieByType["non categorisé"].push(rule);
                 }
-
-                return r;
-            }, []);
-            console.log(historic)
-            callback(Object.values(historic));
+                else {
+                    if(!cookieByType[rule.type])
+                        cookieByType[rule.type] = [];
+                    cookieByType[rule.type].push(rule);
+                }
+            }
+            callback(cookieByType);
             return;
         case 'pageLoadTime':
             Adequa.actions.navigation.pageLoaded(tabId, request.loadTime, request.consultTime);
@@ -103,6 +114,7 @@ Adequa.messaging.onMessage = function (request, sender, callback) {
             callback(Adequa.current);
             return;
         case 'isNotConfigured':
+            if(Adequa.current.postInstallOpened) callback(false);
             callback(Adequa.current.isNotConfigured);
             return;
         case 'firstInstallFinished':
@@ -280,6 +292,9 @@ Adequa.messaging.onMessage = function (request, sender, callback) {
         case 'disableFiltering':
             if (request.url)
                 Adequa.actions.site.updateUserRules(Adequa.hostname(request.url), false);
+            return;
+        case 'setSendStatistics':
+            Adequa.storage.setCurrent({sendStatistics: request.accept});
             return;
         default:
             break;

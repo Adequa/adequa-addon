@@ -32,6 +32,16 @@ const getCookieRules = function () {
         for(const item in rules){
             Adequa.actions.cookie.updateAdequaRules(item, rules[item]);
         }
+        Adequa.messaging.send('adequa', {
+            what: 'disableCookieType',
+            type: "ciblage",
+            disabled: true
+        });
+        Adequa.messaging.send('adequa', {
+            what: 'disableCookieType',
+            type: "social",
+            disabled: true
+        });
     });
 };
 

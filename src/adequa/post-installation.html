@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Adequa - Installation</title>
+    <link rel="stylesheet" type="text/css" href="css/installation-common.css">
+    <link rel="stylesheet" type="text/css" href="css/first-install.css">
+    <link rel="stylesheet" type="text/css" href="css/post-installation.css">
+</head>
+<body>
+<header>
+    <h1>FÉLICITATIONS ! Adequa a été installé avec succès.</h1>
+    <h2>Un petit bouton pour toi, une révolution pour internet.</h2>
+</header>
+<main>
+    <div class="choices">
+        <a class="button" href="javascript:window.open('','_self').close();">
+            <div id="astronaut"></div>
+            <p>OK. Mission accomplie. Je repars explorer le web.</p>
+        </a>
+        <a class="button" href="advanced-installation.html">
+            <div id="dashboard"></div>
+            <p>Encore quelques réglages (fonctionnement, nb pubs…)</p>
+        </a>
+    </div>
+    <div>
+        <div class="statistiques">
+            <label for="stats">
+                <input type="checkbox" id="stats">
+                Partager des données statistiques pour améliorer le service Adequa.
+                <span class="checkmark"></span>
+            </label>
+            <p><a href="https://adequa.me/politique_de_confidentialite.html" target="_blank">En savoir plus</a></p>
+        </div>
+    </div>
+</main>
+<footer>
+    <h2>En installant Adequa, tu consens à <a href="https://adequa.me/politique_de_confidentialite.html"
+                                              target="_blank">la politique de confidentialité d’Adequa</a></h2>
+</footer>
+
+<script src="../js/vapi.js"></script>
+<script src="../js/vapi-common.js"></script>
+<script src="../js/vapi-client.js"></script>
+<script src="../js/udom.js"></script>
+<script src="js/interface/post-installation.js"></script>
+</body>
+</html>

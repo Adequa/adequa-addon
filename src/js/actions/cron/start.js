@@ -86,6 +86,6 @@ const onCookieChanged = function (changeInfo) {
     });
 };
 
-Adequa.API.cookies.onChanged.addListener(onCookieChanged);
+// Adequa.API.cookies.onChanged.addListener(onCookieChanged);
 
 Adequa.messaging.send({what: "adequaStart"});

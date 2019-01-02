@@ -1,78 +1,35 @@
 const {ConsentString} = require('consent-string');
 
-Adequa.actions.consent = {};
-
-Adequa.actions.consent.getSettingsByWebsiteId = function (id) {
-    return Adequa.current.consent.settings.filter(setting => setting.id.website_id === id);
+Adequa.actions.consent = {
+    cmp: {},
+    view: {}
 };
 
-Adequa.actions.consent.getDefaultPurposeSettings = function () {
-    const defaultSettings = Adequa.current.consent.settings.filter(setting => setting.id.website_id === "all" && setting.id.vendor_id === "all");
-    const settings = {};
-
-    for (const setting of defaultSettings)
-        settings[setting.id.purpose_id] = setting;
+Adequa.actions.consent.getSettings = function (filters) {
+    let settings = Adequa.storage.consent.settings;
+    if (filters.website_id)
+        settings = settings.filter(setting => setting.id.website_id === filters.website_id);
+    if (filters.vendor_id)
+        settings = settings.filter(setting => setting.id.vendor_id === filters.vendor_id);
+    if (filters.purpose_id)
+        settings = settings.filter(setting => setting.id.purpose_id === filters.purpose_id);
 
     return settings;
 };
 
-Adequa.actions.consent.getCurrentWebsitePurposeSettings = function (callback) {
-    Adequa.API.tabs.query({
-        active: true,
-        lastFocusedWindow: true
-    }, (tabs) => {
-        const tab = tabs[0] || {};
-
-        const websiteSettings = Adequa.actions.consent.getSettingsByWebsiteId(Adequa.getWebsiteId(tab.url || "nourl"));
-        const settings = this.getDefaultPurposeSettings() || {};
-
-        for (const setting of websiteSettings)
-            settings[setting.id.purpose_id] = setting;
-
-        callback(settings);
-    });
-};
-
-Adequa.actions.consent.getDefaultVendorSettings = function () {
-    const defaultSettings = Adequa.current.consent.settings.filter(setting => setting.id.website_id === "all" && setting.id.purpose_id === "all");
-    const settings = {};
-
-    for (const setting of defaultSettings)
-        settings[setting.id.vendor_id] = setting;
-
-    return settings;
-};
-
-Adequa.actions.consent.getCurrentWebsiteVendorSettings = function (callback) {
-    Adequa.API.tabs.query({
-        active: true,
-        lastFocusedWindow: true
-    }, (tabs) => {
-        const tab = tabs[0] || {};
-
-        const websiteSettings = Adequa.actions.consent.getSettingsByWebsiteId(Adequa.getWebsiteId(tab.url || "nourl"));
-        const settings = this.getDefaultVendorSettings() || {};
-
-        for (const setting of websiteSettings)
-            settings[setting.id.vendor_id] = setting;
-
-        callback(settings);
-    });
-};
-
-Adequa.actions.consent.setOrUpdateSetting = function (setting) {
-    const index = Adequa.current.consent.settings.findIndex(item => item.id.website_id === setting.id.website_id && item.id.purpose_id === setting.id.purpose_id && item.id.vendor_id === setting.id.vendor_id);
+Adequa.actions.consent.setSetting = function (setting) {
+    const index = Adequa.storage.consent.settings.findIndex(item => item.id.website_id === setting.id.website_id && item.id.purpose_id === setting.id.purpose_id && item.id.vendor_id === setting.id.vendor_id);
     if (index === -1)
-        Adequa.current.consent.settings.push(setting);
+        Adequa.storage.consent.settings.push(setting);
     else
-        Adequa.current.consent.settings[index] = setting;
+        Adequa.storage.consent.settings[index] = setting;
 
-    Adequa.storage.setCurrent({});
+    Adequa.setStorage({});
 };
 
-Adequa.actions.consent.getConsentData = function (websiteId) {
-    const defaultSettings = Adequa.actions.consent.getSettingsByWebsiteId("all");
-    const websiteSettings = Adequa.actions.consent.getSettingsByWebsiteId(websiteId);
+Adequa.actions.consent.cmp.getConsentData = function (websiteId) {
+    const defaultSettings = Adequa.actions.consent.getSettings({website_id: "all"});
+    const websiteSettings = Adequa.actions.consent.getSettings({website_id: websiteId});
 
     const allowedPurposeIds = [];
     const forbiddenPurposeIds = [];
@@ -122,20 +79,20 @@ Adequa.actions.consent.getConsentData = function (websiteId) {
             }
         } else if (setting.id.purpose_id === "all" && setting.id.vendor_id === "all") {
             if (setting.value === -1) {
-                for (const purposeId of Adequa.current.purposeList) {
+                for (const purposeId of Adequa.storage.purposeList) {
                     if (allowedPurposeIds.indexOf(purposeId) === -1 && forbiddenPurposeIds.indexOf(purposeId) === -1)
                         allowedPurposeIds.push(purposeId);
                 }
-                for (const vendorId of Adequa.current.vendorList) {
+                for (const vendorId of Adequa.storage.vendorList) {
                     if (allowedVendorIds.indexOf(vendorId) === -1 && forbiddenVendorIds.indexOf(vendorId) === -1)
                         allowedVendorIds.push(vendorId);
                 }
             } else {
-                for (const purposeId of Adequa.current.purposeList) {
+                for (const purposeId of Adequa.storage.purposeList) {
                     if (allowedPurposeIds.indexOf(purposeId) === -1 && forbiddenPurposeIds.indexOf(purposeId) === -1)
                         forbiddenPurposeIds.push(purposeId);
                 }
-                for (const vendorId of Adequa.current.vendorList) {
+                for (const vendorId of Adequa.storage.vendorList) {
                     if (allowedVendorIds.indexOf(vendorId) === -1 && forbiddenVendorIds.indexOf(vendorId) === -1)
                         forbiddenVendorIds.push(vendorId);
                 }
@@ -149,7 +106,7 @@ Adequa.actions.consent.getConsentData = function (websiteId) {
 
     const consentData = new ConsentString();
 
-    consentData.setGlobalVendorList(Adequa.current.fullVendorList);
+    consentData.setGlobalVendorList(Adequa.storage.fullVendorList);
 
     consentData.setCmpId(1);
     consentData.setCmpVersion(1);
@@ -160,10 +117,10 @@ Adequa.actions.consent.getConsentData = function (websiteId) {
 
     return {
         consentString: consentData.getConsentString(),
-        allowedVendors : allowedVendorIds,
+        allowedVendors: allowedVendorIds,
         allowedPurposes: allowedPurposeIds,
-        vendorList: Adequa.current.vendorList,
-        purposeList: Adequa.current.purposeList
+        vendorList: Adequa.storage.vendorList,
+        purposeList: Adequa.storage.purposeList
     };
 }
 ;

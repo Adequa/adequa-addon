@@ -4,27 +4,27 @@ Adequa.actions.resources = {};
 
 Adequa.actions.resources.fetchAll = function () {
     getAPIResponse('resources-version', function(versions){
-        if(Object.is(Adequa.current.versions || {}, versions)) return;
+        if(Object.is(Adequa.storage.versions || {}, versions)) return;
 
-        // if(!checkVersion(versions, 'themes') || !Adequa.current.availableThemes) getAvailableThemes();
-        // if(!checkVersion(versions, 'cookie-blacklist') || !Adequa.current.cookieBlacklist) getBlacklist();
-        // if(!checkVersion(versions, 'query-selectors') || !Adequa.current.partnerList) getPartnerList();
-        // if(!checkVersion(versions, 'notarget-cookies') || !Adequa.current.yocCookies) getOptoutCookies();
-        // if(!checkVersion(versions, 'requests-type') || !Adequa.current.requestsType) getRequestsType();
-        if(!checkVersion(versions, 'cookie-rules') || !Adequa.current.adequaCookieRules) getCookieRules();
+        // if(!checkVersion(versions, 'themes') || !Adequa.storage.availableThemes) getAvailableThemes();
+        // if(!checkVersion(versions, 'cookie-blacklist') || !Adequa.storage.cookieBlacklist) getBlacklist();
+        // if(!checkVersion(versions, 'query-selectors') || !Adequa.storage.partnerList) getPartnerList();
+        // if(!checkVersion(versions, 'notarget-cookies') || !Adequa.storage.yocCookies) getOptoutCookies();
+        // if(!checkVersion(versions, 'requests-type') || !Adequa.storage.requestsType) getRequestsType();
+        if(!checkVersion(versions, 'cookie-rules') || !Adequa.storage.adequaCookieRules) getCookieRules();
 
-        Adequa.storage.setCurrent({versions});
+        Adequa.setStorage({versions});
     });
     getIABResources();
 };
 
 const checkVersion = function(versions, name){
-  return versions[name] === (Adequa.current.versions || {})[name];
+  return versions[name] === (Adequa.storage.versions || {})[name];
 };
 
 const getBlacklist = function () {
     getAPIResponse('cookie-blacklist', function (list) {
-        Adequa.storage.setCurrent({cookieBlacklist: list});
+        Adequa.setStorage({cookieBlacklist: list});
     });
 };
 
@@ -48,8 +48,8 @@ const getCookieRules = function () {
 
 const getPartnerList = function () {
     getAPIResponse('query-selectors', function (partnerList) {
-        Adequa.storage.setCurrent({partnerList});
-        for(let partner in Adequa.current.partnerList) {
+        Adequa.setStorage({partnerList});
+        for(let partner in Adequa.storage.partnerList) {
             Adequa.actions.site.updateAdequaRules(partner, true);
         }
     });
@@ -57,19 +57,19 @@ const getPartnerList = function () {
 
 const getAvailableThemes = function () {
     getAPIResponse('themes', function (availableThemes) {
-        Adequa.storage.setCurrent({availableThemes});
+        Adequa.setStorage({availableThemes});
     });
 };
 
 const getRequestsType = function () {
     getAPIResponse('requests-type', function (requestsType) {
-        Adequa.storage.setCurrent({requestsType});
+        Adequa.setStorage({requestsType});
     });
 };
 
 const getOptoutCookies = function () {
     getAPIResponse('notarget-cookies', function (yocCookies) {
-        Adequa.storage.setCurrent({yocCookies});
+        Adequa.setStorage({yocCookies});
     });
 };
 
@@ -94,15 +94,15 @@ const getIABResources = function(){
     Adequa.request.get('https://vendorlist.consensu.org/purposes-fr.json').then(function(req){
         const res = JSON.parse(req.response);
         if(res){
-            Adequa.current.purposeList = [];
-            Adequa.storage.setCurrent({purposeList: res.purposes})
+            Adequa.storage.purposeList = [];
+            Adequa.setStorage({purposeList: res.purposes})
         }
     }).catch(console.warn);
     Adequa.request.get('https://vendorlist.consensu.org/vendorlist.json').then(function(req){
         const res = JSON.parse(req.response);
         if(res){
-            Adequa.current.vendorList = [];
-            Adequa.storage.setCurrent({fullVendorList: res, vendorList: res.vendors})
+            Adequa.storage.vendorList = [];
+            Adequa.setStorage({fullVendorList: res, vendorList: res.vendors})
         }
     }).catch(console.warn);
 };

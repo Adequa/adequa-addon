@@ -32,19 +32,19 @@ Adequa.hostname = function (url) {
 };
 
 Adequa.shouldRemoveCookie = function(cookie){
-    Adequa.current.cookieRules = Adequa.current.cookieRules || {};
-    const rules = Adequa.current.cookieRules;
+    Adequa.storage.cookieRules = Adequa.storage.cookieRules || {};
+    const rules = Adequa.storage.cookieRules;
 
     const domain = Adequa.hostname(cookie.domain);
     if(!rules[domain]){
         Adequa.actions.cookie.updateCookieRules(cookie.domain);
-        return Adequa.current.cookieRules[domain];
+        return Adequa.storage.cookieRules[domain];
     }
     return (rules[domain] || {}).disabled || false;
 };
 
 Adequa.getCookieRule = function(cookie){
-    const rules = Adequa.current.cookieRules;
+    const rules = Adequa.storage.cookieRules;
     if(!rules) return false;
 
     const domain = Adequa.hostname(cookie.domain);

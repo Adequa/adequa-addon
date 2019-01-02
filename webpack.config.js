@@ -60,7 +60,24 @@ const consentConfig = Object.assign({}, config, {
     }
 });
 
+const storageConfig = Object.assign({}, config, {
+    entry: './src/js/storage.js',
+    output: {
+        filename: 'storage.bundle.js',
+        path: path.resolve(__dirname, './src/js/')
+    },
+    module: {
+        rules: [
+            {
+                test: /\.js$/,
+                loader: 'babel-loader'
+            }
+        ]
+    }
+});
+
 module.exports = [
     vueConfig,
-    consentConfig
+    consentConfig,
+    storageConfig
 ];

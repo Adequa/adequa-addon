@@ -3,10 +3,10 @@
 Adequa.actions.cookie = {};
 
 Adequa.actions.cookie.logCookie = function (cookie) {
-    Adequa.current.cookieList = Adequa.current.cookieList || [];
+    Adequa.storage.cookieList = Adequa.storage.cookieList || [];
     cookie.date = Date.now();
-    Adequa.current.cookieList.push(cookie);
-    Adequa.storage.setCurrent({});
+    Adequa.storage.cookieList.push(cookie);
+    Adequa.setStorage({});
 };
 
 Adequa.actions.cookie.getProspectCookie = function (callback) {
@@ -22,9 +22,9 @@ Adequa.actions.cookie.getProspectCookie = function (callback) {
 
 Adequa.actions.cookie.remove = function (cookie) {
     if(cookie.value === "") return;
-    if(!Array.isArray(Adequa.current.cookieRemovedList)) Adequa.current.cookieRemovedList = [];
+    if(!Array.isArray(Adequa.storage.cookieRemovedList)) Adequa.storage.cookieRemovedList = [];
 
-    Adequa.current.cookieRemovedList.push(Object.assign({}, cookie));
+    Adequa.storage.cookieRemovedList.push(Object.assign({}, cookie));
 
     const url = "http" + (cookie.secure ? "s" : "") + "://" + (cookie.domain.startsWith('.') ? cookie.domain.slice(1) : cookie.domain) +
         cookie.path;

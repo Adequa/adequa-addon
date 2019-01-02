@@ -3,18 +3,18 @@
 
 Adequa.actions.init.start = function () {
     fetchCurrent(function () {
-        if (Adequa.current.firstInstall !== false) {
+        if (Adequa.storage.firstInstall !== false) {
             firstInstall();
         } else {
-            if (!Adequa.current.addonToken) {
+            if (!Adequa.storage.addonToken) {
                 Adequa.request.post(Adequa.uri + `api/addon/create`, {}).then((data) => {
-                    Adequa.storage.setCurrent({addonToken: JSON.parse(data.response)});
+                    Adequa.setStorage({addonToken: JSON.parse(data.response)});
                 }).catch(console.warn);
             }
         }
 
-        if(!Adequa.current.consent)
-            Adequa.current.consent = {settings: []};
+        if(!Adequa.storage.consent)
+            Adequa.storage.consent = {settings: []};
 
         Adequa.actions.resources.fetchAll();
 
@@ -23,7 +23,7 @@ Adequa.actions.init.start = function () {
 };
 
 const firstInstall = function () {
-    Adequa.storage.setCurrent({
+    Adequa.setStorage({
         installDate: Date.now(),
         nbMaxAdsPerDay: 25,
         server: {
@@ -32,12 +32,12 @@ const firstInstall = function () {
         }
     });
     Adequa.request.post(Adequa.uri + `api/addon/create`, {}).then((data) => {
-        Adequa.storage.setCurrent({addonToken: JSON.parse(data.response)});
+        Adequa.setStorage({addonToken: JSON.parse(data.response)});
     }).catch(console.warn);
     Adequa.actions.cookie.getProspectCookie(function (prospect) {
         if (!prospect) {
             return;
-            // Adequa.storage.setCurrent({postInstallOpened: true})
+            // Adequa.setStorage({postInstallOpened: true})
             // return Adequa.API.tabs.open({url: Adequa.API.runtime.getURL('/adequa/post-installation.html')});
         }
 
@@ -46,11 +46,11 @@ const firstInstall = function () {
                 if (tab.url.indexOf(prospect.domain) !== -1) {
                     updateTab(tab);
                     reloadTab(tab.id);
-                    let data = Object.assign({}, Adequa.current.server);
+                    let data = Object.assign({}, Adequa.storage.server);
                     data.new = {
                         converted_from: prospect.domain
                     };
-                    Adequa.storage.setCurrent({convertedFrom: prospect.domain});
+                    Adequa.setStorage({convertedFrom: prospect.domain});
                 }
             }
 
@@ -65,12 +65,12 @@ const firstInstall = function () {
         };
         Adequa.API.tabs.query({}, checkTabs)
     });
-    Adequa.storage.setCurrent({firstInstall: false});
+    Adequa.setStorage({firstInstall: false});
 };
 
 const fetchCurrent = function (callback) {
     Adequa.API.storage.get('current', function (data) {
-        Adequa.current = data.current || {tabs: {}, versions: {}};
+        Adequa.storage = data.current || {tabs: {}, versions: {}};
         callback();
     });
 };

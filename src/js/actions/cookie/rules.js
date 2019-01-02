@@ -5,14 +5,14 @@ Adequa.actions.cookie.updateUserRules = function (domain, blacklist) {
     domain = Adequa.hostname(domain);
     const rule = {};
     rule[domain] = {disabled: blacklist};
-    Adequa.current.userCookieRules = rule;
+    Adequa.storage.userCookieRules = rule;
     Adequa.actions.cookie.updateCookieRules(domain);
 };
 
 Adequa.actions.cookie.updateTypeRules = function (type, blacklist) {
-    const rule = Adequa.current.typeCookieRules || {};
+    const rule = Adequa.storage.typeCookieRules || {};
     rule[type] = {disabled: blacklist};
-    Adequa.current.typeCookieRules = rule;
+    Adequa.storage.typeCookieRules = rule;
     Adequa.actions.cookie.updateTypeCookieRules(type);
 };
 
@@ -20,35 +20,35 @@ Adequa.actions.cookie.updateAdequaRules = function (domain, rule) {
     domain = Adequa.hostname(domain);
     const newrule = {};
     newrule[domain] = rule;
-    Adequa.current.adequaCookieRules = newrule;
+    Adequa.storage.adequaCookieRules = newrule;
     Adequa.actions.cookie.updateCookieRules(domain);
 };
 
 Adequa.actions.cookie.updateTypeCookieRules = function (type) {
-    Adequa.current.userCookieRules = Adequa.current.userCookieRules || {};
-    Adequa.current.typeCookieRules = Adequa.current.typeCookieRules || {};
-    for (const domain in Adequa.current.cookieRules) {
-        const currentRule = Adequa.current.cookieRules[domain] || {};
-        const userRule = Adequa.current.userCookieRules[domain] || {};
-        const typeRule = Adequa.current.typeCookieRules[type] || {};
+    Adequa.storage.userCookieRules = Adequa.storage.userCookieRules || {};
+    Adequa.storage.typeCookieRules = Adequa.storage.typeCookieRules || {};
+    for (const domain in Adequa.storage.cookieRules) {
+        const currentRule = Adequa.storage.cookieRules[domain] || {};
+        const userRule = Adequa.storage.userCookieRules[domain] || {};
+        const typeRule = Adequa.storage.typeCookieRules[type] || {};
 
-        Adequa.current.cookieRules[domain] = Object.assign({}, currentRule, typeRule, userRule);
+        Adequa.storage.cookieRules[domain] = Object.assign({}, currentRule, typeRule, userRule);
     }
-    Adequa.storage.setCurrent({});
+    Adequa.setStorage({});
 };
 
 Adequa.actions.cookie.updateCookieRules = function (domain) {
     domain = Adequa.hostname(domain);
     if (!domain) return;
-    const adequaRules = Adequa.current.adequaCookieRules || {};
+    const adequaRules = Adequa.storage.adequaCookieRules || {};
     const adequaRule = adequaRules[domain] || false;
 
-    const userRules = Adequa.current.userCookieRules || {};
+    const userRules = Adequa.storage.userCookieRules || {};
     const userRule = userRules[domain] || false;
 
-    const typeRules = Adequa.current.typeCookieRules || {};
+    const typeRules = Adequa.storage.typeCookieRules || {};
     const typeRule = typeRules[(adequaRule || {}).type || "non categorisé"] || false;
 
-    Adequa.current.cookieRules[domain] = Object.assign({}, adequaRule, typeRule, userRule);
-    Adequa.storage.setCurrent({});
+    Adequa.storage.cookieRules[domain] = Object.assign({}, adequaRule, typeRule, userRule);
+    Adequa.setStorage({});
 };

@@ -2,16 +2,26 @@ Adequa.messaging = {};
 
 const pageMessaging = function (request, sender, callback) {
     switch (request.what) {
-        case 'getWebsiteRules':
-            if(!(sender && sender.tab && sender.tab.url)) return;
-
-            const hostname = Adequa.hostname(sender.tab.url);
-            callback(Adequa.current.cookieRules[hostname] || {});
-            return;
         case 'getConsent':
-            const message = Adequa.actions.consent.getConsentData(Adequa.getWebsiteId((sender.tab || {}).url || "nourl"));
+            const message = Adequa.actions.consent.cmp.getConsentData(Adequa.getWebsiteId((sender.tab || {}).url || "nourl"));
             message.what = "consentInfos";
             callback(message);
+            return;
+        case 'setConsent':
+            for(const purpose of request.purposeList){
+                const setting = {
+                    id: {
+                        website_id: Adequa.getWebsiteId((sender.tab || {}).url || "nourl"),
+                        vendor_id: "all",
+                        purpose_id: purpose
+                    },
+                    value: -1
+                };
+                Adequa.actions.consent.setSetting(setting);
+            }
+            const msg = Adequa.actions.consent.cmp.getConsentData(Adequa.getWebsiteId((sender.tab || {}).url || "nourl"));
+            msg.what = "requiredConsentInfos";
+            callback(msg);
             return;
         default:
             console.log('Page event not handled : ' + request.what);
@@ -21,16 +31,12 @@ const pageMessaging = function (request, sender, callback) {
 
 const messaging = function (request, sender, callback) {
     switch (request.what) {
-        case 'setOrUpdateSetting':
-            Adequa.actions.consent.setOrUpdateSetting(request.setting);
+        case 'setSetting':
+            Adequa.actions.consent.setSetting(request.setting);
 
-            Adequa.API.tabs.query({}, function(tabs) {
-                const message = Adequa.actions.consent.getConsentData(Adequa.getWebsiteId((sender.tab || {}).url || "nourl"));
-                message.what = "consentInfos";
-                for (const tab of tabs) {
-                    Adequa.API.tabs.sendMessage(tab.id, message);
-                }
-            });
+            const message = Adequa.actions.consent.cmp.getConsentData(Adequa.getWebsiteId((sender.tab || {}).url || "nourl"));
+            message.what = "consentInfos";
+            Adequa.messaging.sendAllTabs(message);
             return;
         case 'getWebsiteId':
             Adequa.API.tabs.query({
@@ -42,31 +48,42 @@ const messaging = function (request, sender, callback) {
             });
             return true;
         case 'getDefaultPurposeSettings':
-            callback(Adequa.actions.consent.getDefaultPurposeSettings());
+            callback(Adequa.actions.consent.view.mapSettings(
+                Adequa.actions.consent.getSettings({
+                    website_id: "all",
+                    vendor_id: "all"
+                }),
+                "purpose_id") || {});
             return;
         case 'getWebsitePurposeSettings':
-            Adequa.actions.consent.getCurrentWebsitePurposeSettings(function(settings){
+            Adequa.actions.consent.view.getCurrentWebsiteSettingsMapped(function(settings){
                 callback(settings);
-            });
+            }, "purpose_id");
             return true;
         case 'getDefaultVendorSettings':
-            callback(Adequa.actions.consent.getDefaultVendorSettings());
+            callback(Adequa.actions.consent.view.mapSettings(
+                Adequa.actions.consent.getSettings({
+                    website_id: "all",
+                    purpose_id: "all"
+                }),
+                "vendor_id") || {});
             return;
         case 'getWebsiteVendorSettings':
-            Adequa.actions.consent.getCurrentWebsiteVendorSettings(function(settings){
+            Adequa.actions.consent.view.getCurrentWebsiteSettingsMapped(function(settings){
+                console.log(settings)
                 callback(settings);
-            });
+            }, "vendor_id");
             return true;
         case 'getPurposeList':
-            callback(Adequa.current.purposeList);
+            callback(Adequa.storage.purposeList);
             return;
         case 'getVendorList':
-            callback(Adequa.current.vendorList);
+            callback(Adequa.storage.vendorList);
             return;
         case 'fetchCookieDomainBlocked':
             const domainBlocked = [];
-            for (const domain in Adequa.current.cookieRules) {
-                if (Adequa.current.cookieRules[domain].disabled)
+            for (const domain in Adequa.storage.cookieRules) {
+                if (Adequa.storage.cookieRules[domain].disabled)
                     domainBlocked.push(domain);
             }
             callback(domainBlocked);
@@ -75,8 +92,8 @@ const messaging = function (request, sender, callback) {
             Adequa.actions.init.start();
             return;
         case 'disableCookieType':
-            for (const rule in Adequa.current.adequaCookieRules) {
-                if (Adequa.current.adequaCookieRules[rule].type === request.type)
+            for (const rule in Adequa.storage.adequaCookieRules) {
+                if (Adequa.storage.adequaCookieRules[rule].type === request.type)
                     Adequa.actions.cookie.updateUserRules(rule, request.disabled);
             }
             return;
@@ -87,7 +104,7 @@ const messaging = function (request, sender, callback) {
                 Adequa.actions.cookie.updateTypeRules(request.type, !request.accept);
             return;
         case 'fetchTypeCookieRules':
-            callback(Adequa.current.typeCookieRules || {});
+            callback(Adequa.storage.typeCookieRules || {});
             return;
         case 'cookieChanged':
             if (request.changeInfo.removed) return;
@@ -99,13 +116,13 @@ const messaging = function (request, sender, callback) {
             }
             return;
         case 'getCookieHistoric':
-            callback(Adequa.current.cookieRules);
+            callback(Adequa.storage.cookieRules);
             return;
         case 'getCookieByType':
             const cookieByType = {};
 
-            for (const hostname in Adequa.current.cookieRules) {
-                const rule = Adequa.current.cookieRules[hostname];
+            for (const hostname in Adequa.storage.cookieRules) {
+                const rule = Adequa.storage.cookieRules[hostname];
                 rule.domain = hostname;
                 if (!rule.type) {
                     if (!cookieByType["non categorisé"])
@@ -138,6 +155,14 @@ Adequa.messaging.receive = function (request, sender, callback) {
 
 Adequa.messaging.send = function (request, callback) {
     Adequa.messaging.receive(request, {}, callback)
+};
+
+Adequa.messaging.sendAllTabs = function(message){
+    Adequa.API.tabs.query({}, function(tabs) {
+        for (const tab of tabs) {
+            Adequa.API.tabs.sendMessage(tab.id, message);
+        }
+    });
 };
 
 Adequa.API.onMessage(Adequa.messaging.receive);

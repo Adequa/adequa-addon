@@ -4,7 +4,7 @@
 Adequa.actions.navigation = {};
 
 Adequa.actions.navigation.updatePageViewFromCurrent = function (tabId) {
-    const tab = Adequa.current.tabs[tabId];
+    const tab = Adequa.storage.tabs[tabId];
     if (!tab || !tab.url)
         return;
     if (!(tab.url.startsWith('http://') || tab.url.startsWith('https://')))
@@ -24,7 +24,7 @@ Adequa.actions.navigation.updatePageViewFromCurrent = function (tabId) {
         Adequa.storage.db.commit();
 
         tab.dbId = id;
-        Adequa.storage.setCurrent({
+        Adequa.setStorage({
             tabs: {}[tabId || 0] = tab
         });
     }
@@ -46,7 +46,7 @@ Adequa.actions.navigation.updatePageViewFromCurrent = function (tabId) {
 };
 
 Adequa.actions.navigation.resetTab = function (tabId, url) {
-    let tabs = Adequa.current.tabs || {};
+    let tabs = Adequa.storage.tabs || {};
     if (tabs[tabId] && tabs[tabId].url === url && tabs[tabId].consultTime === 0)
         return;
     if (tabs[tabId] && tabs[tabId].url === url && Date.now() < (tabs[tabId].consultTime + 30 * 60 * 1000))
@@ -67,11 +67,11 @@ Adequa.actions.navigation.resetTab = function (tabId, url) {
         pageviewId: 0
     };
 
-    Adequa.storage.setCurrent({tabs});
+    Adequa.setStorage({tabs});
 };
 
 const savePartnerHistoryToServer = function (tabId) {
-    let tabs = Adequa.current.tabs;
+    let tabs = Adequa.storage.tabs;
     if (!tabs[tabId])
         return;
     if (Adequa.isPartner(tabs[tabId].url)) {
@@ -81,13 +81,13 @@ const savePartnerHistoryToServer = function (tabId) {
             nb_ads_viewed: tabs[tabId].nbAdsViewed,
             hostname: Adequa.hostname(tabs[tabId].url),
         };
-        let body = Adequa.current.server;
+        let body = Adequa.storage.server;
         body.data = data;
 
         Adequa.request.post(Adequa.uri + 'api/partner/pageview', JSON.stringify(body), true)
             .then(function (res) {
                 tabs[tabId].pageviewId = JSON.parse(res.response).id;
-                Adequa.storage.setCurrent({tabs});
+                Adequa.setStorage({tabs});
             })
             .catch(console.warn);
     }

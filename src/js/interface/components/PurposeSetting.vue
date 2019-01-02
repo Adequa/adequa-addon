@@ -59,9 +59,8 @@
                     this.forbiddenActive = true;
                     this.currentSetting.value = 1;
                 }
-                console.dir(this.isDefault, this.currentSetting);
                 this.$emit("settingChanged", this.currentSetting);
-                Adequa.API.runtime.sendMessage({what: "setOrUpdateSetting", setting: this.currentSetting});
+                Adequa.API.runtime.sendMessage({what: "setSetting", setting: this.currentSetting});
             },
             expand: function (e) {
                 if (this.descriptionHidden) {

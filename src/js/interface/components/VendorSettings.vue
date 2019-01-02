@@ -48,6 +48,7 @@
                 this.vendors = vendors;
             });
             Adequa.API.runtime.sendMessage({what: "getDefaultVendorSettings"}, (settings) => {
+                console.log(settings)
                 this.defaultSettings = settings;
             });
             Adequa.API.runtime.sendMessage({what: "getWebsiteVendorSettings"}, (settings) => {

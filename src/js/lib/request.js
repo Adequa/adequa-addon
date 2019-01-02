@@ -32,7 +32,7 @@ class XMLRequest {
       else
         req.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
 
-      req.setRequestHeader('Adequa-Token', Adequa.current.addonToken);
+      req.setRequestHeader('Adequa-Token', Adequa.storage.addonToken);
       req.send(body);
     });
   }

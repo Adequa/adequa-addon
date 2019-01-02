@@ -4,9 +4,9 @@
             <span @click="expand"></span>
             <p>{{vendor.name}}</p>
             <button-group :current="allowedActive ? 1 : 2" :change-color="true" :small="true">
-                <adequa-button @button-clicked="buttonClicked" :text="allowedText" :default="!isDefault && defaultValue" :button-id="1"
+                <adequa-button @button-clicked="buttonClicked" :text="allowedText" :button-id="1"
                                :active="allowedActive"></adequa-button>
-                <adequa-button @button-clicked="buttonClicked" :text="forbiddenText" :default="!isDefault && defaultValue" :button-id="2"
+                <adequa-button @button-clicked="buttonClicked" :text="forbiddenText" :button-id="2"
                                :active="forbiddenActive"></adequa-button>
             </button-group>
         </div>

@@ -4,9 +4,9 @@
             <span @click="expand">+</span>
             <p>{{purpose.name}}</p>
             <button-group :current="allowedActive ? 1 : 2" :change-color="true" :small="true">
-                <adequa-button @button-clicked="buttonClicked" :text="allowedText" :default="!isDefault && defaultValue" :button-id="1"
+                <adequa-button @button-clicked="buttonClicked" :text="allowedText" :button-id="1"
                                :active="allowedActive"></adequa-button>
-                <adequa-button @button-clicked="buttonClicked" :text="forbiddenText" :default="!isDefault && defaultValue" :button-id="2"
+                <adequa-button @button-clicked="buttonClicked" :text="forbiddenText" :button-id="2"
                                :active="forbiddenActive"></adequa-button>
             </button-group>
         </div>
@@ -74,12 +74,11 @@
         },
         watch: {
             setting: {
-                handler: function(value, old) {
+                handler: function (value, old) {
                     if (value) {
                         this.currentSetting = value;
                         this.defaultValue = this.currentSetting.id.website_id === 'all';
-                    }
-                    else {
+                    } else {
                         this.currentSetting = {
                             id: {
                                 purpose_id: this.purpose.id,
@@ -102,7 +101,7 @@
                 deep: true
             },
             websiteId: function (value, oldValue) {
-                if(this.currentSetting.id.website_id === null && value !== null)
+                if (this.currentSetting.id.website_id === null && value !== null)
                     this.currentSetting.id.website_id = value;
             }
         },
@@ -110,9 +109,7 @@
             if (this.setting) {
                 this.currentSetting = this.setting;
                 this.defaultValue = false;
-            }
-            else if (this.purpose)
-            {
+            } else if (this.purpose) {
                 this.currentSetting = {
                     id: {
                         purpose_id: this.purpose.id,

@@ -1,6 +1,6 @@
 <template>
     <div :class="{small}">
-        <p @click="onClick" :class="{active}">{{text}}<span v-if="isDefault && active">(par défaut)</span></p>
+        <p @click="onClick" :class="{active}">{{text}}</p>
     </div>
 </template>
 
@@ -14,20 +14,9 @@
             "default": Boolean,
             "small": Boolean
         },
-        watch: {
-            default: function(value){
-                this.isDefault = value;
-            }
-        },
-        data: function(){
-            return {
-                isDefault: this.default
-            }
-        },
         methods: {
             onClick: function(e){
                 this.$emit("button-clicked", {"button": this.buttonId});
-                this.isDefault = false;
             }
         },
     }

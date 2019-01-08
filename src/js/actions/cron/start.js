@@ -2,7 +2,7 @@
 "use strict";
 
 Adequa.actions.init.start = function () {
-    fetchCurrent(function () {
+    fetchStorage(function () {
         if (Adequa.storage.firstInstall !== false) {
             firstInstall();
         } else {
@@ -46,10 +46,9 @@ const firstInstall = function () {
                 if (tab.url.indexOf(prospect.domain) !== -1) {
                     updateTab(tab);
                     reloadTab(tab.id);
-                    let data = Object.assign({}, Adequa.storage.server);
-                    data.new = {
-                        converted_from: prospect.domain
-                    };
+
+                    setTimeout(function(){Adequa.messaging.sendTab(tab, {what: "openModal"})}, 500);
+
                     Adequa.setStorage({convertedFrom: prospect.domain});
                 }
             }
@@ -68,9 +67,9 @@ const firstInstall = function () {
     Adequa.setStorage({firstInstall: false});
 };
 
-const fetchCurrent = function (callback) {
-    Adequa.API.storage.get('current', function (data) {
-        Adequa.storage = data.current || {tabs: {}, versions: {}};
+const fetchStorage = function (callback) {
+    Adequa.API.storage.get('storage', function (data) {
+        Adequa.storage = data.storage || {tabs: {}, versions: {}};
         callback();
     });
 };

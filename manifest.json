@@ -29,10 +29,20 @@
         "https://*/*"
       ],
       "js": [
-        "/js/page/messaging.js",
-        "/js/page/contentscript.js"
+        "/js/page/messaging.js"
       ],
       "run_at": "document_start",
+      "all_frames": true
+    },
+    {
+      "matches": [
+        "http://*/*",
+        "https://*/*"
+      ],
+      "js": [
+        "/js/page/contentscript.js"
+      ],
+      "run_at": "document_idle",
       "all_frames": true
     }
   ],
@@ -47,6 +57,7 @@
   "incognito": "split",
   "manifest_version": 2,
   "minimum_chrome_version": "51.0",
+  "web_accessible_resources" : ["/js/page/cmp.js"],
   "name": "Adequa",
   "optional_permissions": [
     "file:///*"
@@ -61,5 +72,5 @@
     "<all_urls>"
   ],
   "short_name": "Adequa",
-  "version": "1.0.5"
+  "version": "1.0.7"
 }

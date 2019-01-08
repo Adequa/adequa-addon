@@ -1,44 +1,18 @@
-const merge = require('deepmerge');
+const { mergeDeep } = require('immutable');
 
 Adequa.storage = null;
 
-Adequa.storage = {};
+const store = function(){
+    Adequa.API.storage.set({storage: Adequa.storage});
+};
 
-// function mergeDeep(...objects) {
-//     const isObject = obj => obj && typeof obj === 'object';
-//
-//     return objects.reduce((prev, obj) => {
-//         Object.keys(obj).forEach((key) => {
-//             const pVal = prev[key];
-//             const oVal = obj[key];
-//
-//             if (Array.isArray(pVal) && Array.isArray(oVal)) {
-//                 prev[key] = pVal.concat(...oVal);
-//             } else if (isObject(pVal) && isObject(oVal)) {
-//                 prev[key] = mergeDeep(pVal, oVal);
-//             } else {
-//                 prev[key] = oVal;
-//             }
-//         });
-//
-//         return prev;
-//     }, {});
-// }
-
-Adequa.setStorage = function (newCurrent) {
+Adequa.setStorage = function (newStorage) {
     if (Adequa.storage === null)
         return;
 
-    const oldCurrent = Adequa.storage || {};
-    const current = merge(oldCurrent, newCurrent);
+    const oldStorage = Adequa.storage || {};
 
-    Adequa.storage = current;
-    Adequa.shouldSetStorage = true;
-    // Adequa.API.storage.set({current});
+    Adequa.storage = mergeDeep(oldStorage, newStorage);
+    clearTimeout(Adequa.setStorageTimeout || 0);
+    Adequa.setStorageTimeout = setTimeout(store, 2000);
 };
-
-setInterval(() => {
-    if (Adequa.shouldSetStorage)
-        Adequa.API.storage.set({current: Adequa.storage});
-    Adequa.shouldSetStorage = false;
-}, 2000);

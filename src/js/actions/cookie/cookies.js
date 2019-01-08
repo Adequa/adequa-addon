@@ -10,12 +10,8 @@ Adequa.actions.cookie.logCookie = function (cookie) {
 };
 
 Adequa.actions.cookie.getProspectCookie = function (callback) {
-    Adequa.API.cookies.getAll({}, function (cookies) {
-        for (let cookie of cookies) {
-            if (cookie.name === "adequa-hasadblock") {
-                return callback(cookie);
-            }
-        }
+    Adequa.API.cookies.getAll({name: "adequa-wait-for-return"}, function (cookies) {
+        if(cookies[0]) return callback(cookies[0]);
         callback();
     });
 };

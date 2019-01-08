@@ -23,11 +23,10 @@ Adequa.actions.consent.setSetting = function (setting) {
         Adequa.storage.consent.settings.push(setting);
     else
         Adequa.storage.consent.settings[index] = setting;
-
     Adequa.setStorage({});
 };
 
-Adequa.actions.consent.cmp.getConsentData = function (websiteId) {
+Adequa.actions.consent.cmp.getConsentData = function (websiteId, callback) {
     const defaultSettings = Adequa.actions.consent.getSettings({website_id: "all"});
     const websiteSettings = Adequa.actions.consent.getSettings({website_id: websiteId});
 
@@ -99,11 +98,6 @@ Adequa.actions.consent.cmp.getConsentData = function (websiteId) {
             }
         }
     }
-    console.log('forbidden vendor :', forbiddenVendorIds);
-    console.log('allowed vendors :', allowedVendorIds);
-    console.log('forbidden purposes :', forbiddenPurposeIds);
-    console.log('allowed purposes :', allowedPurposeIds);
-
     const consentData = new ConsentString();
 
     consentData.setGlobalVendorList(Adequa.storage.fullVendorList);
@@ -115,12 +109,18 @@ Adequa.actions.consent.cmp.getConsentData = function (websiteId) {
     consentData.setPurposesAllowed(allowedPurposeIds);
     consentData.setVendorsAllowed(allowedVendorIds);
 
-    return {
-        consentString: consentData.getConsentString(),
-        allowedVendors: allowedVendorIds,
-        allowedPurposes: allowedPurposeIds,
-        vendorList: Adequa.storage.vendorList,
-        purposeList: Adequa.storage.purposeList
-    };
+    Adequa.actions.consent.getCurrentWebsiteSettings(function (settings, tab) {
+        for(const index in settings){
+            settings[index].id.website_id = Adequa.hostname(tab.url || "nourl");
+        }
+        callback({
+            consentString: consentData.getConsentString(),
+            allowedVendors: allowedVendorIds,
+            allowedPurposes: allowedPurposeIds,
+            vendorList: Adequa.storage.vendorList,
+            purposeList: Adequa.storage.purposeList,
+            settings: settings
+        })
+    });
 }
 ;

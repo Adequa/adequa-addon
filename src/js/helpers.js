@@ -2,7 +2,15 @@
 const env = 'dev';
 
 let Adequa = {
-    uri: env.match('dev') ? 'http://dev.admin-equa.com/' : env.match('prod') ? 'https://admin-equa.com/' : 'http://localhost:8000/'
+    uri: env.match('dev') ? 'https://dev.admin-equa.com/' : env.match('prod') ? 'https://admin-equa.com/' : 'http://localhost:8000/',
+    actions: {
+        init: {},
+        cookie: {},
+        interface: {},
+        navigation: {},
+        page: {},
+        request: {}
+    }
 };
 
 Adequa.hostname = function (url) {
@@ -50,8 +58,4 @@ Adequa.getCookieRule = function(cookie){
     const domain = Adequa.hostname(cookie.domain);
 
     return rules[domain] || false;
-};
-
-Adequa.getWebsiteId = function(url){
-    return Adequa.hostname(url);
 };

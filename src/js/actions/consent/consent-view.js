@@ -7,19 +7,18 @@ Adequa.actions.consent.view.mapSettings = function (settings, id) {
     return settingsMapped;
 };
 
-const getCurrentWebsiteSettings = function(callback){
+Adequa.actions.consent.getCurrentWebsiteSettings = function(callback){
     Adequa.API.tabs.query({
         active: true,
         lastFocusedWindow: true
     }, (tabs) => {
         const tab = tabs[0] || {};
-
-        callback(Adequa.actions.consent.getSettings({website_id: Adequa.getWebsiteId(tab.url || "nourl")}));
+        callback(Adequa.actions.consent.getSettings({website_id: Adequa.hostname(tab.url || "nourl")}), tab);
     });
 };
 
 Adequa.actions.consent.view.getCurrentWebsiteSettingsMapped = function (callback, id) {
-    getCurrentWebsiteSettings(function(currentSettings){
+    Adequa.actions.consent.getCurrentWebsiteSettings(function(currentSettings){
         const websiteSettings = Adequa.actions.consent.view.mapSettings(
             currentSettings,
             id) || {};

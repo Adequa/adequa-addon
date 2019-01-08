@@ -21,6 +21,7 @@ window.addEventListener("message", function (event) {
 
 Adequa.API.runtime.onMessage.addListener(
     function(request, sender, callback) {
+        console.log(request)
         window.postMessage({
             direction: "adequa-topage",
             message: request

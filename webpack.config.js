@@ -2,7 +2,7 @@ const VueLoaderPlugin = require('vue-loader/lib/plugin')
 const path = require('path');
 
 const config = {
-    mode: 'production',
+    mode: 'development',
     devtool: 'inline-source-map'
 };
 

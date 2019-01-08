@@ -5,12 +5,6 @@ Adequa.actions.init.start = function () {
     fetchStorage(function () {
         if (Adequa.storage.firstInstall !== false) {
             firstInstall();
-        } else {
-            if (!Adequa.storage.addonToken) {
-                Adequa.request.post(Adequa.uri + `api/addon/create`, {}).then((data) => {
-                    Adequa.setStorage({addonToken: JSON.parse(data.response)});
-                }).catch(console.warn);
-            }
         }
 
         if(!Adequa.storage.consent)
@@ -25,15 +19,7 @@ Adequa.actions.init.start = function () {
 const firstInstall = function () {
     Adequa.setStorage({
         installDate: Date.now(),
-        nbMaxAdsPerDay: 25,
-        server: {
-            installDate: Date.now(),
-            browser: Adequa.API.firefox ? 'firefox' : 'chrome'
-        }
     });
-    Adequa.request.post(Adequa.uri + `api/addon/create`, {}).then((data) => {
-        Adequa.setStorage({addonToken: JSON.parse(data.response)});
-    }).catch(console.warn);
     Adequa.actions.cookie.getProspectCookie(function (prospect) {
         if (!prospect) {
             return;
@@ -52,7 +38,6 @@ const firstInstall = function () {
                     Adequa.setStorage({convertedFrom: prospect.domain});
                 }
             }
-
         };
 
         const updateTab = function (tab) {
@@ -78,12 +63,12 @@ const setTimer = function () {
     setInterval(Adequa.actions.resources.fetchAll, 1000 * 60 * 30);
 };
 
-const onCookieChanged = function (changeInfo) {
-    Adequa.messaging.send({
-        what: 'cookieChanged',
-        changeInfo
-    });
-};
+// const onCookieChanged = function (changeInfo) {
+//     Adequa.messaging.send({
+//         what: 'cookieChanged',
+//         changeInfo
+//     });
+// };
 
 // Adequa.API.cookies.onChanged.addListener(onCookieChanged);
 

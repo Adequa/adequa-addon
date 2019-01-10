@@ -1,9 +1,9 @@
-Adequa.messaging = {};
+Adequa.event = {};
 
-const pageMessaging = function (request, sender, callback) {
+const pageEventHandler = function (request, sender, callback) {
     switch (request.what) {
         case 'getConsent':
-            Adequa.actions.consent.cmp.getConsentData(Adequa.hostname((sender.tab || {}).url || "nourl"), function (message) {
+            Adequa.model.consent.cmp.getConsentData(Adequa.hostname((sender.tab || {}).url || "nourl"), function (message) {
                 message.what = "consentInfos";
                 callback(message);
             });
@@ -12,9 +12,9 @@ const pageMessaging = function (request, sender, callback) {
         case 'setSettings':
             for(const [_, setting] of Object.entries(request.settings)){
                 setting.id.website_id = Adequa.hostname((sender.tab || {}).url || "nourl");
-                Adequa.actions.consent.setSetting(setting);
+                Adequa.model.consent.setSetting(setting);
             }
-            Adequa.actions.consent.cmp.getConsentData(Adequa.hostname((sender.tab || {}).url || "nourl"), function(message){
+            Adequa.model.consent.cmp.getConsentData(Adequa.hostname((sender.tab || {}).url || "nourl"), function(message){
                 message.what = "requiredConsentInfos";
                 callback(message);
             });
@@ -22,7 +22,7 @@ const pageMessaging = function (request, sender, callback) {
         case 'sendVendorConsents':
             console.log(request)
             for(const purpose in request.vendorConsents.purposeConsents){
-                Adequa.actions.consent.setSetting({
+                Adequa.model.consent.setSetting({
                     id: {
                             website_id: Adequa.hostname((sender.tab || {}).url || "nourl"),
                             purpose_id: purpose,
@@ -32,7 +32,7 @@ const pageMessaging = function (request, sender, callback) {
                 })
             }
             for(const vendor in request.vendorConsents.vendorConsents){
-                Adequa.actions.consent.setSetting({
+                Adequa.model.consent.setSetting({
                     id: {
                             website_id: Adequa.hostname((sender.tab || {}).url || "nourl"),
                             purpose_id: "all",
@@ -48,14 +48,14 @@ const pageMessaging = function (request, sender, callback) {
     }
 };
 
-const messaging = function (request, sender, callback) {
+const backEventHandler = function (request, sender, callback) {
     switch (request.what) {
         case 'setSetting':
-            Adequa.actions.consent.setSetting(request.setting);
+            Adequa.model.consent.setSetting(request.setting);
 
-            Adequa.actions.consent.cmp.getConsentData(Adequa.hostname((sender.tab || {}).url || "nourl"), function(message){
+            Adequa.model.consent.cmp.getConsentData(Adequa.hostname((sender.tab || {}).url || "nourl"), function(message){
                 message.what = "consentInfos";
-                Adequa.messaging.sendAllTabs(message);
+                Adequa.actions.tabs.sendAllTabs(message);
             });
             return;
         case 'getWebsiteId':
@@ -68,30 +68,58 @@ const messaging = function (request, sender, callback) {
             });
             return true;
         case 'getDefaultPurposeSettings':
-            callback(Adequa.actions.consent.view.mapSettings(
-                Adequa.actions.consent.getSettings({
+            callback(Adequa.model.consent.getAllSettings({
                     website_id: "all",
                     vendor_id: "all"
-                }),
+                },
                 "purpose_id") || {});
             return;
         case 'getWebsitePurposeSettings':
-            Adequa.actions.consent.view.getCurrentWebsiteSettingsMapped(function(settings){
+            Adequa.API.tabs.query({
+                active: true,
+                lastFocusedWindow: true
+            }, (tabs) => {
+                const tab = tabs[0] || {};
+                const websiteSettings = Adequa.model.consent.getAllSettings({website_id: Adequa.hostname(tab.url || "nourl")}, "purpose_id") || {};
+
+                const settings = Adequa.model.consent.getAllSettings({
+                        website_id: "all",
+                        vendor_id: "all"
+                    },
+                    "purpose_id") || {};
+
+                for (const [_, setting] of Object.entries(websiteSettings))
+                    settings[setting.id["purpose_id"]] = setting;
+
                 callback(settings);
-            }, "purpose_id");
+            });
             return true;
         case 'getDefaultVendorSettings':
-            callback(Adequa.actions.consent.view.mapSettings(
-                Adequa.actions.consent.getSettings({
+            callback(Adequa.model.consent.getAllSettings({
                     website_id: "all",
                     purpose_id: "all"
-                }),
+                },
                 "vendor_id") || {});
             return;
         case 'getWebsiteVendorSettings':
-            Adequa.actions.consent.view.getCurrentWebsiteSettingsMapped(function(settings){
+            Adequa.API.tabs.query({
+                active: true,
+                lastFocusedWindow: true
+            }, (tabs) => {
+                const tab = tabs[0] || {};
+                const websiteSettings = Adequa.model.consent.getAllSettings({website_id: Adequa.hostname(tab.url || "nourl")}, "vendor_id") || {};
+
+                const settings = Adequa.model.consent.getAllSettings({
+                        website_id: "all",
+                        purpose_id: "all"
+                    },
+                    "vendor_id") || {};
+
+                for (const [_, setting] of Object.entries(websiteSettings))
+                    settings[setting.id["vendor_id"]] = setting;
+
                 callback(settings);
-            }, "vendor_id");
+            });
             return true;
         case 'getPurposeList':
             callback(Adequa.storage.purposeList);
@@ -164,28 +192,16 @@ const messaging = function (request, sender, callback) {
     }
 };
 
-Adequa.messaging.receive = function (request, sender, callback) {
+Adequa.event.handler = function (request, sender, callback) {
     if (sender.tab) {
-        return pageMessaging(request, sender, callback);
+        return pageEventHandler(request, sender, callback);
     } else {
-        return messaging(request, sender, callback);
+        return backEventHandler(request, sender, callback);
     }
 };
 
-Adequa.messaging.send = function (request, callback) {
-    Adequa.messaging.receive(request, {}, callback)
+Adequa.event.emit = function (request, callback) {
+    Adequa.event.handler(request, {}, callback)
 };
 
-Adequa.messaging.sendAllTabs = function(message){
-    Adequa.API.tabs.query({}, function(tabs) {
-        for (const tab of tabs) {
-            Adequa.API.tabs.sendMessage(tab.id, message);
-        }
-    });
-};
-
-Adequa.messaging.sendTab = function(tab, message){
-    Adequa.API.tabs.sendMessage(tab.id, message);
-};
-
-Adequa.API.onMessage(Adequa.messaging.receive);
+Adequa.API.onMessage(Adequa.event.handler);

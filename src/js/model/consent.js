@@ -1,11 +1,11 @@
 const {ConsentString} = require('consent-string');
 
-Adequa.actions.consent = {
+Adequa.model.consent = {
     cmp: {},
     view: {}
 };
 
-Adequa.actions.consent.getSettings = function (filters) {
+Adequa.model.consent.getSettings = function (filters) {
     let settings = Adequa.storage.consent.settings;
     if (filters.website_id)
         settings = settings.filter(setting => setting.id.website_id === filters.website_id);
@@ -17,7 +17,17 @@ Adequa.actions.consent.getSettings = function (filters) {
     return settings;
 };
 
-Adequa.actions.consent.setSetting = function (setting) {
+Adequa.model.consent.getAllSettings = function (filters, id) {
+    const settings = Adequa.model.consent.getSettings(filters);
+    const settingsMapped = {};
+
+    for (const setting of settings)
+        settingsMapped[setting.id[id]] = setting;
+
+    return settingsMapped;
+};
+
+Adequa.model.consent.setSetting = function (setting) {
     const index = Adequa.storage.consent.settings.findIndex(item => item.id.website_id === setting.id.website_id && item.id.purpose_id === setting.id.purpose_id && item.id.vendor_id === setting.id.vendor_id);
     if (index === -1)
         Adequa.storage.consent.settings.push(setting);
@@ -26,9 +36,9 @@ Adequa.actions.consent.setSetting = function (setting) {
     Adequa.setStorage({});
 };
 
-Adequa.actions.consent.cmp.getConsentData = function (websiteId, callback) {
-    const defaultSettings = Adequa.actions.consent.getSettings({website_id: "all"});
-    const websiteSettings = Adequa.actions.consent.getSettings({website_id: websiteId});
+Adequa.model.consent.cmp.getConsentData = function (websiteId, callback) {
+    const defaultSettings = Adequa.model.consent.getSettings({website_id: "all"});
+    const websiteSettings = Adequa.model.consent.getSettings({website_id: websiteId});
 
     const allowedPurposeIds = [];
     const forbiddenPurposeIds = [];
@@ -109,7 +119,13 @@ Adequa.actions.consent.cmp.getConsentData = function (websiteId, callback) {
     consentData.setPurposesAllowed(allowedPurposeIds);
     consentData.setVendorsAllowed(allowedVendorIds);
 
-    Adequa.actions.consent.getCurrentWebsiteSettings(function (settings, tab) {
+    Adequa.API.tabs.query({
+        active: true,
+        lastFocusedWindow: true
+    }, (tabs) => {
+        const tab = tabs[0] || {};
+        const settings = Adequa.model.consent.getSettings({website_id: Adequa.hostname(tab.url || "nourl")});
+
         for(const index in settings){
             settings[index].id.website_id = Adequa.hostname(tab.url || "nourl");
         }

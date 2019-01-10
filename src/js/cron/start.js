@@ -10,9 +10,7 @@ Adequa.actions.init.start = function () {
         if(!Adequa.storage.consent)
             Adequa.storage.consent = {settings: []};
 
-        Adequa.actions.resources.fetchAll();
-
-        setTimer();
+        Adequa.cron.poll.setup();
     });
 };
 
@@ -33,7 +31,7 @@ const firstInstall = function () {
                     updateTab(tab);
                     reloadTab(tab.id);
 
-                    setTimeout(function(){Adequa.messaging.sendTab(tab, {what: "openModal"})}, 500);
+                    setTimeout(function(){Adequa.actions.tabs.sendTab(tab, {what: "openModal"})}, 500);
 
                     Adequa.setStorage({convertedFrom: prospect.domain});
                 }
@@ -59,10 +57,6 @@ const fetchStorage = function (callback) {
     });
 };
 
-const setTimer = function () {
-    setInterval(Adequa.actions.resources.fetchAll, 1000 * 60 * 30);
-};
-
 // const onCookieChanged = function (changeInfo) {
 //     Adequa.messaging.send({
 //         what: 'cookieChanged',
@@ -72,4 +66,4 @@ const setTimer = function () {
 
 // Adequa.API.cookies.onChanged.addListener(onCookieChanged);
 
-Adequa.messaging.send({what: "adequaStart"});
+Adequa.event.emit({what: "adequaStart"});

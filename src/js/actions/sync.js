@@ -1,8 +1,6 @@
-/* global Adequa */
-"use strict";
-Adequa.actions.resources = {};
+Adequa.actions.sync = {};
 
-Adequa.actions.resources.fetchAll = function () {
+Adequa.actions.sync.fetchAdequaResources = function () {
     getAPIResponse('resources-version', function(versions){
         if(Object.is(Adequa.storage.versions || {}, versions)) return;
 
@@ -11,15 +9,18 @@ Adequa.actions.resources.fetchAll = function () {
         // if(!checkVersion(versions, 'query-selectors') || !Adequa.storage.partnerList) getPartnerList();
         // if(!checkVersion(versions, 'notarget-cookies') || !Adequa.storage.yocCookies) getOptoutCookies();
         // if(!checkVersion(versions, 'requests-type') || !Adequa.storage.requestsType) getRequestsType();
-        if(!checkVersion(versions, 'cookie-rules') || !Adequa.storage.adequaCookieRules) getCookieRules();
+        // if(!checkVersion(versions, 'cookie-rules') || !Adequa.storage.adequaCookieRules) getCookieRules();
 
         Adequa.setStorage({versions});
     });
+};
+
+Adequa.actions.sync.fetchExternalResources = function () {
     getIABResources();
 };
 
 const checkVersion = function(versions, name){
-  return versions[name] === (Adequa.storage.versions || {})[name];
+    return versions[name] === (Adequa.storage.versions || {})[name];
 };
 
 const getBlacklist = function () {

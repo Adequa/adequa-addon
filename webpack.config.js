@@ -45,10 +45,10 @@ const vueConfig = Object.assign({}, config, {
 });
 
 const consentConfig = Object.assign({}, config, {
-    entry: './src/js/actions/consent/consent.js',
+    entry: './src/js/model/consent.js',
     output: {
         filename: 'consent.bundle.js',
-        path: path.resolve(__dirname, './src/js/actions/consent/')
+        path: path.resolve(__dirname, './src/js/model/')
     },
     module: {
         rules: [

@@ -60,6 +60,22 @@ const consentConfig = Object.assign({}, config, {
     }
 });
 
+const adequaApiConfig = Object.assign({}, config, {
+    entry: './src/js/page/adequa-api.js',
+    output: {
+        filename: 'adequa-api.bundle.js',
+        path: path.resolve(__dirname, './src/js/page/')
+    },
+    module: {
+        rules: [
+            {
+                test: /\.js$/,
+                loader: 'babel-loader'
+            }
+        ]
+    }
+});
+
 const storageConfig = Object.assign({}, config, {
     entry: './src/js/storage.js',
     output: {
@@ -79,5 +95,6 @@ const storageConfig = Object.assign({}, config, {
 module.exports = [
     vueConfig,
     consentConfig,
-    storageConfig
+    storageConfig,
+    adequaApiConfig
 ];

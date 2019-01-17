@@ -10,6 +10,7 @@ Adequa.actions.sync.fetchAdequaResources = function () {
         // if(!checkVersion(versions, 'notarget-cookies') || !Adequa.storage.yocCookies) getOptoutCookies();
         // if(!checkVersion(versions, 'requests-type') || !Adequa.storage.requestsType) getRequestsType();
         // if(!checkVersion(versions, 'cookie-rules') || !Adequa.storage.adequaCookieRules) getCookieRules();
+        if(!checkVersion(versions, 'banner-filters') || !Adequa.storage.bannerFilters) getBannerFilters();
 
         Adequa.setStorage({versions});
     });
@@ -23,54 +24,9 @@ const checkVersion = function(versions, name){
     return versions[name] === (Adequa.storage.versions || {})[name];
 };
 
-const getBlacklist = function () {
-    getAPIResponse('cookie-blacklist', function (list) {
-        Adequa.setStorage({cookieBlacklist: list});
-    });
-};
-
-const getCookieRules = function () {
-    getAPIResponse('cookie-rules', function (rules) {
-        for(const item in rules){
-            Adequa.actions.cookie.updateAdequaRules(item, rules[item]);
-        }
-        Adequa.messaging.send('adequa', {
-            what: 'disableCookieType',
-            type: "ciblage",
-            disabled: true
-        });
-        Adequa.messaging.send('adequa', {
-            what: 'disableCookieType',
-            type: "social",
-            disabled: true
-        });
-    });
-};
-
-const getPartnerList = function () {
-    getAPIResponse('query-selectors', function (partnerList) {
-        Adequa.setStorage({partnerList});
-        for(let partner in Adequa.storage.partnerList) {
-            Adequa.actions.site.updateAdequaRules(partner, true);
-        }
-    });
-};
-
-const getAvailableThemes = function () {
-    getAPIResponse('themes', function (availableThemes) {
-        Adequa.setStorage({availableThemes});
-    });
-};
-
-const getRequestsType = function () {
-    getAPIResponse('requests-type', function (requestsType) {
-        Adequa.setStorage({requestsType});
-    });
-};
-
-const getOptoutCookies = function () {
-    getAPIResponse('notarget-cookies', function (yocCookies) {
-        Adequa.setStorage({yocCookies});
+const getBannerFilters = function () {
+    getAPIResponse('banner-filters', function (filters) {
+        Adequa.setStorage({bannerFilters: filters});
     });
 };
 

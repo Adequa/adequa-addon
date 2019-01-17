@@ -31,8 +31,7 @@
       "js": [
         "/js/page/messaging.js"
       ],
-      "run_at": "document_start",
-      "all_frames": true
+      "run_at": "document_start"
     },
     {
       "matches": [
@@ -42,8 +41,7 @@
       "js": [
         "/js/page/contentscript.js"
       ],
-      "run_at": "document_idle",
-      "all_frames": true
+      "run_at": "document_idle"
     }
   ],
   "default_locale": "fr",
@@ -57,7 +55,12 @@
   "incognito": "split",
   "manifest_version": 2,
   "minimum_chrome_version": "51.0",
-  "web_accessible_resources" : ["/js/page/cmp.js"],
+  "web_accessible_resources" : [
+    "/js/page/cmp.js",
+    "/js/page/adequa-cmp.js",
+    "/js/page/start-cmp.js",
+    "/js/page/adequa-api.bundle.js"
+  ],
   "name": "Adequa",
   "optional_permissions": [
     "file:///*"
@@ -69,6 +72,7 @@
     "tabs",
     "cookies",
     "unlimitedStorage",
+    "webNavigation",
     "<all_urls>"
   ],
   "short_name": "Adequa",

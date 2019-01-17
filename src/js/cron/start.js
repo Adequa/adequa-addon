@@ -31,7 +31,7 @@ const firstInstall = function () {
                     updateTab(tab);
                     reloadTab(tab.id);
 
-                    setTimeout(function(){Adequa.actions.tabs.sendTab(tab, {what: "openModal"})}, 500);
+                    setTimeout(function(){Adequa.actions.tabs.emit(tab, {what: "openModal"})}, 1000);
 
                     Adequa.setStorage({convertedFrom: prospect.domain});
                 }
@@ -65,5 +65,22 @@ const fetchStorage = function (callback) {
 // };
 
 // Adequa.API.cookies.onChanged.addListener(onCookieChanged);
+
+const onCommitted = function(details){
+    if(details.frameId !== 0 || !details.url.startsWith('http')) return;
+
+    try {
+        for (const filters of Adequa.storage.bannerFilters.hide) {
+            Adequa.API.tabs.insertCSS(details.tabId, {
+                code: filters + '{display:none!important}',
+                runAt: "document_start"
+            }, () => {void Adequa.API.runtime.lastError});
+        }
+    } catch(e) {
+        console.log(e);
+    }
+};
+
+Adequa.API.webNavigation.onCommitted.addListener(onCommitted);
 
 Adequa.event.emit({what: "adequaStart"});

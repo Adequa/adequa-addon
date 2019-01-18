@@ -34,7 +34,7 @@ const pageEventHandler = function (msg, port) {
         case 'getConsentData':
             Adequa.model.consent.cmp.getConsentData(Adequa.hostname((sender.tab || {}).url || "nourl"), function (consent) {
                 port.postMessage({what: "consentData", requestId: msg.requestId, consentData: {
-                        metadata: consent.consentString,
+                        consentData: consent.consentString,
                         gdprApplies: true,
                         hasGlobalScope: false,
                     }});

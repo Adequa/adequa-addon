@@ -9,7 +9,6 @@ Adequa.actions.tabs.emitAllTabs = function(message){
 };
 
 Adequa.actions.tabs.emit = function(tab, message){
-    console.log(message)
     const port = Adequa.API.tabs.connect(tab.id);
     port.postMessage(message);
 };

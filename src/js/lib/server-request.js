@@ -2,7 +2,7 @@
 
 'use strict';
 
-class XMLRequest {
+class ServerXMLRequest {
   static get(url, body = null) {
     return XMLRequest.ajax('get', url, body);
   }
@@ -32,6 +32,8 @@ class XMLRequest {
       else
         req.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
 
+      req.setRequestHeader('Adequa-Token', Adequa.storage.addonToken);
+
       req.send(body);
     });
   }
@@ -43,4 +45,4 @@ class XMLRequest {
   }
 }
 
-Adequa.request = XMLRequest;
+Adequa.serverRequest = ServerXMLRequest;

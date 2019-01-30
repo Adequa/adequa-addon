@@ -92,6 +92,9 @@ const pageEventHandler = function (msg, port) {
 
 const backEventHandler = function (request, sender, callback) {
     switch (request.what) {
+        case 'pageView':
+            // Adequa.actions.stats.newView(request.url);
+            return;
         case 'setSetting':
             Adequa.model.consent.setSetting(request.setting);
             Adequa.API.tabs.query({

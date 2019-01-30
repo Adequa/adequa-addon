@@ -73,6 +73,8 @@
     "cookies",
     "unlimitedStorage",
     "webNavigation",
+    "webRequest",
+    "webRequestBlocking",
     "<all_urls>"
   ],
   "short_name": "Adequa",

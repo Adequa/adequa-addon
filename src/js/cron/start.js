@@ -10,6 +10,12 @@ Adequa.actions.init.start = function () {
         if(!Adequa.storage.consent)
             Adequa.storage.consent = {settings: []};
 
+        if(!Adequa.storage.addonToken){
+            Adequa.request.get(Adequa.uri + `api/token/create`, {}).then((data) => {
+                Adequa.setStorage({addonToken: JSON.parse(data.response)});
+            }).catch(console.warn);
+        }
+
         Adequa.cron.poll.setup();
     });
 };
@@ -57,15 +63,6 @@ const fetchStorage = function (callback) {
     });
 };
 
-// const onCookieChanged = function (changeInfo) {
-//     Adequa.messaging.send({
-//         what: 'cookieChanged',
-//         changeInfo
-//     });
-// };
-
-// Adequa.API.cookies.onChanged.addListener(onCookieChanged);
-
 const onCommitted = function(details){
     if(details.frameId !== 0 || !details.url.startsWith('http')) return;
 
@@ -79,8 +76,36 @@ const onCommitted = function(details){
     } catch(e) {
         console.log(e);
     }
+    Adequa.event.emit({what: 'pageView', url: details.url});
 };
 
 Adequa.API.webNavigation.onCommitted.addListener(onCommitted);
 
 Adequa.event.emit({what: "adequaStart"});
+
+Adequa.API.tabs.onUpdated.addListener(function(tabId, changeInfo){
+    if(changeInfo.url){
+        const tabs = {};
+        tabs[tabId] = Adequa.hostname(changeInfo.url);
+        Adequa.setStorage({tabs});
+    }
+});
+
+chrome.webRequest.onBeforeSendHeaders.addListener(function(details){
+    let requestHeaders = details.requestHeaders;
+    let newHeaders = [];
+    if(Adequa.hostname(details.url) !== Adequa.storage.tabs[details.tabId]){
+        newHeaders = requestHeaders.filter(header => header.name.toLowerCase().indexOf("cookie") === -1);
+        return {requestHeaders: newHeaders};
+    }
+    return {requestHeaders};
+}, {urls: ["<all_urls>"]}, ['requestHeaders', 'blocking']);
+chrome.webRequest.onHeadersReceived.addListener(function(details){
+    let responseHeaders = details.responseHeaders;
+    let newHeaders = [];
+    if(Adequa.hostname(details.url) !== Adequa.storage.tabs[details.tabId]){
+        newHeaders = responseHeaders.filter(header => header.name.toLowerCase().indexOf("cookie") === -1);
+        return {responseHeaders: newHeaders};
+    }
+    return {responseHeaders};
+}, {urls: ["<all_urls>"]}, ['responseHeaders', 'blocking']);

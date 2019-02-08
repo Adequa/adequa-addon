@@ -41,7 +41,6 @@
             Adequa.API.runtime.sendMessage({what: "getCookies"}, (cookies) => {
                 this.cookies = cookies;
             });
-
             setInterval(()=> {
                 Adequa.API.runtime.sendMessage({what: "getCookies"}, (cookies) => {
                     this.cookies = cookies;

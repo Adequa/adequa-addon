@@ -37,14 +37,6 @@ Adequa.model.consent.setSetting = function (setting) {
 };
 
 Adequa.model.consent.setConsent = function (allowedPurposes, allowedVendors, url) {
-    Adequa.model.consent.setSetting({
-        id: {
-            website_id: "all",
-            purpose_id: 1,
-            vendor_id: "all"
-        },
-        value: -1
-    });
     for (const purpose of Adequa.storage.purposeList) {
         Adequa.model.consent.setSetting({
             id: {
@@ -65,6 +57,19 @@ Adequa.model.consent.setConsent = function (allowedPurposes, allowedVendors, url
             value: allowedVendors.indexOf(vendor.id) === -1 ? 1 : -1
         })
     }
+};
+
+Adequa.model.consent.acceptAll = function(){
+    Adequa.storage.adequaPurposeList.forEach(purpose => {
+        Adequa.model.consent.setSetting({
+            id: {
+                website_id: "all",
+                purpose_id: purpose.id,
+                vendor_id: "all"
+            },
+            value: -1
+        });
+    })
 };
 
 Adequa.model.consent.setConsentString = function (consentString, url) {

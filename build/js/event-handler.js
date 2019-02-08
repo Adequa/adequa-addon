@@ -107,10 +107,9 @@ const backEventHandler = function (request, sender, callback) {
                 callback();
             });
             return;
-        case 'brokenWebsite':
+        case 'addToWhitelist':
             Adequa.API.tabs.query({
-                active: true,
-                lastFocusedWindow: true
+                active: true
             }, (tabs) => {
                 const tab = tabs[0] || {};
                 if (!tab.url) return;
@@ -125,9 +124,43 @@ const backEventHandler = function (request, sender, callback) {
                         url: tab.url,
                         hostname: Adequa.hostname(tab.url)
                     })
+                });
+                callback({
+                    hostname: Adequa.hostname(tab.url),
+                    whitelisted: Adequa.storage.userBrokenWebsites.indexOf(Adequa.hostname(tab.url)) !== -1
                 })
             });
-            return;
+            return true;
+        case 'removeFromWhitelist':
+            Adequa.API.tabs.query({
+                active: true
+            }, (tabs) => {
+                const tab = tabs[0] || {};
+                if (!tab.url) return;
+                let userBrokenWebsites = new Set(Adequa.storage.userBrokenWebsites);
+                userBrokenWebsites.delete(Adequa.hostname(tab.url));
+                userBrokenWebsites = Array.from(userBrokenWebsites);
+                Adequa.storage.userBrokenWebsites = userBrokenWebsites;
+                Adequa.setStorage({});
+
+                callback({
+                    hostname: Adequa.hostname(tab.url),
+                    whitelisted: Adequa.storage.userBrokenWebsites.indexOf(Adequa.hostname(tab.url)) !== -1
+                })
+            });
+            return true;
+        case 'getCurrentWebsite':
+            Adequa.API.tabs.query({
+                active: true
+            }, (tabs) => {
+                const tab = tabs[0] || {};
+                if (!tab.url || !Adequa.storage.userBrokenWebsites) return;
+                callback({
+                    hostname: Adequa.hostname(tab.url),
+                    whitelisted: Adequa.storage.userBrokenWebsites.indexOf(Adequa.hostname(tab.url)) !== -1
+                })
+            });
+            return true;
         case 'pageView':
             // Adequa.actions.stats.newView(request.url);
             return;

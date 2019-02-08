@@ -6,9 +6,9 @@
             <router-link to="/cookies"><hover-button :text="'MES ' + nbCookies + ' COOKIES'"></hover-button></router-link>
             <router-link to="/choices"><hover-button text="MES CHOIX"></hover-button></router-link>
             <router-link to="/desires"><hover-button text="MES ENVIES"></hover-button></router-link>
-            <span @click="onClick">Signaler et réparer un site non fonctionnel</span>
+            <span @click="addToWhitelist" v-if="!website.whitelisted">Signaler et réparer un site non fonctionnel</span>
+            <span v-else class="whitelisted">{{ website.hostname }} est whitelisté <span @click="removeFromWhitelist">(enlever)</span></span>
         </nav>
-        <!--<span @click="onClick">Site cassé</span>-->
     </div>
 </template>
 
@@ -21,11 +21,31 @@
             showMenu() {
                 return window.history.length > 1;
             },
-            onClick(){
-                Adequa.API.runtime.sendMessage({what: 'brokenWebsite'})
+            addToWhitelist(){
+                Adequa.API.runtime.sendMessage({what: 'addToWhitelist'}, (website) => {
+                    this.website = website
+                })
+            },
+            removeFromWhitelist(){
+                Adequa.API.runtime.sendMessage({what: 'removeFromWhitelist'}, (website) => {
+                    this.website = website
+                })
             }
         },
-        props: ['nb-cookies']
+        data(){
+            return {
+                website: {
+                    whitelisted: false,
+                    hostname: "Ce site"
+                }
+            }
+        },
+        props: ['nb-cookies'],
+        created(){
+            Adequa.API.runtime.sendMessage({what: "getCurrentWebsite"}, (website) => {
+                if(website) this.website = website
+            });
+        }
     }
 </script>
 
@@ -36,6 +56,14 @@
         right: 5px;
         height: 15px;
         width: 15px;
+    }
+
+    .whitelisted {
+        color: var(--green)!important;
+        cursor: auto!important;
+    }
+    .whitelisted:hover {
+        text-shadow: none!important;
     }
 
     span {

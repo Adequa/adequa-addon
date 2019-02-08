@@ -34,7 +34,10 @@
         components: {ButtonGroup, AdequaButton},
         methods: {
             buttonClicked: function () {
-                Adequa.API.runtime.sendMessage({what: "openModal"}, window.close);
+                Adequa.API.runtime.sendMessage({what: "openModal"}, () => {
+                    window.close();
+                    void chrome.runtime.lastError;
+                });
             }
         }
     }

@@ -54,7 +54,10 @@ const getCustomCss = function () {
 
 const getAdequaPurposeList = function () {
     getAPIResponse('adequa-purposes', function (list) {
-        Adequa.storage.adequaPurposeList = list;
+        if(!Adequa.storage.adequaPurposeList){
+            Adequa.storage.adequaPurposeList = list;
+            Adequa.model.consent.acceptAll();
+        } else Adequa.storage.adequaPurposeList = list;
         Adequa.setStorage({});
     });
 };

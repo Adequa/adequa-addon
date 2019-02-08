@@ -7,16 +7,31 @@ Adequa.actions.init.start = function () {
             firstInstall();
         }
 
-        if(!Adequa.storage.consent)
+        if (!Adequa.storage.consent)
             Adequa.storage.consent = {settings: []};
 
-        if(!Adequa.storage.addonToken){
+        if (!Adequa.storage.addonToken) {
             Adequa.request.get(Adequa.uri + `api/token/create`, {}).then((data) => {
                 Adequa.setStorage({addonToken: JSON.parse(data.response)});
             }).catch(console.warn);
         }
 
         Adequa.cron.poll.setup();
+
+        Adequa.API.tabs.query({}, function (tabs) {
+            Adequa.storage.tabs = {};
+            tabs.forEach((tab) => {
+                const hostname = Adequa.hostname(tab.url);
+                Adequa.storage.tabs[tab.id] = {
+                    hostname: hostname,
+                    domains: [hostname],
+                    cookies: []
+                };
+            });
+            Adequa.setStorage({});
+        });
+
+        registerListeners();
     });
 };
 
@@ -61,21 +76,24 @@ const fetchStorage = function (callback) {
     });
 };
 
+const registerListeners = function () {
+    Adequa.API.webNavigation.onCommitted.addListener(Adequa.actions.tabs.requests.onCommitted);
 
-Adequa.API.webNavigation.onCommitted.addListener(Adequa.actions.tabs.requests.onCommitted);
+    Adequa.API.tabs.onUpdated.addListener(Adequa.actions.tabs.onUpdated);
 
-Adequa.API.tabs.onUpdated.addListener(Adequa.actions.tabs.onUpdated);
-
-Adequa.API.webRequest.onBeforeSendHeaders.addListener(Adequa.actions.tabs.requests.onBeforeSendHeaders, {urls: ["<all_urls>"]}, ['requestHeaders', 'blocking']);
-Adequa.API.webRequest.onHeadersReceived.addListener(Adequa.actions.tabs.requests.onHeadersReceived, {urls: ["<all_urls>"]}, ['responseHeaders', 'blocking']);
+    Adequa.API.webRequest.onBeforeSendHeaders.addListener(Adequa.actions.tabs.requests.onBeforeSendHeaders, {urls: ["<all_urls>"]}, ['requestHeaders', 'blocking', 'extraHeaders']);
+    Adequa.API.webRequest.onHeadersReceived.addListener(Adequa.actions.tabs.requests.onHeadersReceived, {urls: ["<all_urls>"]}, ['responseHeaders', 'blocking', 'extraHeaders']);
+};
 
 Adequa.event.emit({what: "adequaStart"});
 
 var _gaq = _gaq || [];
 _gaq.push(['_setAccount', 'UA-134079678-1']);
 
-(function() {
-    const ga = document.createElement('script'); ga.type = 'text/javascript';
+(function () {
+    const ga = document.createElement('script');
+    ga.type = 'text/javascript';
     ga.src = 'https://ssl.google-analytics.com/ga.js';
-    const s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    const s = document.getElementsByTagName('script')[0];
+    s.parentNode.insertBefore(ga, s);
 })();

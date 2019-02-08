@@ -5,7 +5,7 @@ const stripCookieHeaders = function(headers){
 };
 
 const shouldDelete = function(url, tabId, initiator){
-    if(Adequa.storage.userBrokenWebsites.indexOf(Adequa.hostname(initiator)) !== -1) return false;
+    if(Adequa.storage.userBrokenWebsites && Adequa.storage.userBrokenWebsites.indexOf(Adequa.hostname(initiator)) !== -1) return false;
     if(tabId === -1) return true;
     if(!Adequa.storage.cookiePurposes) return false;
     const hostname = Adequa.hostname(url);
@@ -62,6 +62,7 @@ Adequa.actions.tabs.requests.onHeadersReceived = function(details){
 Adequa.actions.tabs.requests.onCommitted = function(details){
     if(details.frameId !== 0 || !details.url.startsWith('http')) return;
     const hostname = Adequa.hostname(details.url);
+    if(Adequa.storage.userBrokenWebsites && Adequa.storage.userBrokenWebsites.indexOf(hostname) !== -1) return;
     const customRules = (Adequa.storage.customCss || {})[hostname];
     try {
         if(customRules) {

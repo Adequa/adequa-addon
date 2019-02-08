@@ -1,13 +1,27 @@
-const VueLoaderPlugin = require('vue-loader/lib/plugin')
+const VueLoaderPlugin = require('vue-loader/lib/plugin');
 const path = require('path');
+const exec = require('child_process').exec;
+const {mergeDeep} = require('immutable')
 
 const config = {
     mode: 'development',
-    devtool: 'inline-source-map'
+    devtool: 'inline-source-map',
+    plugins: [
+        {
+            apply: (compiler) => {
+                compiler.hooks.afterEmit.tap('AfterEmitPlugin', (compilation) => {
+                    exec('.\\chrome-build.sh', (err, stdout, stderr) => {
+                        if (stdout) process.stdout.write(stdout);
+                        if (stderr) process.stderr.write(stderr);
+                    });
+                });
+            }
+        }
+    ]
 };
 
-const vueConfig = Object.assign({}, config, {
-    entry: './src/js/interface/popup.js',
+const vueConfig = mergeDeep(config, {
+    entry: {background: './src/js/interface/popup.js'},
     output: {
         filename: 'popup.bundle.js',
         path: path.resolve(__dirname, './src/js/interface/')
@@ -44,7 +58,7 @@ const vueConfig = Object.assign({}, config, {
     ]
 });
 
-const consentConfig = Object.assign({}, config, {
+const consentConfig = mergeDeep(config, {
     entry: './src/js/model/consent.js',
     output: {
         filename: 'consent.bundle.js',
@@ -60,7 +74,7 @@ const consentConfig = Object.assign({}, config, {
     }
 });
 
-const adequaApiConfig = Object.assign({}, config, {
+const adequaApiConfig = mergeDeep(config, {
     entry: './src/js/page/adequa-api.js',
     output: {
         filename: 'adequa-api.bundle.js',
@@ -76,7 +90,7 @@ const adequaApiConfig = Object.assign({}, config, {
     }
 });
 
-const storageConfig = Object.assign({}, config, {
+const storageConfig = mergeDeep(config, {
     entry: './src/js/storage.js',
     output: {
         filename: 'storage.bundle.js',

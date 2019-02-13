@@ -8,6 +8,27 @@ const pageEventHandler = function (msg, port) {
                 port.postMessage({what: "consent", requestId: msg.requestId, consent});
             });
             return true;
+        case 'getDimensions':
+            Adequa.model.consent.cmp.getConsentData("all", (consent) => {
+                const purposes = [];
+                for (const id of consent.allowedPurposes) {
+                    purposes.push(Adequa.storage.adequaPurposeList[id - 1].shortname);
+                }
+                let defaultAllowedPurposes = purposes.join(", ");
+                if (defaultAllowedPurposes === "") defaultAllowedPurposes = "Aucun";
+
+                const d = new Date(Adequa.storage.installDate);
+                const installDate = (d.getFullYear() + "-" + ("0" + (d.getMonth() + 1)).slice(-2) + "-" + ("0" + d.getDate()).slice(-2));
+
+                const customDimensions = {
+                    "cd2": defaultAllowedPurposes,
+                    "cd3": installDate
+                };
+
+                port.postMessage({what: "dimensions", requestId: msg.requestId, dimensions: customDimensions});
+            });
+
+            return true;
         // case 'getVendorConsents':
         //     Adequa.model.consent.cmp.getConsentData(Adequa.hostname((sender.tab || {}).url || "nourl"), function (consent) {
         //         const vendorConsents = {};
@@ -97,6 +118,7 @@ const pageEventHandler = function (msg, port) {
 const backEventHandler = function (request, sender, callback) {
     switch (request.what) {
         case 'openModal':
+            Adequa.actions.analytics.sendAnonymousEvent("nourl", 'basic', 'addon_open');
             Adequa.API.tabs.query({
                 active: true,
                 lastFocusedWindow: true
@@ -106,7 +128,7 @@ const backEventHandler = function (request, sender, callback) {
                 Adequa.actions.tabs.emit(tab, {what: "openModal"});
                 callback();
             });
-            return;
+            return true;
         case 'addToWhitelist':
             Adequa.API.tabs.query({
                 active: true
@@ -185,6 +207,7 @@ const backEventHandler = function (request, sender, callback) {
                         for (const cookie of cookies[request.purpose])
                             Adequa.actions.cookie.remove(cookie);
 
+                        Adequa.actions.analytics.sendAnonymousEvent("nourl", 'tracking', 'addon_cookie_delete', Adequa.storage.adequaPurposeList[request.purpose-1].shortname, cookies.length);
                         callback();
                     });
                 });
@@ -194,17 +217,21 @@ const backEventHandler = function (request, sender, callback) {
             if (request.domain) {
                 Adequa.API.cookies.getAll({domain: request.domain}, cookies => {
                     cookies.forEach(Adequa.actions.cookie.remove);
+                    Adequa.actions.analytics.sendAnonymousEvent("nourl", 'tracking', 'addon_cookie_delete', request.domain, cookies.length);
                     callback();
                 });
             }
-            return;
+            return true;
         case 'setSetting':
             Adequa.model.consent.setSetting(request.setting);
+            Adequa.updateUninstallUrl();
             Adequa.API.tabs.query({
                 active: true,
                 lastFocusedWindow: true
             }, (tabs) => {
                 const tab = tabs[0] || {};
+
+                Adequa.actions.analytics.sendAnonymousEvent((tab || {}).url || "nourl", 'consent', 'default_parameter_change', Adequa.storage.adequaPurposeList[request.setting.id.purpose_id-1].shortname, request.setting.value === 1 ? 0 : 1);
 
                 Adequa.model.consent.cmp.getConsentData(Adequa.hostname((tab || {}).url || "nourl"), function (consent) {
                     Adequa.actions.tabs.emitAllTabs({what: "consent", consent});

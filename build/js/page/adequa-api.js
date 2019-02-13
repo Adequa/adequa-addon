@@ -12,6 +12,9 @@ import {Handler} from "./event/handler"
         getConsent: function(callback){
             Emitter.sendMessage({what: "getConsent"}, callback)
         },
+        getDimensions(callback){
+            Emitter.sendMessage({what: "getDimensions"}, callback)
+        }
         // cmp: (command, parameter, callback) => {
         //     switch (command) {
         //         case 'getVendorConsents':

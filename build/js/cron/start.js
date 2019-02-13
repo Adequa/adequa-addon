@@ -39,6 +39,12 @@ const firstInstall = function () {
     Adequa.setStorage({
         installDate: Date.now(),
     });
+
+    setTimeout(() => {
+        Adequa.updateUninstallUrl();
+        Adequa.actions.analytics.sendAnonymousEvent("nourl", 'basic', 'addon_install', undefined, 1);
+    }, 5000);
+
     Adequa.actions.cookie.getProspectCookie(function (prospect) {
         if (!prospect) {
             return;
@@ -86,14 +92,3 @@ const registerListeners = function () {
 };
 
 Adequa.event.emit({what: "adequaStart"});
-
-var _gaq = _gaq || [];
-_gaq.push(['_setAccount', 'UA-134079678-1']);
-
-(function () {
-    const ga = document.createElement('script');
-    ga.type = 'text/javascript';
-    ga.src = 'https://ssl.google-analytics.com/ga.js';
-    const s = document.getElementsByTagName('script')[0];
-    s.parentNode.insertBefore(ga, s);
-})();

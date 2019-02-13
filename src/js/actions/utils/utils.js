@@ -24,39 +24,31 @@ Adequa.hostname = function (url) {
     return domain;
 };
 
-Adequa.groupBy = function (list, keyGetter) {
-    const map = new Map();
-    list.forEach((item) => {
-        const key = keyGetter(item);
-        const collection = map.get(key);
-        if (!collection) {
-            map.set(key, [item]);
-        } else {
-            collection.push(item);
+function uuidv4() {
+    return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
+        (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
+    )
+}
+
+Adequa.updateUninstallUrl = function(){
+    Adequa.model.consent.cmp.getConsentData("all", (consent) => {
+        const purposes = [];
+        for(const id of consent.allowedPurposes){
+            purposes.push(Adequa.storage.adequaPurposeList[id-1].shortname);
         }
+        let allowedPurposes = purposes.join(", ");
+        if(allowedPurposes === "") allowedPurposes = "Aucun";
+
+        const customDimensions = {
+            "cd2": allowedPurposes,
+            "cd3": Adequa.storage.installDate
+        };
+
+        const dimensions = Object.entries(customDimensions).map(dimension => dimension.join('=')).join('&');
+
+        const url = `https://byebye-adequa.me/uninstall.php?tid=${Adequa.googleId}&cid=${uuidv4()}&dimensions=${encodeURI(dimensions)}`;
+        Adequa.API.runtime.setUninstallURL(url);
     });
-    return map;
-};
-
-Adequa.shouldRemoveCookie = function (cookie) {
-    Adequa.storage.cookieRules = Adequa.storage.cookieRules || {};
-    const rules = Adequa.storage.cookieRules;
-
-    const domain = Adequa.hostname(cookie.domain);
-    if (!rules[domain]) {
-        Adequa.actions.cookie.updateCookieRules(cookie.domain);
-        return Adequa.storage.cookieRules[domain];
-    }
-    return (rules[domain] || {}).disabled || false;
-};
-
-Adequa.getCookieRule = function (cookie) {
-    const rules = Adequa.storage.cookieRules;
-    if (!rules) return false;
-
-    const domain = Adequa.hostname(cookie.domain);
-
-    return rules[domain] || false;
 };
 
 Adequa.debug = function () {

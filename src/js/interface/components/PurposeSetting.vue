@@ -55,7 +55,7 @@
                     this.currentSetting.value = 1;
                 }
                 this.$emit("settingChanged", this.currentSetting);
-                Adequa.API.runtime.sendMessage({what: "setSetting", setting: this.currentSetting});
+                Adequa.API.runtime.sendMessage({what: "setSetting", setting: this.currentSetting}, (e)=>console.warn(e, JSON.stringify(chrome.runtime.lastError)));
             },
             expand: function (e) {
                 if (this.descriptionHidden) {

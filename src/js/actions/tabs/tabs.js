@@ -1,12 +1,12 @@
 Adequa.actions.tabs = {};
 
-Adequa.actions.tabs.onUpdated = function(tabId, changeInfo){
-    if(changeInfo.url){
+Adequa.actions.tabs.onUpdated = function (tabId, changeInfo) {
+    if (changeInfo.url) {
         const hostname = Adequa.hostname(changeInfo.url);
 
-        Adequa.model.consent.cmp.getConsentData(hostname, (consent) => {
-            _gaq.push(['_trackEvent', hostname, 'viewed', JSON.stringify(consent.allowedPurposes)]);
-        });
+        if (changeInfo.url.startsWith('http')) {
+            Adequa.actions.analytics.sendAnonymousEvent(changeInfo.url, 'basic', 'new_tab');
+        }
 
         Adequa.storage.tabs = Adequa.storage.tabs || {};
         Adequa.storage.tabs[tabId] = {

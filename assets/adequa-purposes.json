@@ -1,0 +1,30 @@
+[
+  {
+    "id": 1,
+    "name": "Cookies de fonctionnement",
+    "description": "Ces cookies garantissent le bon fonctionnement du site et permettent son optimisation. Le site Web ne peut pas fonctionner correctement sans ces cookies. Certains cookies sont également déposés pour l'affichage et le comptage de publicités contextuelles non personnalisées.",
+    "IABPurposes": [1,2,3,4,5],
+    "shortname": "Essential"
+  },
+  {
+    "id": 2,
+    "name": "Cookies analytics",
+    "description": "Ces cookies permettent d’obtenir des statistiques de fréquentation anonymes du site afin d’optimiser son ergonomie, sa navigation et ses contenus. En désactivant ces cookies, le traffic du site ne peut pas être analysé.",
+    "IABPurposes": [1, 2],
+    "shortname": "Analytics"
+  },
+  {
+    "id": 3,
+    "name": "Cookies de ciblage publicitaire",
+    "description": "Ces cookies permettent au site ou à ses partenaires de vous présenter les publicités les plus pertinentes et les plus adaptées à vos centres d'intérêt en fonction de votre navigation. En désactivant ces cookies, des publicités sans lien avec vos centres d'intérêt supposés vous seront proposées.",
+    "IABPurposes": [3, 4],
+    "shortname": "Advertising"
+  },
+  {
+    "id": 4,
+    "name": "Cookies sociaux",
+    "description": "Ces cookies permettent d'interagir depuis le site avec les modules sociaux et de partager les contenus du site avec d’autres personnes ou de les informer de votre consultation ou opinion sur celui-ci, lorsque vous cliquez sur les modules \"Partager\", \"Aimer\" de Facebook et de Twitter, par exemple. Par ailleurs, associés aux données de navigation du site, les cookies sociaux permettent de créer et diffuser certaines publicités personnalisées relatives à ses publications et à ses offres. En désactivant ces cookies, ce site ne pourra plus vous proposer ce type de publicités personnalisées.",
+    "IABPurposes": [5, 1],
+    "shortname": "Social"
+  }
+]

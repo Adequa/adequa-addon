@@ -27,7 +27,12 @@ Adequa.model.consent.getAllSettings = function (filters, id) {
     return settingsMapped;
 };
 
-Adequa.model.consent.setSetting = function (setting) {
+Adequa.model.consent.setSetting = function (setting) {//todo add check if setting already exist and move send analytics here
+    const existing = Adequa.model.consent.getSettings(setting.id);
+    if(existing.length && existing[0].value === setting.value) return;
+
+    Adequa.actions.analytics.sendAnonymousEvent("nourl", 'consent', 'default_parameter_change', Adequa.storage.adequaPurposeList[setting.id.purpose_id-1].shortname, setting.value === 1 ? 0 : 1);
+
     const index = Adequa.storage.consent.settings.findIndex(item => item.id.website_id === setting.id.website_id && item.id.purpose_id === setting.id.purpose_id && item.id.vendor_id === setting.id.vendor_id);
     if (index === -1)
         Adequa.storage.consent.settings.push(setting);
@@ -208,7 +213,7 @@ Adequa.model.consent.cmp.getConsentData = function (websiteId, callback) {
         allowedVendors: allowedVendorIds,
         allowedPurposes: allowedPurposeIds,
         // settings: settings
-    })
+    });
 
     return allowedPurposeIds;
     // });

@@ -31,8 +31,11 @@ class XMLRequest {
         req.setRequestHeader('Content-type', 'application/json');
       else
         req.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-
-      req.send(body);
+      try {
+        req.send(body);
+      } catch (e) {
+        reject(e);
+      }
     });
   }
 

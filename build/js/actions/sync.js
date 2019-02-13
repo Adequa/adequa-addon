@@ -20,6 +20,14 @@ Adequa.actions.sync.fetchAdequaResources = function () {
                     .then(data => {
                         Adequa.storage.cookiePurposes[name] = data;
                     })
+                    .catch(() => {
+                        fetch('/assets/cookies-default.json')
+                            .then(res => res.json())
+                            .then(data => {
+                                Adequa.storage.cookiePurposes[name] = data;
+                            })
+                            .catch(console.warn);
+                    });
             }
         }
 
@@ -68,12 +76,12 @@ const getAPIResponse = function (route, callback) {
             callback(JSON.parse(req.response));
         }
         catch(e){
-            Adequa.request.get('/assets/adequa/' + route + '.json').then(function(failoverReq){
+            Adequa.request.get('/assets/' + route + '.json').then(function(failoverReq){
                 callback(JSON.parse(failoverReq.response));
             }).catch(console.warn);
         }
     }).catch(function(){
-        Adequa.request.get('/assets/adequa/' + route + '.json').then(function(failoverReq){
+        Adequa.request.get('/assets/' + route + '.json').then(function(failoverReq){
             callback(JSON.parse(failoverReq.response));
         }).catch(console.warn);
     });

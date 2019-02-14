@@ -10,10 +10,11 @@
         </div>
         <footer>
             <hr>
-            <div @click="onClick">
+            <div @click="openSite">
                 <img src="img/adequa.svg" height="20" width="20" alt="Adequa Logo">
                 <span>Adequa</span>
             </div>
+            <font-awesome-icon :icon="['far', 'question-circle']" title="Aide" @click="openHelp"></font-awesome-icon>
         </footer>
     </div>
 </template>
@@ -28,8 +29,11 @@
             }
         },
         methods: {
-            onClick() {
-                alert('oui')
+            openSite() {
+                Adequa.API.runtime.sendMessage({what: "openTab", url: "https://adequa.me/"})
+            },
+            openHelp(){
+                Adequa.API.runtime.sendMessage({what: "openTab", url: "https://adequa.me/help"})
             }
         },
         watch: {
@@ -43,6 +47,7 @@
             });
             setInterval(()=> {
                 Adequa.API.runtime.sendMessage({what: "getCookies"}, (cookies) => {
+                    void Adequa.API.runtime.lastError;
                     this.cookies = cookies;
                 });
             }, 2000)
@@ -106,6 +111,7 @@
         align-items: center;
         flex-direction: column;
         margin: 15px 0;
+        position: relative;
 
         div {
             display: flex;
@@ -125,6 +131,18 @@
         hr {
             width: 412px;
             margin: 15px 8%;
+        }
+
+        > svg {
+            position: absolute;
+            bottom: 0;
+            right: 40px;
+            cursor: pointer;
+            color: grey;
+            transition: color 0.2s ease;
+        }
+        > svg:hover {
+            color: black;
         }
     }
 </style>

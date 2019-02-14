@@ -61,7 +61,6 @@ Adequa.actions.cookie.getCurrentDomains = function (cookies, callback) {
         active: true
     }, (tabs) => {
         const tab = tabs[0] || {};
-        console.log(tab)
         if (!Adequa.storage.tabs[tab.id])
             return callback(cookies.map(cookie => {
                 cookie.active = false;
@@ -103,7 +102,7 @@ Adequa.actions.cookie.getCookieCountByDomains = function(callback){
                                 return collector;
                             }, new Map());
                         result[purpose[0]] = Array.from(purpose[1].values())
-                            .sort((a, b) => a.domain.localeCompare(b.domain));
+                            .sort((a, b) => a.domain.toString().toLowerCase().localeCompare(b.domain.toString().toLowerCase()));
                     });
 
                 callback(result);

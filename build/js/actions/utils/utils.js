@@ -32,21 +32,27 @@ function uuidv4() {
 
 Adequa.updateUninstallUrl = function(){
     Adequa.model.consent.cmp.getConsentData("all", (consent) => {
-        const purposes = [];
-        for(const id of consent.allowedPurposes){
-            purposes.push(Adequa.storage.adequaPurposeList[id-1].shortname);
-        }
-        let allowedPurposes = purposes.join(", ");
-        if(allowedPurposes === "") allowedPurposes = "Aucun";
+        // const purposes = [];
+        // for(const id of consent.allowedPurposes){
+        //     purposes.push(Adequa.storage.adequaPurposeList[id-1].shortname);
+        // }
+        // if(!purposes.length) purposes.push("Aucun");
+        // let allowedPurposes = purposes.join(", ");
 
         const customDimensions = {
-            "cd2": allowedPurposes,
-            "cd3": Adequa.storage.installDate
+            // "cd2": allowedPurposes,
+            "cd3": Adequa.storage.installDate,
+            "cd4": Adequa.storage.convertedFrom
         };
 
         const dimensions = Object.entries(customDimensions).map(dimension => dimension.join('=')).join('&');
 
-        const url = `https://byebye-adequa.me/uninstall.php?tid=${Adequa.googleId}&cid=${uuidv4()}&dimensions=${encodeURI(dimensions)}`;
+        const toRemove = {};
+        for(const purpose of Adequa.storage.adequaPurposeList){
+            toRemove[purpose.shortname] = consent.allowedPurposes.indexOf(purpose.id) === -1 ? 1 : 0;
+        }
+
+        const url = `https://byebye-adequa.me/uninstall.php?tid=${Adequa.googleId}&cid=${uuidv4()}&toremove=${encodeURI(JSON.stringify(toRemove))}&dimensions=${encodeURI(dimensions)}`;
         Adequa.API.runtime.setUninstallURL(url);
     });
 };

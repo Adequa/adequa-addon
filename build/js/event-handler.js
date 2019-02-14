@@ -207,7 +207,7 @@ const backEventHandler = function (request, sender, callback) {
                         for (const cookie of cookies[request.purpose])
                             Adequa.actions.cookie.remove(cookie);
 
-                        Adequa.actions.analytics.sendAnonymousEvent("nourl", 'tracking', 'addon_cookie_delete', Adequa.storage.adequaPurposeList[request.purpose-1].shortname, cookies.length);
+                        Adequa.actions.analytics.sendAnonymousEvent("nourl", 'tracking', 'addon_cookie_delete', Adequa.storage.adequaPurposeList[request.purpose - 1].shortname, cookies.length);
                         callback();
                     });
                 });
@@ -231,7 +231,7 @@ const backEventHandler = function (request, sender, callback) {
             }, (tabs) => {
                 const tab = tabs[0] || {};
 
-                Adequa.actions.analytics.sendAnonymousEvent((tab || {}).url || "nourl", 'consent', 'default_parameter_change', Adequa.storage.adequaPurposeList[request.setting.id.purpose_id-1].shortname, request.setting.value === 1 ? 0 : 1);
+                Adequa.actions.analytics.sendAnonymousEvent((tab || {}).url || "nourl", 'consent', 'default_parameter_change', Adequa.storage.adequaPurposeList[request.setting.id.purpose_id - 1].shortname, request.setting.value === 1 ? 0 : 1);
 
                 Adequa.model.consent.cmp.getConsentData(Adequa.hostname((tab || {}).url || "nourl"), function (consent) {
                     Adequa.actions.tabs.emitAllTabs({what: "consent", consent});
@@ -364,7 +364,7 @@ const backEventHandler = function (request, sender, callback) {
             callback(cookieByType);
             return;
         case 'openTab':
-            Adequa.API.tabs.open({url: request.url});
+            Adequa.API.tabs.create({url: request.url});
             return;
         default:
             console.log('Event not handled : ' + request.what);

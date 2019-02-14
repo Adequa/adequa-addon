@@ -41,12 +41,8 @@
             Adequa.API.runtime.sendMessage({what: "getCookiePurposes"}, (purposes) => {
                 this.purposes = purposes;
             });
-            Adequa.API.runtime.sendMessage({what: "getCookiesByPurpose"}, (cookies) => {
-                this.cookies = cookies;
-            });
-            Adequa.API.runtime.sendMessage({what: "getCookieDomainsByPurpose"}, (domains) => {
-                this.domains = domains;
-            });
+
+            this.updateCookies();
         }
     }
 </script>
@@ -66,12 +62,13 @@
     }
 
     main {
-        max-height: 300px;
-        height: 300px;
-        overflow-y: auto;
+        max-height: 325px;
+        height: 325px;
+        overflow-y: overlay;
         display: flex;
         flex-direction: column;
         /*justify-content: center;*/
+        padding-right: 16px;
     }
 
     .link {

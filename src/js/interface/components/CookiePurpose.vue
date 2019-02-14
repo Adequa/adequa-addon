@@ -4,11 +4,11 @@
             <span class="expand" @click="toggleExpand">+</span>
             <div>
                 <p>{{ purpose.name }}</p>
-                <p>{{ (cookies[purpose.id] || []).length }}</p>
+                <p>{{ ((cookies || {})[purpose.id] || []).length }}</p>
             </div>
             <span class="link" @click="deletePurpose(purpose.id)">Supprimer</span>
         </div>
-        <div v-if="expanded" v-for="domain of domains[purpose.id]" class="domain">
+        <div v-if="expanded" v-for="domain of (domains || {})[purpose.id]" class="domain">
             <div>
                 <p :style="{color: domain.active ? 'red' : 'black'}" @click="openUrl(domain.website)"
                    :class="{pointer: domain.website}">{{domain.domain}}</p>
@@ -40,12 +40,13 @@
                 });
             },
             toggleExpand(e) {
+                console.log(this.domains, this.cookies)
                 this.expanded = !this.expanded;
                 e.target.innerText = this.expanded ? '-' : '+';
             },
             openUrl(url) {
                 if (!url) return;
-                alert(url)
+                Adequa.API.runtime.sendMessage({what: "openTab", url: url});
             }
         }
     }

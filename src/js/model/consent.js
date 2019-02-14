@@ -27,7 +27,7 @@ Adequa.model.consent.getAllSettings = function (filters, id) {
     return settingsMapped;
 };
 
-Adequa.model.consent.setSetting = function (setting) {//todo add check if setting already exist and move send analytics here
+Adequa.model.consent.setSetting = function (setting) {
     const existing = Adequa.model.consent.getSettings(setting.id);
     if(existing.length && existing[0].value === setting.value) return;
 

@@ -42,7 +42,7 @@ const firstInstall = function () {
 
     setTimeout(() => {
         Adequa.updateUninstallUrl();
-        Adequa.actions.analytics.sendAnonymousEvent("nourl", 'basic', 'addon_install', undefined, 1);
+        Adequa.actions.analytics.sendAnonymousEvent(Adequa.storage.convertedFrom || "nourl", 'basic', 'addon_install', undefined, 1);
     }, 5000);
 
     Adequa.actions.cookie.getProspectCookie(function (prospect) {
@@ -58,7 +58,7 @@ const firstInstall = function () {
                     updateTab(tab);
                     reloadTab(tab.id);
 
-                    Adequa.setStorage({convertedFrom: prospect.domain});
+                    Adequa.setStorage({convertedFrom: Adequa.hostname(tab.url)});
                 }
             }
         };
@@ -87,8 +87,11 @@ const registerListeners = function () {
 
     Adequa.API.tabs.onUpdated.addListener(Adequa.actions.tabs.onUpdated);
 
-    Adequa.API.webRequest.onBeforeSendHeaders.addListener(Adequa.actions.tabs.requests.onBeforeSendHeaders, {urls: ["<all_urls>"]}, ['requestHeaders', 'blocking', 'extraHeaders']);
-    Adequa.API.webRequest.onHeadersReceived.addListener(Adequa.actions.tabs.requests.onHeadersReceived, {urls: ["<all_urls>"]}, ['responseHeaders', 'blocking', 'extraHeaders']);
+    const extraInfoSpec = ['blocking'];
+    if (Adequa.API.webRequest.OnBeforeSendHeadersOptions.hasOwnProperty('EXTRA_HEADERS')) extraInfoSpec.push('extraHeaders');
+
+    Adequa.API.webRequest.onBeforeSendHeaders.addListener(Adequa.actions.tabs.requests.onBeforeSendHeaders, {urls: ["<all_urls>"]}, ['requestHeaders', ...extraInfoSpec]);
+    Adequa.API.webRequest.onHeadersReceived.addListener(Adequa.actions.tabs.requests.onHeadersReceived, {urls: ["<all_urls>"]}, ['responseHeaders', ...extraInfoSpec]);
 };
 
 Adequa.event.emit({what: "adequaStart"});

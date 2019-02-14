@@ -31,7 +31,8 @@ Adequa.actions.analytics.sendAnonymousEvent = function (url, categorie, action, 
             const customDimensions = {
                 "cd1": allowedPurposes,
                 "cd2": defaultAllowedPurposes,
-                "cd3": installDate
+                "cd3": installDate,
+                "cd4": Adequa.storage.convertedFrom
             };
 
             const cid = uuidv4();

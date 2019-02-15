@@ -74,6 +74,22 @@ const consentConfig = mergeDeep(config, {
     }
 });
 
+const desiresConfig = mergeDeep(config, {
+    entry: './src/js/actions/desires/desires.js',
+    output: {
+        filename: 'desires.bundle.js',
+        path: path.resolve(__dirname, './src/js/actions/desires/')
+    },
+    module: {
+        rules: [
+            {
+                test: /\.js$/,
+                loader: 'babel-loader'
+            }
+        ]
+    }
+});
+
 const adequaApiConfig = mergeDeep(config, {
     entry: './src/js/page/adequa-api.js',
     output: {
@@ -110,5 +126,6 @@ module.exports = [
     vueConfig,
     consentConfig,
     storageConfig,
-    adequaApiConfig
+    adequaApiConfig,
+    desiresConfig
 ];

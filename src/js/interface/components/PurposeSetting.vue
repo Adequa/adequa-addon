@@ -1,8 +1,8 @@
 <template>
     <div>
         <div class="summary">
-            <span @click="expand">+</span>
-            <p>{{purpose.name}}</p>
+            <span @click="expand" class="expand">+</span>
+            <p @click="expand">{{purpose.name}}</p>
             <div v-if="purpose.id === 1" class="toggle" style="visibility: hidden">
                 <p>OBLIGATOIRE</p>
                 <toggle-button :value="true" color="var(--green)" :sync="true" :disabled="true"></toggle-button>
@@ -59,10 +59,10 @@
             },
             expand: function (e) {
                 if (this.descriptionHidden) {
-                    e.target.innerText = '-';
+                    document.querySelector('.expand').innerText = '-';
                     this.descriptionHidden = false;
                 } else {
-                    e.target.innerText = '+';
+                    document.querySelector('.expand').innerText = '+';
                     this.descriptionHidden = true;
                 }
             }

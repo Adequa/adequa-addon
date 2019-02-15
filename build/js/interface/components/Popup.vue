@@ -42,6 +42,7 @@
             }
         },
         created(){
+            Adequa.API.runtime.sendMessage({what: "openPopup"});
             Adequa.API.runtime.sendMessage({what: "getCookies"}, (cookies) => {
                 this.cookies = cookies;
             });

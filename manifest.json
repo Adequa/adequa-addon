@@ -66,6 +66,5 @@
     "<all_urls>"
   ],
   "short_name": "Adequa",
-  "version": "1.0.33",
-  "content_security_policy": "script-src 'self' https://www.google-analytics.com; object-src 'self'"
+  "version": "1.0.37"
 }

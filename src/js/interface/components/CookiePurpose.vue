@@ -3,7 +3,7 @@
         <div class="purpose">
             <span class="expand" @click="toggleExpand">+</span>
             <div>
-                <p>{{ purpose.name }}</p>
+                <p @click="toggleExpand">{{ purpose.name }}</p>
                 <p>{{ ((cookies || {})[purpose.id] || []).length }}</p>
             </div>
             <span class="link" @click="deletePurpose(purpose.id)">Supprimer</span>
@@ -40,9 +40,8 @@
                 });
             },
             toggleExpand(e) {
-                console.log(this.domains, this.cookies)
                 this.expanded = !this.expanded;
-                e.target.innerText = this.expanded ? '-' : '+';
+                document.querySelector('.expand').innerText = this.expanded ? '-' : '+';
             },
             openUrl(url) {
                 if (!url) return;

@@ -117,8 +117,10 @@ const pageEventHandler = function (msg, port) {
 
 const backEventHandler = function (request, sender, callback) {
     switch (request.what) {
-        case 'openModal':
+        case 'openPopup':
             Adequa.actions.analytics.sendAnonymousEvent("nourl", 'basic', 'addon_open');
+            return;
+        case 'openModal':
             Adequa.API.tabs.query({
                 active: true,
                 lastFocusedWindow: true
@@ -173,7 +175,8 @@ const backEventHandler = function (request, sender, callback) {
             return true;
         case 'getCurrentWebsite':
             Adequa.API.tabs.query({
-                active: true
+                active: true,
+                lastFocusedWindow: true
             }, (tabs) => {
                 const tab = tabs[0] || {};
                 if (!tab.url || !Adequa.storage.userBrokenWebsites) return;

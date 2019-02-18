@@ -5,15 +5,15 @@ const stripCookieHeaders = function(headers){
 };
 
 const shouldDelete = function(url, tabId, initiator){
-    if(Adequa.storage.userBrokenWebsites && Adequa.storage.userBrokenWebsites.indexOf(Adequa.hostname(initiator)) !== -1) return false;
+    if(Adequa.storage.userBrokenWebsites && Adequa.storage.userBrokenWebsites.indexOf(Adequa.domain(initiator)) !== -1) return false;
     if(tabId === -1) return true;
     if(!Adequa.storage.cookiePurposes) return false;
-    const hostname = Adequa.hostname(url);
+    const hostname = Adequa.domain(url);
     const website = (Adequa.storage.tabs[tabId] || {}).hostname;
     if(website === hostname) return false;
 
     const purpose = (((Adequa.storage.cookiePurposes[website] || Adequa.storage.cookiePurposes['default'])[hostname] || Adequa.storage.cookiePurposes['default'][hostname]) || {}).purpose || 'unknown';
-    // const purpose = ((Adequa.storage.cookiePurposes['default'])[hostname] || {}).purpose || '1';
+    // const purpose = ((Adequa.storage.cookiePurposes['default'])[domain] || {}).purpose || '1';
 
     if(purpose === '1') return false;
     if(purpose === 'unknown') return false;
@@ -30,7 +30,7 @@ const logCookies = function(headers, tabId, url){
 
     cookies.forEach(cookie => {
         Adequa.storage.tabs[tabId].cookies.push(cookie);
-        Adequa.storage.tabs[tabId].domains.push(Adequa.hostname(url));
+        Adequa.storage.tabs[tabId].domains.push(Adequa.domain(url));
     });
 
     Adequa.storage.tabs[tabId].cookies = Array.from(new Set(Adequa.storage.tabs[tabId].cookies));
@@ -61,7 +61,7 @@ Adequa.actions.tabs.requests.onHeadersReceived = function(details){
 
 Adequa.actions.tabs.requests.onCommitted = function(details){
     if(details.frameId !== 0 || !details.url.startsWith('http')) return;
-    const hostname = Adequa.hostname(details.url);
+    const hostname = Adequa.domain(details.url);
     if(Adequa.storage.userBrokenWebsites && Adequa.storage.userBrokenWebsites.indexOf(hostname) !== -1) return;
     const customRules = (Adequa.storage.customCss || {})[hostname];
     try {
@@ -82,3 +82,19 @@ Adequa.actions.tabs.requests.onCommitted = function(details){
     }
     Adequa.event.emit({what: 'pageView', url: details.url});
 };
+<<<<<<< Updated upstream
+=======
+
+Adequa.actions.tabs.requests.onBeforeRequest = function(details){
+    if(details.type === "main_frame" && details.parentFrameId === -1) {
+        const hostname = Adequa.domain(details.url);
+        Adequa.storage.tabs = Adequa.storage.tabs || {};
+        Adequa.storage.tabs[details.tabId] = {
+            hostname: hostname,
+            domains: [hostname],
+            cookies: []
+        };
+        Adequa.setStorage({});
+    }
+};
+>>>>>>> Stashed changes

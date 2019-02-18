@@ -19,7 +19,7 @@ Adequa.actions.cookie.remove = function (cookie) {
 Adequa.actions.cookie.sortByPurpose = function (cookies, callback) {
     let purposes = {};
     for (let cookie of cookies) {
-        const domain = (Adequa.storage.cookiePurposes.default[cookie.domain.startsWith('.') ? cookie.domain.substr(1) : cookie.domain] || {});
+        const domain = (Adequa.storage.cookiePurposes.default[Adequa.domain(cookie.domain.startsWith('.') ? cookie.domain.substr(1) : cookie.domain)] || {});
         let purpose = domain.purpose || 1;
 
         if (purpose === 'unknown') purpose = 1;
@@ -71,7 +71,7 @@ Adequa.actions.cookie.getCurrentDomains = function (cookies, callback) {
 
         callback(
             cookies.map(cookie => {
-                cookie.active = currentDomains.indexOf(Adequa.hostname(cookie.domain)) !== -1;
+                cookie.active = currentDomains.indexOf(Adequa.domain(cookie.domain)) !== -1;
                 return cookie;
             })
         );
@@ -87,7 +87,7 @@ Adequa.actions.cookie.getCookieCountByDomains = function(callback){
                     .forEach(purpose => {
                         purpose[1] = purpose[1]
                             .map(cookie => {
-                                return {domain: Adequa.hostname(cookie.domain), active: cookie.active, website: cookie.website}
+                                return {domain: Adequa.domain(cookie.domain), active: cookie.active, website: cookie.website}
                             })
                             .reduce((collector, item) => {
                                 if (collector.has(item.domain)) {

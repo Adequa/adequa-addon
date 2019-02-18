@@ -2,7 +2,7 @@
 "use strict";
 
 Adequa.actions.cookie.updateUserRules = function (domain, blacklist) {
-    domain = Adequa.hostname(domain);
+    domain = Adequa.domain(domain);
     const rule = {};
     rule[domain] = {disabled: blacklist};
     Adequa.storage.userCookieRules = rule;
@@ -17,7 +17,7 @@ Adequa.actions.cookie.updateTypeRules = function (type, blacklist) {
 };
 
 Adequa.actions.cookie.updateAdequaRules = function (domain, rule) {
-    domain = Adequa.hostname(domain);
+    domain = Adequa.domain(domain);
     const newrule = {};
     newrule[domain] = rule;
     Adequa.storage.adequaCookieRules = newrule;
@@ -38,7 +38,7 @@ Adequa.actions.cookie.updateTypeCookieRules = function (type) {
 };
 
 Adequa.actions.cookie.updateCookieRules = function (domain) {
-    domain = Adequa.hostname(domain);
+    domain = Adequa.domain(domain);
     if (!domain) return;
     const adequaRules = Adequa.storage.adequaCookieRules || {};
     const adequaRule = adequaRules[domain] || false;

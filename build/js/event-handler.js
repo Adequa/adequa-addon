@@ -4,7 +4,7 @@ const pageEventHandler = function (msg, port) {
     const sender = port.sender || {};
     switch (msg.what) {
         case 'getConsent':
-            Adequa.model.consent.cmp.getConsentData(Adequa.hostname((sender.tab || {}).url || "nourl"), function (consent) {
+            Adequa.model.consent.cmp.getConsentData(Adequa.domain((sender.tab || {}).url || "nourl"), function (consent) {
                 port.postMessage({what: "consent", requestId: msg.requestId, consent});
             });
             return true;
@@ -30,7 +30,7 @@ const pageEventHandler = function (msg, port) {
 
             return true;
         // case 'getVendorConsents':
-        //     Adequa.model.consent.cmp.getConsentData(Adequa.hostname((sender.tab || {}).url || "nourl"), function (consent) {
+        //     Adequa.model.consent.cmp.getConsentData(Adequa.domain((sender.tab || {}).url || "nourl"), function (consent) {
         //         const vendorConsents = {};
         //         const purposeConsents = {};
         //
@@ -53,7 +53,7 @@ const pageEventHandler = function (msg, port) {
         //     });
         //     return true;
         // case 'getConsentData':
-        //     Adequa.model.consent.cmp.getConsentData(Adequa.hostname((sender.tab || {}).url || "nourl"), function (consent) {
+        //     Adequa.model.consent.cmp.getConsentData(Adequa.domain((sender.tab || {}).url || "nourl"), function (consent) {
         //         port.postMessage({what: "consentData", requestId: msg.requestId, consentData: {
         //                 consentData: consent.consentString,
         //                 gdprApplies: true,
@@ -64,13 +64,13 @@ const pageEventHandler = function (msg, port) {
         // case 'setSettings':
         //     for (const [_, setting_id] of Object.entries(msg.settings)) {
         //         const setting = {id: setting_id, value: -1};
-        //         setting.id.website_id = Adequa.hostname((sender.tab || {}).url || "nourl");
+        //         setting.id.website_id = Adequa.domain((sender.tab || {}).url || "nourl");
         //         Adequa.model.consent.setSetting(setting);
         //     }
         //     port.postMessage({requestId: msg.requestId});
         //     return true;
         // case 'getSettings':
-        //     const settings = Adequa.model.consent.getSettings({website_id: Adequa.hostname((sender.tab || {}).url || "nourl")});
+        //     const settings = Adequa.model.consent.getSettings({website_id: Adequa.domain((sender.tab || {}).url || "nourl")});
         //     port.postMessage({what: "settings", requestId: msg.requestId, settings});
         //     return;
         case 'setConsent':
@@ -80,7 +80,7 @@ const pageEventHandler = function (msg, port) {
         //     for (const purpose in msg.vendorConsents.purposeConsents) {
         //         Adequa.model.consent.setSetting({
         //             id: {
-        //                 website_id: Adequa.hostname((sender.tab || {}).url || "nourl"),
+        //                 website_id: Adequa.domain((sender.tab || {}).url || "nourl"),
         //                 purpose_id: purpose,
         //                 vendor_id: "all"
         //             },
@@ -90,7 +90,7 @@ const pageEventHandler = function (msg, port) {
         //     for (const vendor in msg.vendorConsents.vendorConsents) {
         //         Adequa.model.consent.setSetting({
         //             id: {
-        //                 website_id: Adequa.hostname((sender.tab || {}).url || "nourl"),
+        //                 website_id: Adequa.domain((sender.tab || {}).url || "nourl"),
         //                 purpose_id: "all",
         //                 vendor_id: vendor
         //             },
@@ -99,7 +99,7 @@ const pageEventHandler = function (msg, port) {
         //     }
         //     return;
         case 'getSiteViews':
-            const hostname = Adequa.hostname((sender.tab || {}).url);
+            const hostname = Adequa.domain((sender.tab || {}).url);
             if (!hostname) port.postMessage({what: "siteViews", views: 0});
             else {
                 port.postMessage({
@@ -144,7 +144,7 @@ const backEventHandler = function (request, sender, callback) {
             }, (tabs) => {
                 const tab = tabs[0] || {};
                 if (!tab.url) return;
-                Adequa.setStorage({userBrokenWebsites: [Adequa.hostname(tab.url)]});
+                Adequa.setStorage({userBrokenWebsites: [Adequa.domain(tab.url)]});
                 fetch(Adequa.uri + 'api/website/broken', {
                     method: 'post',
                     headers: {
@@ -153,12 +153,12 @@ const backEventHandler = function (request, sender, callback) {
                     },
                     body: JSON.stringify({
                         url: tab.url,
-                        hostname: Adequa.hostname(tab.url)
+                        hostname: Adequa.domain(tab.url)
                     })
                 });
                 callback({
-                    hostname: Adequa.hostname(tab.url),
-                    whitelisted: Adequa.storage.userBrokenWebsites.indexOf(Adequa.hostname(tab.url)) !== -1
+                    hostname: Adequa.domain(tab.url),
+                    whitelisted: Adequa.storage.userBrokenWebsites.indexOf(Adequa.domain(tab.url)) !== -1
                 })
             });
             return true;
@@ -169,14 +169,14 @@ const backEventHandler = function (request, sender, callback) {
                 const tab = tabs[0] || {};
                 if (!tab.url) return;
                 let userBrokenWebsites = new Set(Adequa.storage.userBrokenWebsites);
-                userBrokenWebsites.delete(Adequa.hostname(tab.url));
+                userBrokenWebsites.delete(Adequa.domain(tab.url));
                 userBrokenWebsites = Array.from(userBrokenWebsites);
                 Adequa.storage.userBrokenWebsites = userBrokenWebsites;
                 Adequa.setStorage({});
 
                 callback({
-                    hostname: Adequa.hostname(tab.url),
-                    whitelisted: Adequa.storage.userBrokenWebsites.indexOf(Adequa.hostname(tab.url)) !== -1
+                    hostname: Adequa.domain(tab.url),
+                    whitelisted: Adequa.storage.userBrokenWebsites.indexOf(Adequa.domain(tab.url)) !== -1
                 })
             });
             return true;
@@ -188,8 +188,8 @@ const backEventHandler = function (request, sender, callback) {
                 const tab = tabs[0] || {};
                 if (!tab.url || !Adequa.storage.userBrokenWebsites) return;
                 callback({
-                    hostname: Adequa.hostname(tab.url),
-                    whitelisted: Adequa.storage.userBrokenWebsites.indexOf(Adequa.hostname(tab.url)) !== -1
+                    hostname: Adequa.domain(tab.url),
+                    whitelisted: Adequa.storage.userBrokenWebsites.indexOf(Adequa.domain(tab.url)) !== -1
                 })
             });
             return true;
@@ -243,7 +243,7 @@ const backEventHandler = function (request, sender, callback) {
 
                 Adequa.actions.analytics.sendAnonymousEvent((tab || {}).url || "nourl", 'consent', 'default_parameter_change', Adequa.storage.adequaPurposeList[request.setting.id.purpose_id - 1].shortname, request.setting.value === 1 ? 0 : 1);
 
-                Adequa.model.consent.cmp.getConsentData(Adequa.hostname((tab || {}).url || "nourl"), function (consent) {
+                Adequa.model.consent.cmp.getConsentData(Adequa.domain((tab || {}).url || "nourl"), function (consent) {
                     Adequa.actions.tabs.emitAllTabs({what: "consent", consent});
                 });
             });
@@ -254,7 +254,7 @@ const backEventHandler = function (request, sender, callback) {
                 lastFocusedWindow: true
             }, (tabs) => {
                 const tab = tabs[0] || {};
-                callback(Adequa.hostname(tab.url || "nourl"));
+                callback(Adequa.domain(tab.url || "nourl"));
             });
             return true;
         case 'getDefaultPurposeSettings':
@@ -270,7 +270,7 @@ const backEventHandler = function (request, sender, callback) {
                 lastFocusedWindow: true
             }, (tabs) => {
                 const tab = tabs[0] || {};
-                const websiteSettings = Adequa.model.consent.getAllSettings({website_id: Adequa.hostname(tab.url || "nourl")}, "purpose_id") || {};
+                const websiteSettings = Adequa.model.consent.getAllSettings({website_id: Adequa.domain(tab.url || "nourl")}, "purpose_id") || {};
 
                 const settings = Adequa.model.consent.getAllSettings({
                         website_id: "all",
@@ -297,7 +297,7 @@ const backEventHandler = function (request, sender, callback) {
                 lastFocusedWindow: true
             }, (tabs) => {
                 const tab = tabs[0] || {};
-                const websiteSettings = Adequa.model.consent.getAllSettings({website_id: Adequa.hostname(tab.url || "nourl")}, "vendor_id") || {};
+                const websiteSettings = Adequa.model.consent.getAllSettings({website_id: Adequa.domain(tab.url || "nourl")}, "vendor_id") || {};
 
                 const settings = Adequa.model.consent.getAllSettings({
                         website_id: "all",
@@ -403,7 +403,7 @@ Adequa.API.runtime.onConnect.addListener(function (port) {
             pageEventHandler(msg, port);
         });
 
-        const hostname = Adequa.hostname(((port.sender || {}).tab || {}).url);
+        const hostname = Adequa.domain(((port.sender || {}).tab || {}).url);
         if (!hostname) return port.postMessage({what: "siteViews", views: 0});
         const siteViews = Adequa.storage.siteViews || {};
         siteViews[hostname] = (siteViews[hostname] || 0) + 1;

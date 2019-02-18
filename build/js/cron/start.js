@@ -21,7 +21,7 @@ Adequa.actions.init.start = function () {
         Adequa.API.tabs.query({}, function (tabs) {
             Adequa.storage.tabs = {};
             tabs.forEach((tab) => {
-                const hostname = Adequa.hostname(tab.url);
+                const hostname = Adequa.domain(tab.url);
                 Adequa.storage.tabs[tab.id] = {
                     hostname: hostname,
                     domains: [hostname],
@@ -58,7 +58,7 @@ const firstInstall = function () {
                     updateTab(tab);
                     reloadTab(tab.id);
 
-                    Adequa.setStorage({convertedFrom: Adequa.hostname(tab.url)});
+                    Adequa.setStorage({convertedFrom: Adequa.domain(tab.url)});
                 }
             }
         };

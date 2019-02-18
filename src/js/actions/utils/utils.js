@@ -1,4 +1,4 @@
-Adequa.hostname = function (url) {
+Adequa.domain = function (url) {
     if (!url)
         return false;
 
@@ -24,6 +24,18 @@ Adequa.hostname = function (url) {
     return domain;
 };
 
+Adequa.hostname = function(url){
+    if (!url)
+        return false;
+
+    let hostname = url;
+
+    const match = url.match(/:\/\/(www[0-9]?\.)?(.[^/:]+)/i);
+    if (match !== null && match.length > 2 && typeof match[2] === 'string' && match[2].length > 0)
+        hostname = match[2];
+
+    return hostname;
+};
 function uuidv4() {
     return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
         (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
@@ -64,7 +76,7 @@ Adequa.debug = function () {
     }, (tabs) => {
         const tab = tabs[0] || {};
 
-        debug.hostname = Adequa.hostname(tab.url);
+        debug.hostname = Adequa.domain(tab.url);
 
         Adequa.model.consent.cmp.getConsentData(debug.hostname, function (consent) {
             debug.websiteConsent = consent;

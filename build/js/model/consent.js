@@ -45,7 +45,7 @@ Adequa.model.consent.setConsent = function (allowedPurposes, allowedVendors, url
     for (const purpose of Adequa.storage.purposeList) {
         Adequa.model.consent.setSetting({
             id: {
-                website_id: Adequa.hostname(url),
+                website_id: Adequa.domain(url),
                 purpose_id: purpose.id,
                 vendor_id: "all"
             },
@@ -55,7 +55,7 @@ Adequa.model.consent.setConsent = function (allowedPurposes, allowedVendors, url
     for (const vendor of Adequa.storage.vendorList) {
         Adequa.model.consent.setSetting({
             id: {
-                website_id: Adequa.hostname(url),
+                website_id: Adequa.domain(url),
                 purpose_id: "all",
                 vendor_id: vendor.id
             },
@@ -87,7 +87,7 @@ Adequa.model.consent.setConsentString = function (consentString, url) {
     for (const purpose of Adequa.storage.purposeList) {
         Adequa.model.consent.setSetting({
             id: {
-                website_id: Adequa.hostname(url),
+                website_id: Adequa.domain(url),
                 purpose_id: purpose.id,
                 vendor_id: "all"
             },
@@ -97,7 +97,7 @@ Adequa.model.consent.setConsentString = function (consentString, url) {
     for (const vendor of Adequa.storage.vendorList) {
         Adequa.model.consent.setSetting({
             id: {
-                website_id: Adequa.hostname(url),
+                website_id: Adequa.domain(url),
                 purpose_id: "all",
                 vendor_id: vendor.id
             },
@@ -191,10 +191,10 @@ Adequa.model.consent.cmp.getConsentData = function (websiteId, callback) {
     //     lastFocusedWindow: true
     // }, (tabs) => {
     //     const tab = tabs[0] || {};
-    //     const settings = Adequa.model.consent.getSettings({website_id: Adequa.hostname(tab.url || "nourl")});
+    //     const settings = Adequa.model.consent.getSettings({website_id: Adequa.domain(tab.url || "nourl")});
     //
     //     for(const index in settings){
-    //         settings[index].id.website_id = Adequa.hostname(tab.url || "nourl");
+    //         settings[index].id.website_id = Adequa.domain(tab.url || "nourl");
     //     }
     //
     //     const consentData = new ConsentString();

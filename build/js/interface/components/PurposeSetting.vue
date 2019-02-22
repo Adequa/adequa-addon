@@ -174,6 +174,7 @@
             flex: 1;
             font-size: 18px;
             padding: 3px 0 0 25px;
+            cursor: pointer;
         }
 
         span {

@@ -19,11 +19,7 @@ Adequa.actions.cookie.remove = function (cookie) {
 Adequa.actions.cookie.sortByPurpose = function (cookies, callback) {
     let purposes = {};
     for (let cookie of cookies) {
-<<<<<<< Updated upstream
-        const domain = (Adequa.storage.cookiePurposes.default[cookie.domain.startsWith('.') ? cookie.domain.substr(1) : cookie.domain] || {});
-=======
         const domain = (Adequa.storage.cookiePurposes.default[Adequa.domain(cookie.domain.startsWith('.') ? cookie.domain.substr(1) : cookie.domain)] || {});
->>>>>>> Stashed changes
         let purpose = domain.purpose || 1;
 
         if (purpose === 'unknown') purpose = 1;

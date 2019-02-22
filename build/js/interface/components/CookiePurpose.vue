@@ -65,6 +65,9 @@
             align-items: center;
             justify-content: space-between;
 
+            > p:first-child {
+                cursor: pointer;
+            }
             > p:last-child {
                 font-weight: 300;
             }

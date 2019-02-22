@@ -5,7 +5,7 @@
         <nav>
             <router-link to="/cookies"><hover-button :text="'MES ' + nbCookies + ' COOKIES'"></hover-button></router-link>
             <router-link to="/choices"><hover-button text="MES CHOIX"></hover-button></router-link>
-            <router-link to="/desires"><hover-button text="MES ENVIES"></hover-button></router-link>
+            <router-link to="/interests"><hover-button text="MES ENVIES"></hover-button></router-link>
             <span @click="addToWhitelist" v-if="!website.whitelisted">Signaler et réparer un site non fonctionnel</span>
             <span v-else class="whitelisted">{{ website.hostname }} est whitelisté <span @click="removeFromWhitelist">(enlever)</span></span>
         </nav>

@@ -1,0 +1,1090 @@
+{
+  "-- VÉHICULES --": {
+    "name": "1",
+    "query_parameters": {}
+  },
+  "Voitures": {
+    "name": "2",
+    "query_parameters": {
+      "Prix min": {
+        "name": "price_min"
+      },
+      "Prix max": {
+        "name": "price_max"
+      },
+      "Année min": {
+        "name": "regdate_min",
+        "keys": {
+          "1960 ou avant": "1960"
+        }
+      },
+      "Année max": {
+        "name": "regdate_max"
+      },
+      "Kilomètres min": {
+        "name": "mileage_min"
+      },
+      "Kilomètres max": {
+        "name": "mileage_max"
+      },
+      "Marque": {
+        "name": "brand",
+        "keys": {
+          "Alfa Romeo": "Alfa Romeo",
+          "Aston Martin": "Aston Martin",
+          "Bluecar Groupe Bollore": "Bluecar Groupe Bollore",
+          "De La Chapelle": "De La Chapelle",
+          "Land Rover": "Land Rover"
+        }
+      },
+      "Modèle": {
+        "name": "model"
+      },
+      "Energie": {
+        "name": "fuel",
+        "keys": {
+          "Essence": "1",
+          "Diesel": "2",
+          "GPL": "3",
+          "Electrique": "4",
+          "Autre": "5",
+          "Hybride": "6"
+        }
+      },
+      "Boîte de vitesse": {
+        "name": "gearbox",
+        "keys": {
+          "Manuelle": "1",
+          "Automatique": "2"
+        }
+      }
+    }
+  },
+  "Motos": {
+    "name": "3",
+    "query_parameters": {
+      "Prix min": {
+        "name": "price_min"
+      },
+      "Prix max": {
+        "name": "price_max"
+      },
+      "Année min": {
+        "name": "regdate_min",
+        "keys": {
+          "1960 ou avant": "1960"
+        }
+      },
+      "Année max": {
+        "name": "regdate_max"
+      },
+      "Kilomètres min": {
+        "name": "mileage_min"
+      },
+      "Kilomètres max": {
+        "name": "mileage_max"
+      },
+      "Cylindrée min": {
+        "name": "cubic_capacity_min"
+      },
+      "Cylindrée max": {
+        "name": "cubic_capacity_max"
+      }
+    }
+  },
+  "Caravaning": {
+    "name": "4",
+    "query_parameters": {
+      "Prix min": {
+        "name": "price_min"
+      },
+      "Prix max": {
+        "name": "price_max"
+      },
+      "Année min": {
+        "name": "regdate_min",
+        "keys": {
+          "1975 ou avant": "1975"
+        }
+      },
+      "Année max": {
+        "name": "regdate_max"
+      },
+      "Kilomètres min": {
+        "name": "mileage_min"
+      },
+      "Kilomètres max": {
+        "name": "mileage_max"
+      }
+    }
+  },
+  "Utilitaires": {
+    "name": "5",
+    "query_parameters": {
+      "Prix min": {
+        "name": "price_min"
+      },
+      "Prix max": {
+        "name": "price_max"
+      },
+      "Année min": {
+        "name": "regdate_min",
+        "keys": {
+          "1975 ou avant": "1975"
+        }
+      },
+      "Année max": {
+        "name": "regdate_max"
+      },
+      "Kilomètres min": {
+        "name": "mileage_min"
+      },
+      "Kilomètres max": {
+        "name": "mileage_max"
+      },
+      "Energie": {
+        "name": "fuel",
+        "keys": {
+          "Essence": "1",
+          "Diesel": "2",
+          "GPL": "3",
+          "Electrique": "4",
+          "Autre": "5",
+          "Hybride": "6"
+        }
+      }
+    }
+  },
+  "Équipement auto": {
+    "name": "6",
+    "query_parameters": {
+      "Prix min": {
+        "name": "price_min"
+      },
+      "Prix max": {
+        "name": "price_max"
+      }
+    }
+  },
+  "Nautisme": {
+    "name": "7",
+    "query_parameters": {
+      "Prix min": {
+        "name": "price_min"
+      },
+      "Prix max": {
+        "name": "price_max"
+      }
+    }
+  },
+  "-- IMMOBILIER --": {
+    "name": "8",
+    "query_parameters": {}
+  },
+  "Ventes immobilières": {
+    "name": "9",
+    "query_parameters": {
+      "Prix min": {
+        "name": "price_min"
+      },
+      "Prix max": {
+        "name": "price_max"
+      },
+      "Surface min": {
+        "name": "square_min"
+      },
+      "Surface max": {
+        "name": "square_max"
+      },
+      "Pièces min": {
+        "name": "rooms_min"
+      },
+      "Pièces max": {
+        "name": "rooms_max"
+      }
+    }
+  },
+  "Locations": {
+    "name": "10",
+    "query_parameters": {
+      "Loyer min": {
+        "name": "price_min"
+      },
+      "Loyer max": {
+        "name": "price_max"
+      },
+      "Surface min": {
+        "name": "square_min"
+      },
+      "Surface max": {
+        "name": "square_max"
+      },
+      "Pièces min": {
+        "name": "rooms_min"
+      },
+      "Pièces max": {
+        "name": "rooms_max"
+      },
+      "Meublé / Non meublé": {
+        "name": "furnished",
+        "keys": {
+          "Meublé": "1",
+          "Non meublé": "2"
+        }
+      }
+    }
+  },
+  "Colocations": {
+    "name": "11",
+    "query_parameters": {
+      "Prix min": {
+        "name": "price_min"
+      },
+      "Prix max": {
+        "name": "price_max"
+      }
+    }
+  },
+  "Locations & Gîtes": {
+    "name": "12",
+    "query_parameters": {
+      "Prix min": {
+        "name": "price_min"
+      },
+      "Prix max": {
+        "name": "price_max"
+      },
+      "Capacité min": {
+        "name": "capacity_min"
+      },
+      "Capacité max": {
+        "name": "capacity_max"
+      },
+      "Chambres min": {
+        "name": "bedrooms_min"
+      },
+      "Chambres max": {
+        "name": "bedrooms_max"
+      },
+      "Indifférent": {
+        "name": "swimming_pool",
+        "keys": {
+          "Avec piscine": "1",
+          "Sans piscine": "2"
+        }
+      }
+    }
+  },
+  "Bureaux & Commerces": {
+    "name": "13",
+    "query_parameters": {
+      "Type": {
+        "name": "lease_type",
+        "keys": {
+          "Ventes": "sell",
+          "Locations": "rent"
+        }
+      },
+      "Prix min": {
+        "name": "price_min"
+      },
+      "Prix max": {
+        "name": "price_max"
+      }
+    }
+  },
+  "-- MULTIMÉDIA --": {
+    "name": "14",
+    "query_parameters": {}
+  },
+  "Informatique": {
+    "name": "15",
+    "query_parameters": {
+      "Prix min": {
+        "name": "price_min"
+      },
+      "Prix max": {
+        "name": "price_max"
+      }
+    }
+  },
+  "Image & Son": {
+    "name": "16",
+    "query_parameters": {
+      "Prix min": {
+        "name": "price_min"
+      },
+      "Prix max": {
+        "name": "price_max"
+      }
+    }
+  },
+  "Téléphonie": {
+    "name": "17",
+    "query_parameters": {
+      "Prix min": {
+        "name": "price_min"
+      },
+      "Prix max": {
+        "name": "price_max"
+      }
+    }
+  },
+  "-- MAISON --": {
+    "name": "18",
+    "query_parameters": {}
+  },
+  "Ameublement": {
+    "name": "19",
+    "query_parameters": {
+      "Prix min": {
+        "name": "price_min"
+      },
+      "Prix max": {
+        "name": "price_max"
+      }
+    }
+  },
+  "Électroménager": {
+    "name": "20",
+    "query_parameters": {
+      "Prix min": {
+        "name": "price_min"
+      },
+      "Prix max": {
+        "name": "price_max"
+      }
+    }
+  },
+  "Bricolage": {
+    "name": "21",
+    "query_parameters": {
+      "Prix min": {
+        "name": "price_min"
+      },
+      "Prix max": {
+        "name": "price_max"
+      }
+    }
+  },
+  "Vêtements": {
+    "name": "22",
+    "query_parameters": {
+      "Prix min": {
+        "name": "price_min"
+      },
+      "Prix max": {
+        "name": "price_max"
+      },
+      "Type": {
+        "name": "clothing_type",
+        "keys": {
+          "Femme": "1",
+          "Femme enceinte": "2",
+          "Homme": "3",
+          "Enfant": "4"
+        }
+      },
+      "Taille": {
+        "name": "clothing_st"
+      }
+    }
+  },
+  "Équipement bébé": {
+    "name": "23",
+    "query_parameters": {
+      "Prix min": {
+        "name": "price_min"
+      },
+      "Prix max": {
+        "name": "price_max"
+      }
+    }
+  },
+  "-- LOISIRS --": {
+    "name": "24",
+    "query_parameters": {}
+  },
+  "DVD - Films": {
+    "name": "25",
+    "query_parameters": {
+      "Prix min": {
+        "name": "price_min"
+      },
+      "Prix max": {
+        "name": "price_max"
+      }
+    }
+  },
+  "CD - Musique": {
+    "name": "26",
+    "query_parameters": {
+      "Prix min": {
+        "name": "price_min"
+      },
+      "Prix max": {
+        "name": "price_max"
+      }
+    }
+  },
+  "Livres": {
+    "name": "27",
+    "query_parameters": {
+      "Prix min": {
+        "name": "price_min"
+      },
+      "Prix max": {
+        "name": "price_max"
+      }
+    }
+  },
+  "Animaux": {
+    "name": "28",
+    "query_parameters": {
+      "Prix min": {
+        "name": "price_min"
+      },
+      "Prix max": {
+        "name": "price_max"
+      },
+      "Type de l'offre": {
+        "name": "animal_type",
+        "keys": {
+          "Chiens & Chats": "1",
+          "Autres animaux": "2",
+          "Accessoires": "3"
+        }
+      },
+      "Nature de l'offre": {
+        "name": "animal_offer_nature"
+      }
+    }
+  },
+  "Sports & Hobbies": {
+    "name": "29",
+    "query_parameters": {
+      "Prix min": {
+        "name": "price_min"
+      },
+      "Prix max": {
+        "name": "price_max"
+      }
+    }
+  },
+  "Instruments de musique": {
+    "name": "30",
+    "query_parameters": {
+      "Prix min": {
+        "name": "price_min"
+      },
+      "Prix max": {
+        "name": "price_max"
+      }
+    }
+  },
+  "-- SERVICES --": {
+    "name": "31",
+    "query_parameters": {}
+  },
+  "Équipements industriels": {
+    "name": "32",
+    "query_parameters": {
+      "Prix min": {
+        "name": "price_min"
+      },
+      "Prix max": {
+        "name": "price_max"
+      }
+    }
+  },
+  "Offres d'emploi": {
+    "name": "33",
+    "query_parameters": {
+      "Type de contrat": {
+        "name": "jobcontract",
+        "keys": {
+          "CDD": "1",
+          "CDI": "2",
+          "Intérim": "3",
+          "Indépendant/Franchise": "4",
+          "Stage/Alternance": "5",
+          "Apprentissage": "6"
+        }
+      },
+      "Fonction": {
+        "name": "jobduty",
+        "keys": {
+          "Administration/Services généraux": "1",
+          "Commercial/Vente": "2",
+          "Comptabilité/Gestion/Finance": "3",
+          "Conseil/Audit": "4",
+          "Direction Générale": "5",
+          "Sécurité/Défense/Gardiennage": "6",
+          "Hôtellerie/Restauration": "7",
+          "Informatique/Internet": "8",
+          "Juridique": "9",
+          "Logistique/Achat/Transport": "10",
+          "Marketing/Communication": "11",
+          "Ménage/Entretien": "12",
+          "Ressources Humaines/Formation": "13",
+          "Services à la personne": "14",
+          "Formation/Education": "15",
+          "Etudes/Recherches/Ingénieries": "16",
+          "Ouvrier/Artisan": "17",
+          "Médecine/Santé": "18",
+          "Production/Opérations": "19",
+          "Service Client/Accueil": "20"
+        }
+      },
+      "Expérience": {
+        "name": "jobexp",
+        "keys": {
+          "0 à 2 ans": "1",
+          "2 à 5 ans": "3",
+          "5 ans et plus": "5"
+        }
+      },
+      "Secteur d'activité": {
+        "name": "jobfield",
+        "keys": {
+          "Agriculture": "1",
+          "BTP/Construction": "2",
+          "Commerce/Distribution": "3",
+          "Banque/Assurance/Finance": "4",
+          "Industrie/Environnement": "5",
+          "Immobilier": "6",
+          "Services publics/Administrations": "7",
+          "Médecine/Santé": "8",
+          "Services": "9",
+          "Télécom/Internet/Médias": "10",
+          "Tourisme": "11",
+          "Transport/Logistique": "12",
+          "Hôtellerie/Restauration": "13",
+          "Textile/Mode/Luxe": "14",
+          "Sport": "15",
+          "Services à la personne": "16"
+        }
+      },
+      "Niveau d'études": {
+        "name": "jobstudy",
+        "keys": {
+          "Sans diplôme": "1",
+          "BEP/CAP": "2",
+          "Employé/Ouvrier spécialisé/Bac": "3",
+          "Technicien/Employé/Bac+2": "4",
+          "Agent de maîtrise/Bac+3": "5",
+          "Ingénieur/Cadre/Bac+5 ou plus": "6"
+        }
+      },
+      "Temps plein/partiel": {
+        "name": "jobtime",
+        "keys": {
+          "Temps plein": "1",
+          "Temps partiel": "2"
+        }
+      }
+    }
+  },
+  "Prestations de services": {
+    "name": "34",
+    "query_parameters": {}
+  },
+  "Billetterie": {
+    "name": "35",
+    "query_parameters": {
+      "Prix min": {
+        "name": "price_min"
+      },
+      "Prix max": {
+        "name": "price_max"
+      }
+    }
+  },
+  "Cours particuliers": {
+    "name": "36",
+    "query_parameters": {
+      "Prix min": {
+        "name": "price_min"
+      },
+      "Prix max": {
+        "name": "price_max"
+      }
+    }
+  },
+  "-- AUTRES --": {
+    "name": "37",
+    "query_parameters": {}
+  },
+  "Autres": {
+    "name": "38",
+    "query_parameters": {
+      "Prix min": {
+        "name": "price_min"
+      },
+      "Prix max": {
+        "name": "price_max"
+      }
+    }
+  },
+  "Décoration": {
+    "name": "39",
+    "query_parameters": {
+      "Prix min": {
+        "name": "price_min"
+      },
+      "Prix max": {
+        "name": "price_max"
+      }
+    }
+  },
+  "Collection": {
+    "name": "40",
+    "query_parameters": {
+      "Prix min": {
+        "name": "price_min"
+      },
+      "Prix max": {
+        "name": "price_max"
+      }
+    }
+  },
+  "Jeux & Jouets": {
+    "name": "41",
+    "query_parameters": {
+      "Prix min": {
+        "name": "price_min"
+      },
+      "Prix max": {
+        "name": "price_max"
+      }
+    }
+  },
+  "Montres & Bijoux": {
+    "name": "42",
+    "query_parameters": {
+      "Prix min": {
+        "name": "price_min"
+      },
+      "Prix max": {
+        "name": "price_max"
+      }
+    }
+  },
+  "Consoles & Jeux vidéo": {
+    "name": "43",
+    "query_parameters": {
+      "Prix min": {
+        "name": "price_min"
+      },
+      "Prix max": {
+        "name": "price_max"
+      }
+    }
+  },
+  "Équipement moto": {
+    "name": "44",
+    "query_parameters": {
+      "Prix min": {
+        "name": "price_min"
+      },
+      "Prix max": {
+        "name": "price_max"
+      }
+    }
+  },
+  "Arts de la table": {
+    "name": "45",
+    "query_parameters": {
+      "Prix min": {
+        "name": "price_min"
+      },
+      "Prix max": {
+        "name": "price_max"
+      }
+    }
+  },
+  "Linge de maison": {
+    "name": "46",
+    "query_parameters": {
+      "Prix min": {
+        "name": "price_min"
+      },
+      "Prix max": {
+        "name": "price_max"
+      }
+    }
+  },
+  "Accessoires & Bagagerie": {
+    "name": "47",
+    "query_parameters": {
+      "Prix min": {
+        "name": "price_min"
+      },
+      "Prix max": {
+        "name": "price_max"
+      }
+    }
+  },
+  "Vins & Gastronomie": {
+    "name": "48",
+    "query_parameters": {
+      "Prix min": {
+        "name": "price_min"
+      },
+      "Prix max": {
+        "name": "price_max"
+      }
+    }
+  },
+  "Évènements": {
+    "name": "49",
+    "query_parameters": {}
+  },
+  "Équipement caravaning": {
+    "name": "50",
+    "query_parameters": {
+      "Prix min": {
+        "name": "price_min"
+      },
+      "Prix max": {
+        "name": "price_max"
+      }
+    }
+  },
+  "Équipement nautisme": {
+    "name": "51",
+    "query_parameters": {
+      "Prix min": {
+        "name": "price_min"
+      },
+      "Prix max": {
+        "name": "price_max"
+      }
+    }
+  },
+  "Jardinage": {
+    "name": "52",
+    "query_parameters": {
+      "Prix min": {
+        "name": "price_min"
+      },
+      "Prix max": {
+        "name": "price_max"
+      }
+    }
+  },
+  "Chaussures": {
+    "name": "53",
+    "query_parameters": {
+      "Prix min": {
+        "name": "price_min"
+      },
+      "Prix max": {
+        "name": "price_max"
+      },
+      "Type": {
+        "name": "shoe_type",
+        "keys": {
+          "Femme": "1",
+          "Homme": "2",
+          "Enfant": "3"
+        }
+      },
+      "Pointure": {
+        "name": "shoe_size",
+        "keys": {
+          "16": "1",
+          "17": "2",
+          "18": "3",
+          "19": "4",
+          "20": "5",
+          "21": "6",
+          "22": "7",
+          "23": "8",
+          "24": "9",
+          "25": "10",
+          "26": "11",
+          "27": "12",
+          "28": "13",
+          "29": "14",
+          "30": "15",
+          "31": "16",
+          "32": "17",
+          "33": "18",
+          "34": "19",
+          "35": "20",
+          "36": "21",
+          "37": "22",
+          "38": "23",
+          "39": "24",
+          "40": "25",
+          "41": "26",
+          "42": "27",
+          "43": "28",
+          "44": "29",
+          "45": "30",
+          "46": "31",
+          "47": "32",
+          "48": "33",
+          "49": "34",
+          "50 et plus": "35"
+        }
+      }
+    }
+  },
+  "Vêtements bébé": {
+    "name": "54",
+    "query_parameters": {
+      "Prix min": {
+        "name": "price_min"
+      },
+      "Prix max": {
+        "name": "price_max"
+      },
+      "Taille": {
+        "name": "baby_age",
+        "keys": {
+          "0 mois": "0",
+          "1 mois": "1",
+          "3 mois": "3",
+          "6 mois": "6",
+          "9 mois": "9",
+          "12 mois": "12",
+          "18 mois": "18",
+          "24 mois": "24",
+          "36 mois": "36",
+          "Prématuré": "p"
+        }
+      }
+    }
+  },
+  "Vélos": {
+    "name": "55",
+    "query_parameters": {
+      "Prix min": {
+        "name": "price_min"
+      },
+      "Prix max": {
+        "name": "price_max"
+      }
+    }
+  },
+  "-- MATÉRIEL PROFESSIONNEL --": {
+    "name": "56",
+    "query_parameters": {}
+  },
+  "Matériel agricole": {
+    "name": "57",
+    "query_parameters": {
+      "Prix min": {
+        "name": "price_min"
+      },
+      "Prix max": {
+        "name": "price_max"
+      }
+    }
+  },
+  "Transport - Manutention": {
+    "name": "58",
+    "query_parameters": {
+      "Prix min": {
+        "name": "price_min"
+      },
+      "Prix max": {
+        "name": "price_max"
+      }
+    }
+  },
+  "BTP - Chantier gros-oeuvre": {
+    "name": "59",
+    "query_parameters": {
+      "Prix min": {
+        "name": "price_min"
+      },
+      "Prix max": {
+        "name": "price_max"
+      }
+    }
+  },
+  "Outillage - Matériaux 2nd-oeuvre": {
+    "name": "60",
+    "query_parameters": {
+      "Prix min": {
+        "name": "price_min"
+      },
+      "Prix max": {
+        "name": "price_max"
+      }
+    }
+  },
+  "Restauration - Hôtellerie": {
+    "name": "61",
+    "query_parameters": {
+      "Prix min": {
+        "name": "price_min"
+      },
+      "Prix max": {
+        "name": "price_max"
+      }
+    }
+  },
+  "Fournitures de bureau": {
+    "name": "62",
+    "query_parameters": {
+      "Prix min": {
+        "name": "price_min"
+      },
+      "Prix max": {
+        "name": "price_max"
+      }
+    }
+  },
+  "Commerces & Marchés": {
+    "name": "63",
+    "query_parameters": {
+      "Prix min": {
+        "name": "price_min"
+      },
+      "Prix max": {
+        "name": "price_max"
+      }
+    }
+  },
+  "Matériel médical": {
+    "name": "64",
+    "query_parameters": {
+      "Prix min": {
+        "name": "price_min"
+      },
+      "Prix max": {
+        "name": "price_max"
+      }
+    }
+  },
+  "Covoiturage": {
+    "name": "65",
+    "query_parameters": {
+      "Prix min": {
+        "name": "price_min"
+      },
+      "Prix max": {
+        "name": "price_max"
+      }
+    }
+  },
+  "-- VACANCES --": {
+    "name": "66",
+    "query_parameters": {
+      "Prix min": {
+        "name": "price_min"
+      },
+      "Prix max": {
+        "name": "price_max"
+      }
+    }
+  },
+  "Chambres d'hôtes": {
+    "name": "67",
+    "query_parameters": {
+      "Prix min": {
+        "name": "price_min"
+      },
+      "Prix max": {
+        "name": "price_max"
+      },
+      "Capacité min": {
+        "name": "capacity_min"
+      },
+      "Capacité max": {
+        "name": "capacity_max"
+      },
+      "Chambres min": {
+        "name": "bedrooms_min"
+      },
+      "Chambres max": {
+        "name": "bedrooms_max"
+      },
+      "Indifférent": {
+        "name": "swimming_pool",
+        "keys": {
+          "Avec piscine": "1",
+          "Sans piscine": "2"
+        }
+      }
+    }
+  },
+  "Campings": {
+    "name": "68",
+    "query_parameters": {
+      "Prix min": {
+        "name": "price_min"
+      },
+      "Prix max": {
+        "name": "price_max"
+      },
+      "Capacité min": {
+        "name": "capacity_min"
+      },
+      "Capacité max": {
+        "name": "capacity_max"
+      },
+      "Chambres min": {
+        "name": "bedrooms_min"
+      },
+      "Chambres max": {
+        "name": "bedrooms_max"
+      },
+      "Indifférent": {
+        "name": "swimming_pool",
+        "keys": {
+          "Avec piscine": "1",
+          "Sans piscine": "2"
+        }
+      }
+    }
+  },
+  "Hôtels": {
+    "name": "69",
+    "query_parameters": {
+      "Prix min": {
+        "name": "price_min"
+      },
+      "Prix max": {
+        "name": "price_max"
+      },
+      "Indifférent": {
+        "name": "swimming_pool",
+        "keys": {
+          "Avec piscine": "1",
+          "Sans piscine": "2"
+        }
+      }
+    }
+  },
+  "Hébergements insolites": {
+    "name": "70",
+    "query_parameters": {
+      "Prix min": {
+        "name": "price_min"
+      },
+      "Prix max": {
+        "name": "price_max"
+      },
+      "Indifférent": {
+        "name": "swimming_pool",
+        "keys": {
+          "Avec piscine": "1",
+          "Sans piscine": "2"
+        }
+      }
+    }
+  },
+  "-- EMPLOI --": {
+    "name": "71",
+    "query_parameters": {}
+  },
+  "-- MODE --": {
+    "name": "72",
+    "query_parameters": {}
+  }
+}

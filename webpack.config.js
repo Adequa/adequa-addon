@@ -74,11 +74,27 @@ const consentConfig = mergeDeep(config, {
     }
 });
 
-const desiresConfig = mergeDeep(config, {
-    entry: './src/js/actions/desires/desires.js',
+const interestsConfig = mergeDeep(config, {
+    entry: './src/js/actions/interests/interests.js',
     output: {
-        filename: 'desires.bundle.js',
-        path: path.resolve(__dirname, './src/js/actions/desires/')
+        filename: 'interests.bundle.js',
+        path: path.resolve(__dirname, './src/js/actions/interests/')
+    },
+    module: {
+        rules: [
+            {
+                test: /\.js$/,
+                loader: 'babel-loader'
+            }
+        ]
+    }
+});
+
+const leboncoinConfig = mergeDeep(config, {
+    entry: './src/js/actions/interests/catalogs/leboncoin.js',
+    output: {
+        filename: 'leboncoin.bundle.js',
+        path: path.resolve(__dirname, './src/js/actions/interests/catalogs/')
     },
     module: {
         rules: [
@@ -127,5 +143,6 @@ module.exports = [
     consentConfig,
     storageConfig,
     adequaApiConfig,
-    desiresConfig
+    interestsConfig,
+    leboncoinConfig
 ];

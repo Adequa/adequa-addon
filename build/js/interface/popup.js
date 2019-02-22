@@ -5,7 +5,7 @@ import ButtonGroup from './components/ButtonGroup.vue'
 import Popup from './components/Popup.vue'
 import Cookies from './components/Cookies.vue'
 import Choices from './components/Choices.vue'
-import Desires from './components/Desires.vue'
+import Interests from './components/Interests.vue'
 import Menu from './components/Menu.vue'
 import ToggleButton from 'vue-js-toggle-button'
 import { library } from '@fortawesome/fontawesome-svg-core'
@@ -47,8 +47,8 @@ const routes = [
         ]
     },
     {
-        path: '/desires',
-        component: Desires,
+        path: '/interests',
+        component: Interests,
         props: true
     }
 ];

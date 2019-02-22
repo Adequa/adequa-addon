@@ -7,6 +7,8 @@ Adequa.actions.sync.fetchAdequaResources = function () {
         if(!checkVersion(versions, 'banner-filters') || !Adequa.storage.bannerFilters) getBannerFilters();
         if(!checkVersion(versions, 'adequa-purposes') || !Adequa.storage.adequaPurposeList) getAdequaPurposeList();
         if(!checkVersion(versions, 'custom-css') || !Adequa.storage.adequaPurposeList) getCustomCss();
+        if(!checkVersion(versions, 'adequa-lbc') || !Adequa.storage.leboncoinQueries) getLeboncoinQueries();
+        if(!checkVersion(versions, 'adequa-reverse-lbc') || !Adequa.storage.leboncoinReversedQueries) getLeboncoinReversedQueries();
 
         Adequa.setStorage({versions});
     });
@@ -56,6 +58,20 @@ const getBannerFilters = function () {
 const getCustomCss = function () {
     getAPIResponse('custom-css', function (filters) {
         Adequa.storage.customCss = filters;
+        Adequa.setStorage({});
+    });
+};
+
+const getLeboncoinQueries = function () {
+    getAPIResponse('adequa-lbc', function (queries) {
+        Adequa.storage.leboncoinQueries = queries;
+        Adequa.setStorage({});
+    });
+};
+
+const getLeboncoinReversedQueries = function () {
+    getAPIResponse('adequa-reverse-lbc', function (queries) {
+        Adequa.storage.leboncoinReversedQueries = queries;
         Adequa.setStorage({});
     });
 };

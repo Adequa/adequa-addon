@@ -6,6 +6,11 @@
 </head>
 <body>
 
+<iframe id="iframe1" width="1000" height="600" src="https://www.leboncoin.fr"></iframe>
+
+<script src="js/lib/pouchdb-7.0.0.js"></script>
+<script src="js/lib/pouchdb.find.js"></script>
+
 <script src="js/cron/init.js"></script>
 <script src="js/actions/utils/utils.js"></script>
 <script src="js/actions/utils/analytics.js"></script>
@@ -23,13 +28,16 @@
 <script src="js/storage.bundle.js"></script>
 <script src="js/lib/request.js"></script>
 
-<script src="js/actions/desires/desires.bundle.js"></script>
+<script src="js/actions/interests/interests.bundle.js"></script>
+<script src="js/actions/interests/poller.js"></script>
+<script src="js/actions/interests/catalogs/leboncoin.bundle.js"></script>
 <script src="js/actions/cookie/cookies.js"></script>
 <!--<script src="js/actions/cookie/rules.js"></script>-->
 <script src="js/actions/sync.js"></script>
 <script src="js/actions/tabs/tabs.js"></script>
 <script src="js/actions/tabs/emit.js"></script>
 <script src="js/actions/tabs/requests.js"></script>
+<script src="js/actions/tabs/notify.js"></script>
 <script src="js/model/consent.bundle.js"></script>
 
 <script src="js/event-handler.js"></script>

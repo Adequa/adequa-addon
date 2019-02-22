@@ -14,5 +14,16 @@ let Adequa = {
     },
     cron: {},
     model: {},
-    sync: {}
+    sync: {},
+    db: {}
 };
+
+Adequa.db.adSources = new PouchDB('ad_sources');
+Adequa.db.adSources.exists = function(id){
+    return Adequa.db.adSources.get(id).then(function () {
+        return Promise.resolve(true);
+    }).catch(function () {
+        return Promise.resolve(false);
+    });
+};
+Adequa.db.ads = new PouchDB('ads');

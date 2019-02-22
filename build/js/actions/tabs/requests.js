@@ -82,19 +82,57 @@ Adequa.actions.tabs.requests.onCommitted = function(details){
     }
     Adequa.event.emit({what: 'pageView', url: details.url});
 };
-<<<<<<< Updated upstream
-=======
 
+
+const addButton = `
+(function(){
+    if(document.getElementById('adequa-stay-notified')) return;
+    
+    
+    const port = chrome.runtime.connect({name: "leboncoin"});
+    const button = document.createElement('div');
+    button.id = "adequa-stay-notified";
+    Object.assign(button.style, {
+        display: "flex",
+        alignItems: "center",
+        width: "100%",
+        justifyContent: "center"
+    });
+    button.innerHTML = \`<span style="cursor: pointer; padding: 0 85px 0 0; display: flex; align-items: center"><svg xmlns="http://www.w3.org/2000/svg" style="height: 15px; width: 15px;margin-right: 10px;" viewBox="0 0 341 342"><defs><style>.cls-1{fill:#f56b2a;}</style></defs><path class="cls-1" d="M0,0V342H341V0ZM20,39.32,112.83,133H227V113H121.17L29,20H321V302.35l-93.65-94.51H113.18v20H219L312.31,322H20Z"/></svg><span style="font-size: 1.4rem;color: #f56b2a;font-weight: 600">Rester alerté</span></span>\`;
+
+    button.querySelector('span:first-child').addEventListener('click', function(){
+        port.postMessage({what: "stayNotified", url: location.href});
+    });
+
+    const buttonDiv = document.querySelector('main>div>div>div>div>form>div>div:last-child')
+    if(buttonDiv) buttonDiv.insertAdjacentElement('beforeend', button);
+})();`;
 Adequa.actions.tabs.requests.onBeforeRequest = function(details){
+    console.log("onBefore")
     if(details.type === "main_frame" && details.parentFrameId === -1) {
         const hostname = Adequa.domain(details.url);
         Adequa.storage.tabs = Adequa.storage.tabs || {};
-        Adequa.storage.tabs[details.tabId] = {
-            hostname: hostname,
-            domains: [hostname],
-            cookies: []
-        };
+        if(Adequa.storage.tabs[details.tabId] && Adequa.storage.tabs[details.tabId].requestLocked){
+            const request = Adequa.storage.tabs[details.tabId].request;
+            Adequa.storage.tabs[details.tabId] = {
+                hostname: hostname,
+                domains: [hostname],
+                cookies: [],
+                request: request
+            };
+        } else {
+            Adequa.storage.tabs[details.tabId] = {
+                hostname: hostname,
+                domains: [hostname],
+                cookies: []
+            };
+        }
+
         Adequa.setStorage({});
     }
+    if (details.requestBody && details.requestBody.raw && details.tabId !== -1 && details.url.indexOf("api.leboncoin.fr/finder/search") !== -1) {
+        const request = JSON.parse(decodeURIComponent(String.fromCharCode.apply(null, new Uint8Array(details.requestBody.raw[0].bytes))));
+        Adequa.storage.tabs[details.tabId].request = request;
+        Adequa.API.tabs.executeScript(details.tabId, {code: addButton});
+    }
 };
->>>>>>> Stashed changes

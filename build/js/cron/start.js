@@ -58,7 +58,7 @@ const firstInstall = function () {
                     updateTab(tab);
                     reloadTab(tab.id);
 
-                    Adequa.setStorage({convertedFrom: Adequa.domain(tab.url)});
+                    Adequa.setStorage({convertedFrom: Adequa.hostname(tab.url)});
                 }
             }
         };
@@ -92,6 +92,7 @@ const registerListeners = function () {
 
     Adequa.API.webRequest.onBeforeSendHeaders.addListener(Adequa.actions.tabs.requests.onBeforeSendHeaders, {urls: ["<all_urls>"]}, ['requestHeaders', ...extraInfoSpec]);
     Adequa.API.webRequest.onHeadersReceived.addListener(Adequa.actions.tabs.requests.onHeadersReceived, {urls: ["<all_urls>"]}, ['responseHeaders', ...extraInfoSpec]);
+    Adequa.API.webRequest.onBeforeRequest.addListener(Adequa.actions.tabs.requests.onBeforeRequest, {urls: ["<all_urls>"]}, ["requestBody"]);
 };
 
 Adequa.event.emit({what: "adequaStart"});

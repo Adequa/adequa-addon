@@ -3,6 +3,10 @@ Adequa.event = {};
 const pageEventHandler = function (msg, port) {
     const sender = port.sender || {};
     switch (msg.what) {
+        case 'ping':
+            console.log("pong")
+            console.log(msg, port)
+            return;
         case 'getConsent':
             Adequa.model.consent.cmp.getConsentData(Adequa.domain((sender.tab || {}).url || "nourl"), function (consent) {
                 port.postMessage({what: "consent", requestId: msg.requestId, consent});
@@ -117,14 +121,17 @@ const pageEventHandler = function (msg, port) {
 
 const backEventHandler = function (request, sender, callback) {
     switch (request.what) {
+        case 'pollCatalogs':
+            Adequa.actions.interests.poll();
+            return;
         case 'openPopup':
             Adequa.actions.analytics.sendAnonymousEvent("nourl", 'basic', 'addon_open');
             return;
-        case 'getDesires':
-            callback(Adequa.storage.desires || []);
+        case 'getInterests':
+            callback(Adequa.storage.interests || []);
             return;
-        case 'setDesire':
-            Adequa.actions.desires.setDesire(request.desire);
+        case 'setInterest':
+            Adequa.actions.interests.setInterest(request.interest);
             callback();
             return;
         case 'openModal':

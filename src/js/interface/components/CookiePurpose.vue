@@ -41,7 +41,7 @@
             },
             toggleExpand(e) {
                 this.expanded = !this.expanded;
-                document.querySelector('.expand').innerText = this.expanded ? '-' : '+';
+                e.target.parentNode.parentNode.querySelector('.expand').innerText = this.expanded ? '-' : '+';
             },
             openUrl(url) {
                 if (!url) return;

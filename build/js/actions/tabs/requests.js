@@ -82,8 +82,6 @@ Adequa.actions.tabs.requests.onCommitted = function(details){
     }
     Adequa.event.emit({what: 'pageView', url: details.url});
 };
-<<<<<<< Updated upstream
-=======
 
 Adequa.actions.tabs.requests.onBeforeRequest = function(details){
     if(details.type === "main_frame" && details.parentFrameId === -1) {
@@ -97,4 +95,3 @@ Adequa.actions.tabs.requests.onBeforeRequest = function(details){
         Adequa.setStorage({});
     }
 };
->>>>>>> Stashed changes

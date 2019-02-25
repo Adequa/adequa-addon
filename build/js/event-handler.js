@@ -120,13 +120,6 @@ const backEventHandler = function (request, sender, callback) {
         case 'openPopup':
             Adequa.actions.analytics.sendAnonymousEvent("nourl", 'basic', 'addon_open');
             return;
-        case 'getDesires':
-            callback(Adequa.storage.desires || []);
-            return;
-        case 'setDesire':
-            Adequa.actions.desires.setDesire(request.desire);
-            callback();
-            return;
         case 'openModal':
             Adequa.API.tabs.query({
                 active: true,

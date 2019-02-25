@@ -58,7 +58,7 @@ const firstInstall = function () {
                     updateTab(tab);
                     reloadTab(tab.id);
 
-                    Adequa.setStorage({convertedFrom: Adequa.domain(tab.url)});
+                    Adequa.setStorage({convertedFrom: Adequa.hostname(tab.url)});
                 }
             }
         };

@@ -1,7 +1,7 @@
 /* global Adequa */
 "use strict";
 
-Adequa.actions.init.start = function () {
+Adequa.process.init.start = function () {
     fetchStorage(function () {
         if (Adequa.storage.firstInstall !== false) {
             firstInstall();
@@ -42,10 +42,10 @@ const firstInstall = function () {
 
     setTimeout(() => {
         Adequa.updateUninstallUrl();
-        Adequa.actions.analytics.sendAnonymousEvent(Adequa.storage.convertedFrom || "nourl", 'basic', 'addon_install', undefined, 1);
+        Adequa.process.analytics.sendAnonymousEvent(Adequa.storage.convertedFrom || "nourl", 'basic', 'addon_install', undefined, 1);
     }, 5000);
 
-    Adequa.actions.cookie.getProspectCookie(function (prospect) {
+    Adequa.process.cookie.getProspectCookie(function (prospect) {
         if (!prospect) {
             return;
             // Adequa.setStorage({postInstallOpened: true})
@@ -83,15 +83,15 @@ const fetchStorage = function (callback) {
 };
 
 const registerListeners = function () {
-    Adequa.API.webNavigation.onCommitted.addListener(Adequa.actions.tabs.requests.onCommitted);
+    Adequa.API.webNavigation.onCommitted.addListener(Adequa.process.tabs.requests.onCommitted);
 
-    Adequa.API.tabs.onUpdated.addListener(Adequa.actions.tabs.onUpdated);
+    Adequa.API.tabs.onUpdated.addListener(Adequa.process.tabs.onUpdated);
 
     const extraInfoSpec = ['blocking'];
     if (Adequa.API.webRequest.OnBeforeSendHeadersOptions.hasOwnProperty('EXTRA_HEADERS')) extraInfoSpec.push('extraHeaders');
 
-    Adequa.API.webRequest.onBeforeSendHeaders.addListener(Adequa.actions.tabs.requests.onBeforeSendHeaders, {urls: ["<all_urls>"]}, ['requestHeaders', ...extraInfoSpec]);
-    Adequa.API.webRequest.onHeadersReceived.addListener(Adequa.actions.tabs.requests.onHeadersReceived, {urls: ["<all_urls>"]}, ['responseHeaders', ...extraInfoSpec]);
+    Adequa.API.webRequest.onBeforeSendHeaders.addListener(Adequa.process.tabs.requests.onBeforeSendHeaders, {urls: ["<all_urls>"]}, ['requestHeaders', ...extraInfoSpec]);
+    Adequa.API.webRequest.onHeadersReceived.addListener(Adequa.process.tabs.requests.onHeadersReceived, {urls: ["<all_urls>"]}, ['responseHeaders', ...extraInfoSpec]);
 };
 
 Adequa.event.emit({what: "adequaStart"});

@@ -1,6 +1,6 @@
-Adequa.actions.stats = {};
+Adequa.process.stats = {};
 
-Adequa.actions.stats.newView = function(url){
+Adequa.process.stats.newView = function(url){
     const hostname = Adequa.domain(url);
     const settings = Adequa.model.consent.getSettings({website_id: hostname});
 

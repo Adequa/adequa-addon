@@ -118,7 +118,7 @@ const pageEventHandler = function (msg, port) {
 const backEventHandler = function (request, sender, callback) {
     switch (request.what) {
         case 'openPopup':
-            Adequa.actions.analytics.sendAnonymousEvent("nourl", 'basic', 'addon_open');
+            Adequa.process.analytics.sendAnonymousEvent("nourl", 'basic', 'addon_open');
             return;
         case 'openModal':
             Adequa.API.tabs.query({
@@ -127,7 +127,7 @@ const backEventHandler = function (request, sender, callback) {
             }, (tabs) => {
                 const tab = tabs[0] || {};
 
-                Adequa.actions.tabs.emit(tab, {what: "openModal"});
+                Adequa.process.tabs.emit(tab, {what: "openModal"});
                 callback();
             });
             return true;
@@ -187,30 +187,30 @@ const backEventHandler = function (request, sender, callback) {
             });
             return true;
         case 'pageView':
-            // Adequa.actions.stats.newView(request.url);
+            // Adequa.process.stats.newView(request.url);
             return;
         case 'getCookiePurposes':
             callback(Adequa.storage.adequaPurposeList);
             return true;
         case 'getCookieDomainsByPurpose':
-            Adequa.actions.cookie.getCookieCountByDomains(callback);
+            Adequa.process.cookie.getCookieCountByDomains(callback);
             return true;
         case 'getCookies':
-            Adequa.actions.cookie.getCurrentCookies(callback);
+            Adequa.process.cookie.getCurrentCookies(callback);
             return true;
         case 'getCookiesByPurpose':
-            Adequa.actions.cookie.getCurrentCookies(function (cookies) {
-                Adequa.actions.cookie.sortByPurpose(cookies, callback);
+            Adequa.process.cookie.getCurrentCookies(function (cookies) {
+                Adequa.process.cookie.sortByPurpose(cookies, callback);
             });
             return true;
         case 'deleteCookiesByPurpose':
             if (request.purpose) {
-                Adequa.actions.cookie.getCurrentCookies(function (cookies) {
-                    Adequa.actions.cookie.sortByPurpose(cookies, function (cookies) {
+                Adequa.process.cookie.getCurrentCookies(function (cookies) {
+                    Adequa.process.cookie.sortByPurpose(cookies, function (cookies) {
                         for (const cookie of cookies[request.purpose])
-                            Adequa.actions.cookie.remove(cookie);
+                            Adequa.process.cookie.remove(cookie);
 
-                        Adequa.actions.analytics.sendAnonymousEvent("nourl", 'tracking', 'addon_cookie_delete', Adequa.storage.adequaPurposeList[request.purpose - 1].shortname, cookies.length);
+                        Adequa.process.analytics.sendAnonymousEvent("nourl", 'tracking', 'addon_cookie_delete', Adequa.storage.adequaPurposeList[request.purpose - 1].shortname, cookies.length);
                         callback();
                     });
                 });
@@ -219,8 +219,8 @@ const backEventHandler = function (request, sender, callback) {
         case 'deleteCookiesByDomain':
             if (request.domain) {
                 Adequa.API.cookies.getAll({domain: request.domain}, cookies => {
-                    cookies.forEach(Adequa.actions.cookie.remove);
-                    Adequa.actions.analytics.sendAnonymousEvent("nourl", 'tracking', 'addon_cookie_delete', request.domain, cookies.length);
+                    cookies.forEach(Adequa.process.cookie.remove);
+                    Adequa.process.analytics.sendAnonymousEvent("nourl", 'tracking', 'addon_cookie_delete', request.domain, cookies.length);
                     callback();
                 });
             }
@@ -234,10 +234,10 @@ const backEventHandler = function (request, sender, callback) {
             }, (tabs) => {
                 const tab = tabs[0] || {};
 
-                Adequa.actions.analytics.sendAnonymousEvent((tab || {}).url || "nourl", 'consent', 'default_parameter_change', Adequa.storage.adequaPurposeList[request.setting.id.purpose_id - 1].shortname, request.setting.value === 1 ? 0 : 1);
+                Adequa.process.analytics.sendAnonymousEvent((tab || {}).url || "nourl", 'consent', 'default_parameter_change', Adequa.storage.adequaPurposeList[request.setting.id.purpose_id - 1].shortname, request.setting.value === 1 ? 0 : 1);
 
                 Adequa.model.consent.cmp.getConsentData(Adequa.domain((tab || {}).url || "nourl"), function (consent) {
-                    Adequa.actions.tabs.emitAllTabs({what: "consent", consent});
+                    Adequa.process.tabs.emitAllTabs({what: "consent", consent});
                 });
             });
             return;
@@ -319,19 +319,19 @@ const backEventHandler = function (request, sender, callback) {
             callback(domainBlocked);
             return;
         case 'adequaStart':
-            Adequa.actions.init.start();
+            Adequa.process.init.start();
             return;
         case 'disableCookieType':
             for (const rule in Adequa.storage.adequaCookieRules) {
                 if (Adequa.storage.adequaCookieRules[rule].type === request.type)
-                    Adequa.actions.cookie.updateUserRules(rule, request.disabled);
+                    Adequa.process.cookie.updateUserRules(rule, request.disabled);
             }
             return;
         case 'updateUserCookieRules':
             if (request.domain)
-                Adequa.actions.cookie.updateUserRules(request.domain, !request.accept);
+                Adequa.process.cookie.updateUserRules(request.domain, !request.accept);
             if (request.type)
-                Adequa.actions.cookie.updateTypeRules(request.type, !request.accept);
+                Adequa.process.cookie.updateTypeRules(request.type, !request.accept);
             return;
         case 'fetchTypeCookieRules':
             callback(Adequa.storage.typeCookieRules || {});
@@ -340,9 +340,9 @@ const backEventHandler = function (request, sender, callback) {
             if (request.changeInfo.removed) return;
 
             if (Adequa.shouldRemoveCookie(request.changeInfo.cookie))
-                Adequa.actions.cookie.remove(request.changeInfo.cookie);
+                Adequa.process.cookie.remove(request.changeInfo.cookie);
             else {
-                Adequa.actions.cookie.logCookie(request.changeInfo.cookie);
+                Adequa.process.cookie.logCookie(request.changeInfo.cookie);
             }
             return;
         case 'getCookieHistoric':

@@ -1,6 +1,6 @@
-Adequa.actions.sync = {};
+Adequa.process.sync = {};
 
-Adequa.actions.sync.fetchAdequaResources = function () {
+Adequa.process.sync.fetchAdequaResources = function () {
     getAPIResponse('resources-version', function(versions){
         if(Object.is(Adequa.storage.versions || {}, versions)) return;
 
@@ -35,7 +35,7 @@ Adequa.actions.sync.fetchAdequaResources = function () {
     });
 };
 
-Adequa.actions.sync.fetchExternalResources = function () {
+Adequa.process.sync.fetchExternalResources = function () {
     getIABResources();
 };
 
@@ -76,12 +76,12 @@ const getAPIResponse = function (route, callback) {
             callback(JSON.parse(req.response));
         }
         catch(e){
-            Adequa.request.get('/assets/' + route + '.json').then(function(failoverReq){
+            Adequa.request.get('/resources/' + route + '.json').then(function(failoverReq){
                 callback(JSON.parse(failoverReq.response));
             }).catch(console.warn);
         }
     }).catch(function(){
-        Adequa.request.get('/assets/' + route + '.json').then(function(failoverReq){
+        Adequa.request.get('/resources/' + route + '.json').then(function(failoverReq){
             callback(JSON.parse(failoverReq.response));
         }).catch(console.warn);
     });

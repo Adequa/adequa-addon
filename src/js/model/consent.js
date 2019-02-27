@@ -31,7 +31,7 @@ Adequa.model.consent.setSetting = function (setting) {
     const existing = Adequa.model.consent.getSettings(setting.id);
     if(existing.length && existing[0].value === setting.value) return;
 
-    Adequa.actions.analytics.sendAnonymousEvent("nourl", 'consent', 'default_parameter_change', Adequa.storage.adequaPurposeList[setting.id.purpose_id-1].shortname, setting.value === 1 ? 0 : 1);
+    Adequa.process.analytics.sendAnonymousEvent("nourl", 'consent', 'default_parameter_change', Adequa.storage.adequaPurposeList[setting.id.purpose_id-1].shortname, setting.value === 1 ? 0 : 1);
 
     const index = Adequa.storage.consent.settings.findIndex(item => item.id.website_id === setting.id.website_id && item.id.purpose_id === setting.id.purpose_id && item.id.vendor_id === setting.id.vendor_id);
     if (index === -1)

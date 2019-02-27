@@ -1,11 +1,11 @@
-Adequa.actions.tabs = {};
+Adequa.process.tabs = {};
 
-Adequa.actions.tabs.onUpdated = function (tabId, changeInfo) {
+Adequa.process.tabs.onUpdated = function (tabId, changeInfo) {
     if (changeInfo.url) {
         const hostname = Adequa.hostname(changeInfo.url);
 
         if (changeInfo.url.startsWith('http')) {
-            Adequa.actions.analytics.sendAnonymousEvent(changeInfo.url, 'basic', 'new_tab');
+            Adequa.process.analytics.sendAnonymousEvent(changeInfo.url, 'basic', 'new_tab');
         }
 
         Adequa.storage.tabs = Adequa.storage.tabs || {};

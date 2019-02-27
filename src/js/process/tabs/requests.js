@@ -80,7 +80,6 @@ Adequa.actions.tabs.requests.onCommitted = function(details){
     } catch(e) {
         console.log(e);
     }
-    Adequa.event.emit({what: 'pageView', url: details.url});
 };
 
 
@@ -108,11 +107,11 @@ const addButton = `
     if(buttonDiv) buttonDiv.insertAdjacentElement('beforeend', button);
 })();`;
 Adequa.actions.tabs.requests.onBeforeRequest = function(details){
-    console.log("onBefore")
     if(details.type === "main_frame" && details.parentFrameId === -1) {
         const hostname = Adequa.domain(details.url);
         Adequa.storage.tabs = Adequa.storage.tabs || {};
         if(Adequa.storage.tabs[details.tabId] && Adequa.storage.tabs[details.tabId].requestLocked){
+            console.log("soft reset " + details.tabId, Object.assign({}, Adequa.storage.tabs[details.tabId]));
             const request = Adequa.storage.tabs[details.tabId].request;
             Adequa.storage.tabs[details.tabId] = {
                 hostname: hostname,
@@ -121,6 +120,7 @@ Adequa.actions.tabs.requests.onBeforeRequest = function(details){
                 request: request
             };
         } else {
+            console.log("reset " + details.tabId, Object.assign({}, Adequa.storage.tabs[details.tabId]));
             Adequa.storage.tabs[details.tabId] = {
                 hostname: hostname,
                 domains: [hostname],
@@ -133,6 +133,9 @@ Adequa.actions.tabs.requests.onBeforeRequest = function(details){
     if (details.requestBody && details.requestBody.raw && details.tabId !== -1 && details.url.indexOf("api.leboncoin.fr/finder/search") !== -1) {
         const request = JSON.parse(decodeURIComponent(String.fromCharCode.apply(null, new Uint8Array(details.requestBody.raw[0].bytes))));
         Adequa.storage.tabs[details.tabId].request = request;
+        Adequa.storage.tabs[details.tabId].requestLocked = true;
         Adequa.API.tabs.executeScript(details.tabId, {code: addButton});
+
+        console.log("request stored " + details.tabId, Object.assign({}, Adequa.storage.tabs[details.tabId]))
     }
 };

@@ -59,10 +59,10 @@
             },
             expand: function (e) {
                 if (this.descriptionHidden) {
-                    document.querySelector('.expand').innerText = '-';
+                    e.target.parentNode.querySelector('.expand').innerText = '-';
                     this.descriptionHidden = false;
                 } else {
-                    document.querySelector('.expand').innerText = '+';
+                    e.target.parentNode.querySelector('.expand').innerText = '+';
                     this.descriptionHidden = true;
                 }
             }

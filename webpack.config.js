@@ -4,7 +4,7 @@ const exec = require('child_process').exec;
 const {mergeDeep} = require('immutable')
 
 const config = {
-    mode: 'development',
+    mode: 'production',
     devtool: 'inline-source-map',
     plugins: [
         {

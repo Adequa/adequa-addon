@@ -122,7 +122,16 @@ const pageEventHandler = function (msg, port) {
 const backEventHandler = function (request, sender, callback) {
     switch (request.what) {
         case 'pollCatalogs':
-            Adequa.actions.interests.poll();
+            if(request.interest) {
+                Adequa.actions.interests.poll(function(){
+                    Adequa.actions.interests.getLastAdsByInterest(20, request.interest, function(ads){
+                        Adequa.actions.interests.notifyAds(ads);
+                    })
+                });
+            } else {
+                Adequa.actions.interests.poll();
+            }
+
             return;
         case 'openPopup':
             Adequa.actions.analytics.sendAnonymousEvent("nourl", 'basic', 'addon_open');

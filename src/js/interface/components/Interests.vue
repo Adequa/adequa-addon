@@ -10,7 +10,7 @@
                                 @interest-change="interestChange"></interest-setting>
             </div>
             <div>
-                <span @click="showOffers">Montre moi les offres</span>
+                <!--<span @click="showOffers">Montre moi les offres</span>-->
             </div>
         </main>
     </div>
@@ -61,6 +61,9 @@
         display: flex;
         flex-direction: column;
         margin-bottom: 15px;
+        max-height: 325px;
+        height: 325px;
+        overflow-y: auto;
     }
 
     h2 {
@@ -81,6 +84,7 @@
     main {
         max-height: 325px;
         height: 325px;
+        overflow-y: auto;
         overflow-y: overlay;
         display: flex;
         flex-direction: column;

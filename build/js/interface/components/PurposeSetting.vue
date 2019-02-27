@@ -59,10 +59,10 @@
             },
             expand: function (e) {
                 if (this.descriptionHidden) {
-                    document.querySelector('.expand').innerText = '-';
+                    e.target.parentNode.querySelector('.expand').innerText = '-';
                     this.descriptionHidden = false;
                 } else {
-                    document.querySelector('.expand').innerText = '+';
+                    e.target.parentNode.querySelector('.expand').innerText = '+';
                     this.descriptionHidden = true;
                 }
             }
@@ -174,6 +174,7 @@
             flex: 1;
             font-size: 18px;
             padding: 3px 0 0 25px;
+            cursor: pointer;
         }
 
         span {

@@ -13,12 +13,12 @@ Adequa.actions.tabs.onUpdated = function (tabId, changeInfo) {
             // }
         }
 
-        Adequa.storage.tabs = Adequa.storage.tabs || {};
-        Adequa.storage.tabs[tabId] = {
-            hostname: hostname,
-            domains: [hostname],
-            cookies: []
-        };
-        Adequa.setStorage({});
+        // Adequa.storage.tabs = Adequa.storage.tabs || {};
+        // Adequa.storage.tabs[tabId] = {
+        //     hostname: hostname,
+        //     domains: [hostname],
+        //     cookies: []
+        // };
+        // Adequa.setStorage({});
     }
 };

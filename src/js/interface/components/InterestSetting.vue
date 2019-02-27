@@ -6,6 +6,7 @@
                 <p @click="toggleExpand">{{interest.name}}</p>
             </div>
             <div class="actions">
+                <span class="poll" @click="poll"><span>Offres</span> <font-awesome-icon icon="external-link-alt"></font-awesome-icon></span>
                 <font-awesome-icon icon="check" class="check" @click="check"
                                    v-show="!(interest.validated || interest.removed)"></font-awesome-icon>
                 <font-awesome-icon icon="times" class="remove" @click="remove"
@@ -27,6 +28,10 @@
         name: "InterestSetting",
         props: ['interest'],
         methods: {
+            poll() {
+                Adequa.API.runtime.sendMessage({what: "pollCatalogs", interest: this.interest});
+                window.close();
+            },
             check() {
                 this.$emit("interest-change", Object.assign(this.interest, {validated: true}))
             },
@@ -100,10 +105,9 @@
         justify-content: space-evenly;
     }
 
-    .check, .remove {
+    .check, .remove, .poll {
         color: grey;
         transition: color 0.2s ease;
-        width: 40px;
         cursor: pointer;
     }
 
@@ -113,6 +117,26 @@
 
     .remove:hover {
         color: var(--red)
+    }
+
+    .poll {
+        font-family: "Josefin Sans", sans-serif;
+        font-weight: 300;
+        display: flex;
+        align-items: center;
+        margin-right: 10px;
+
+        span {
+            padding-top: 3px;
+        }
+
+        svg {
+            margin-left: 5px;
+        }
+    }
+
+    .poll:hover {
+        color: var(--green);
     }
 
     .expand {

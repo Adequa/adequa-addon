@@ -7,7 +7,7 @@ Adequa.actions.interests.createInterest = function (interest) {
 
     const interests = Adequa.storage.interests || [];
     const exist = (interests.filter(item => item.name === interest.name)).length;
-    console.log(exist, interest)
+
     if (!exist) {
         interests.push(interest);
         Adequa.storage.interests = interests;
@@ -18,9 +18,7 @@ Adequa.actions.interests.createInterest = function (interest) {
 };
 
 Adequa.actions.interests.checkInterest = function (url, tabId) {
-    console.log(url, tabId)
-    console.log(Adequa.storage.tabs[tabId].request)
-    console.log(Adequa.storage.tabs[tabId])
+    console.log("check interest " + tabId, Object.assign({}, Adequa.storage.tabs[tabId]));
     if(!Adequa.storage.tabs[tabId].request) return;
     const catalogName = Adequa.hostname(url).split('.')[0];
 
@@ -40,24 +38,33 @@ Adequa.actions.interests.checkInterest = function (url, tabId) {
         return Adequa.actions.interests.createInterest(interest);
     }
 
-    // const parameters = (Adequa.storage.interestRules[hostname] || {}).parameters || [];
-    // const interest = {category: (Adequa.storage.interestRules[hostname] || {}).interest_id};
-    //
-    // for (const index in parameters) {
-    //     if (queryParameters[index]) {
-    //         interest[parameters[index]] = queryParameters[index];
-    //     }
-    // }
-    // interest.parameters = Object.assign(queryParameters);
-
     return false;
 };
 
 Adequa.actions.interests.setInterest = function (interest) {
-    console.log(interest)
     for (const index in Adequa.storage.interests) {
         if (Adequa.storage.interests[index].name === interest.name) {
             Adequa.storage.interests[index] = interest;
         }
     }
+};
+
+Adequa.actions.interests.notifyAds = function (rows) {
+    for (const {doc} of rows) {
+        Adequa.actions.tabs.notify(doc.title, doc.text, doc.link, doc.image, doc.price);
+
+        Adequa.db.ads.put({
+            ...doc,
+            notified: true,
+        }, {force: true}).catch();
+    }
+};
+
+Adequa.actions.interests.getLastAdsByInterest = function (number, interest, callback) {
+    Adequa.db.ads.query(function (doc, emit) {
+        if(doc.interest === interest.name)
+            emit(doc.generated_at);
+    }, {include_docs : true, limit: number, descending: true}).then(data => {
+        callback(data.rows);
+    });
 };

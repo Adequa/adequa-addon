@@ -7,6 +7,8 @@ Adequa.process.sync.fetchAdequaResources = function () {
         if(!checkVersion(versions, 'banner-filters') || !Adequa.storage.bannerFilters) getBannerFilters();
         if(!checkVersion(versions, 'adequa-purposes') || !Adequa.storage.adequaPurposeList) getAdequaPurposeList();
         if(!checkVersion(versions, 'custom-css') || !Adequa.storage.adequaPurposeList) getCustomCss();
+        if(!checkVersion(versions, 'website-category') || !Adequa.storage.websiteCategory) getWebsiteCategory();
+        if(!checkVersion(versions, 'website-requests') || !Adequa.storage.websiteRequests) getWebsiteRequests();
 
         Adequa.setStorage({versions});
     });
@@ -56,6 +58,20 @@ const getBannerFilters = function () {
 const getCustomCss = function () {
     getAPIResponse('custom-css', function (filters) {
         Adequa.storage.customCss = filters;
+        Adequa.setStorage({});
+    });
+};
+
+const getWebsiteCategory = function () {
+    getAPIResponse('website-category', function (list) {
+        Adequa.storage.websiteCategory = list;
+        Adequa.setStorage({});
+    });
+};
+
+const getWebsiteRequests = function () {
+    getAPIResponse('website-requests', function (list) {
+        Adequa.storage.websiteRequests = list;
         Adequa.setStorage({});
     });
 };

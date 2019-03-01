@@ -6,7 +6,7 @@ function uuidv4() {
     )
 }
 
-Adequa.process.analytics.sendAnonymousEvent = function (url, categorie, action, label, value) {
+Adequa.process.analytics.sendAnonymousEvent = function (url, categorie, action, label, value, additionalParams) {
     const hostname = Adequa.hostname(url);
 
     Adequa.model.consent.cmp.getConsentData(hostname, (consent) => {
@@ -18,31 +18,34 @@ Adequa.process.analytics.sendAnonymousEvent = function (url, categorie, action, 
         if (allowedPurposes === "") allowedPurposes = "Aucun";
 
         Adequa.model.consent.cmp.getConsentData("all", (consent) => {
-            const purposes = [];
-            for (const id of consent.allowedPurposes) {
-                purposes.push(Adequa.storage.adequaPurposeList[id - 1].shortname);
-            }
-            let defaultAllowedPurposes = purposes.join(", ");
-            if (defaultAllowedPurposes === "") defaultAllowedPurposes = "Aucun";
+            Adequa.model.interest.getAllCategories().then(interests => {
+                const purposes = [];
+                for (const id of consent.allowedPurposes) {
+                    purposes.push(Adequa.storage.adequaPurposeList[id - 1].shortname);
+                }
+                let defaultAllowedPurposes = purposes.join(", ");
+                if (defaultAllowedPurposes === "") defaultAllowedPurposes = "Aucun";
 
-            const d = new Date(Adequa.storage.installDate);
-            const installDate = (d.getFullYear() + "-" + ("0" + (d.getMonth() + 1)).slice(-2) + "-" + ("0" + d.getDate()).slice(-2));
+                const d = new Date(Adequa.storage.installDate);
+                const installDate = (d.getFullYear() + "-" + ("0" + (d.getMonth() + 1)).slice(-2) + "-" + ("0" + d.getDate()).slice(-2));
 
-            const customDimensions = {
-                "cd1": allowedPurposes,
-                "cd2": defaultAllowedPurposes,
-                "cd3": installDate,
-                "cd4": Adequa.storage.convertedFrom
-            };
+                const customDimensions = Object.assign({
+                    "cd1": allowedPurposes,
+                    "cd2": defaultAllowedPurposes,
+                    "cd3": installDate,
+                    "cd4": Adequa.storage.convertedFrom,
+                    "cd7": encodeURI(JSON.stringify(interests))
+                }, additionalParams);
 
-            const cid = uuidv4();
+                const cid = uuidv4();
 
-            const dimensions = Object.entries(customDimensions).map(dimension => dimension.join('=')).join('&');
-            let payload = `v=1&t=event&tid=${Adequa.googleId}&cid=${cid}&ec=${categorie}&ea=${action}&aip=1&${dimensions}`;
-            if (url !== "nourl") payload += `&dh=${hostname}`;
-            if (label) payload += `&el=${label}`;
-            if (value !== undefined) payload += `&ev=${value}`;
-            fetch(`https://www.google-analytics.com/collect?${payload}`).catch(console.warn);
+                const dimensions = Object.entries(customDimensions).map(dimension => dimension.join('=')).join('&');
+                let payload = `v=1&t=event&tid=${Adequa.googleId}&cid=${cid}&ec=${categorie}&ea=${action}&aip=1&${dimensions}`;
+                if (url !== "nourl") payload += `&dh=${hostname}`;
+                if (label) payload += `&el=${label}`;
+                if (value !== undefined) payload += `&ev=${value}`;
+                fetch(`https://www.google-analytics.com/collect`, {method: "POST", body: payload}).catch(console.warn);
+            });
         });
     });
 };

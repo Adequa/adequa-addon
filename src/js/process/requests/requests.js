@@ -1,20 +1,19 @@
 Adequa.process.tabs.requests = {};
 
 const checkRedirect = function (details) {
+    if(details.parentFrameId !== -1 || details.initiator) return;
+
     let redirect = undefined;
+
     if (details.statusCode === 302) {
-        details.responseHeaders.forEach(header => {
-            if (header.name === "Location") {
-                redirect = header.value;
-            }
-        })
+        redirect = details.responseHeaders.filter(header => header.name.toLowerCase() === "location")[0];
+        console.log(redirect)
     }
 
     return redirect;
 };
 
 Adequa.process.tabs.requests.onBeforeSendHeaders = function (details) {
-    return {};
     let requestHeaders = details.requestHeaders;
 
     if (Adequa.process.cookie.shouldDelete(details.url, details.tabId, details.initiator)) {
@@ -28,11 +27,13 @@ Adequa.process.tabs.requests.onBeforeSendHeaders = function (details) {
 Adequa.process.tabs.requests.onHeadersReceived = function (details) {
     const redirect = checkRedirect(details);
     if(redirect){
-        chrome.tabs.update(details.tabId, {url: redirect});
+        Adequa.API.tabs.update(details.tabId, {url: redirect});
         return {};
     }
 
     let responseHeaders = details.responseHeaders;
+    // Adequa.storage.tabs[details.tabId] = Adequa.storage.tabs[details.tabId] || {};
+    // Adequa.storage.tabs[details.tabId].interest = (responseHeaders.filter(header => header.name.toLowerCase() === "adequa-interest")[0] || {}).value;
 
     if (Adequa.process.cookie.shouldDelete(details.url, details.tabId, details.initiator)) {
         return {responseHeaders: Adequa.process.cookie.stripCookieHeaders(responseHeaders)};

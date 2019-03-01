@@ -8,6 +8,11 @@ const pageEventHandler = function (msg, port) {
                 port.postMessage({what: "consent", requestId: msg.requestId, consent});
             });
             return true;
+        case 'getInterests':
+            Adequa.model.interest.getAllCategories().then(interests => {
+               port.postMessage({what: "interests", requestId: msg.requestId, interests})
+            });
+            return true;
         case 'getDimensions':
             Adequa.model.consent.cmp.getConsentData("all", (consent) => {
                 const purposes = [];
@@ -117,8 +122,19 @@ const pageEventHandler = function (msg, port) {
 
 const backEventHandler = function (request, sender, callback) {
     switch (request.what) {
+        case 'setInterest':
+            Adequa.model.interest.update(request.interest)
+                .then(callback)
+                .catch(console.warn);
+            return true;
+        case 'getInterests':
+            Adequa.model.interest.getAll()
+                .then(callback)
+                .catch(console.warn);
+            return true;
         case 'openPopup':
             Adequa.process.analytics.sendAnonymousEvent("nourl", 'basic', 'addon_open');
+            callback(Adequa.showDevFeatures);
             return;
         case 'openModal':
             Adequa.API.tabs.query({

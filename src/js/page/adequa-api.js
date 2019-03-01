@@ -14,6 +14,9 @@ import {Handler} from "./event/handler"
         },
         getDimensions(callback){
             Emitter.sendMessage({what: "getDimensions"}, callback)
+        },
+        getInterests(callback){
+            Emitter.sendMessage({what: "getInterests"}, callback)
         }
         // cmp: (command, parameter, callback) => {
         //     switch (command) {

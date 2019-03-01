@@ -106,9 +106,26 @@ const storageConfig = mergeDeep(config, {
     }
 });
 
+const interestsConfig = mergeDeep(config, {
+    entry: './src/js/process/interests/interests.js',
+    output: {
+        filename: 'interests.bundle.js',
+        path: path.resolve(__dirname, './src/js/process/interests/')
+    },
+    module: {
+        rules: [
+            {
+                test: /\.js$/,
+                loader: 'babel-loader'
+            }
+        ]
+    }
+});
+
 module.exports = [
     vueConfig,
     consentConfig,
     storageConfig,
-    adequaApiConfig
+    adequaApiConfig,
+    interestsConfig
 ];

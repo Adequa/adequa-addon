@@ -14,5 +14,11 @@ let Adequa = {
     },
     cron: {},
     model: {},
-    sync: {}
+    sync: {},
+    db: {},
+    showDevFeatures: !env.match('prod')
 };
+
+Adequa.db.interests = new PouchDB('interests');
+
+Adequa.db.actionsWithInterest = new PouchDB('actionsWithInterest');

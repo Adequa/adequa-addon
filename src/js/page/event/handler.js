@@ -19,6 +19,9 @@ const Handler = {
                 // document.dispatchEvent(new CustomEvent('consentUpdated', {detail: message.consent.consentString}));
                 this.execCallback(message.requestId, message.dimensions);
                 break;
+            case "interests":
+                this.execCallback(message.requestId, message.interests);
+                break;
             case "vendorConsents":
                 this.execCallback(message.requestId, message.vendorConsents, true);
                 break;

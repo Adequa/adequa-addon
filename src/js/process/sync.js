@@ -7,8 +7,9 @@ Adequa.process.sync.fetchAdequaResources = function () {
         if(!checkVersion(versions, 'banner-filters') || !Adequa.storage.bannerFilters) getBannerFilters();
         if(!checkVersion(versions, 'adequa-purposes') || !Adequa.storage.adequaPurposeList) getAdequaPurposeList();
         if(!checkVersion(versions, 'custom-css') || !Adequa.storage.adequaPurposeList) getCustomCss();
-        if(!checkVersion(versions, 'website-category') || !Adequa.storage.websiteCategory) getWebsiteCategory();
-        if(!checkVersion(versions, 'website-requests') || !Adequa.storage.websiteRequests) getWebsiteRequests();
+        if(!checkVersion(versions, 'website-parameters') || !Adequa.storage.websiteParameters) getWebsiteParameters();
+        if(!checkVersion(versions, 'website-requests') || !Adequa.storage.websiteRequests || !Adequa.storage.websiteCategory) getWebsiteRequests();
+        if(!checkVersion(versions, 'offers-sources') || !Adequa.storage.offerSources) getOffersSources();
 
         Adequa.setStorage({versions});
     });
@@ -62,16 +63,24 @@ const getCustomCss = function () {
     });
 };
 
-const getWebsiteCategory = function () {
-    getAPIResponse('website-category', function (list) {
-        Adequa.storage.websiteCategory = list;
+const getOffersSources = function () {
+    getAPIResponse('offers-sources', function (list) {
+        Adequa.storage.offersSources = list;
         Adequa.setStorage({});
     });
 };
 
 const getWebsiteRequests = function () {
     getAPIResponse('website-requests', function (list) {
-        Adequa.storage.websiteRequests = list;
+        Adequa.storage.websiteRequests = list.requests;
+        Adequa.storage.websiteCategory = list.categories;
+        Adequa.setStorage({});
+    });
+};
+
+const getWebsiteParameters = function () {
+    getAPIResponse('website-parameters', function (list) {
+        Adequa.storage.websiteParameters = list;
         Adequa.setStorage({});
     });
 };

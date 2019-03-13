@@ -14,12 +14,12 @@ Adequa.process.tabs.onUpdated = function (tabId, changeInfo) {
 
         Adequa.process.interests.checkUrl(changeInfo.url);
 
-        Adequa.storage.tabs = Adequa.storage.tabs || {};
-        Adequa.storage.tabs[tabId] = {
-            hostname: hostname,
-            domains: [hostname],
-            cookies: []
-        };
-        Adequa.setStorage({});
+        // Adequa.storage.tabs = Adequa.storage.tabs || {};
+        // Adequa.storage.tabs[tabId] = {
+        //     hostname: hostname,
+        //     domains: [hostname],
+        //     cookies: []
+        // };
+        // Adequa.setStorage({});
     }
 };

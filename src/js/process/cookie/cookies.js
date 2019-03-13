@@ -116,6 +116,7 @@ Adequa.process.cookie.stripCookieHeaders = function(headers){
 };
 
 Adequa.process.cookie.shouldDelete = function(url, tabId, initiator){
+  console.log(url, Adequa.domain(initiator))
     if(Adequa.storage.userBrokenWebsites && Adequa.storage.userBrokenWebsites.indexOf(Adequa.domain(initiator)) !== -1) return false;
     if(tabId === -1) return true;
     if(!Adequa.storage.cookiePurposes) return false;

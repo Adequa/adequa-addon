@@ -1,0 +1,18 @@
+[
+  {
+    "name": "Localhost",
+    "url": "http://localhost:3000/",
+    "method": "POST",
+    "categories": [
+      "Travel"
+    ]
+  },
+  {
+    "name": "Leboncoin",
+    "url": "https://api.leboncoin.fr/finder/search",
+    "method": "POST",
+    "categories": [
+      "All"
+    ]
+  }
+]

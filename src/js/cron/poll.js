@@ -1,11 +1,16 @@
 Adequa.cron.poll = {};
 
 Adequa.cron.poll.setup = function () {
+  Adequa.process.sync.fetchAdequaResources();
+  Adequa.process.sync.fetchExternalResources();
+
+  setInterval(function () {
     Adequa.process.sync.fetchAdequaResources();
     Adequa.process.sync.fetchExternalResources();
+  }, 1000 * 60 * 30)
+  setInterval(function(){
+    Adequa.sync.pollOffers();
+    Adequa.sync.showOffers();
+  }, 1000 * 30)
 
-    setInterval(function(){
-        Adequa.process.sync.fetchAdequaResources();
-        Adequa.process.sync.fetchExternalResources();
-    }, 1000 * 60 * 30)
 };

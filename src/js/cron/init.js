@@ -20,5 +20,6 @@ let Adequa = {
 };
 
 Adequa.db.interests = new PouchDB('interests');
-
 Adequa.db.actionsWithInterest = new PouchDB('actionsWithInterest');
+Adequa.db.offers = new PouchDB('offers');
+Adequa.db.impressions = new PouchDB('impressions');

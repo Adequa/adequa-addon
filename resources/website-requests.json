@@ -1,368 +1,525 @@
 {
-  "leboncoin.fr": {
-    "category": {
-      "1": {
-        "Automotive": {
-          "Vehicles": {}
+  "requests": {
+    "https://booking.oui.sncf/wishes-api/wishes": {
+      "parameters": {
+        "mainJourney": {
+          "destination": {
+            "label": {
+              "destination": {}
+            }
+          },
+          "origin": {
+            "label": {
+              "origin": {}
+            }
+          }
+        },
+        "schedule": {
+          "outward": {
+            "departureDate": {}
+          },
+          "inward": {
+            "returnDate": {}
+          }
+        },
+        "travelClass": {
+          "travelClass": {}
         }
       },
-      "2": {
-        "Automotive": {
-          "Buying/Selling Cars": {}
+      "domain": "oui.sncf",
+      "company": "oui.sncf",
+      "tab_url": "https://www.oui.sncf/billet-train",
+      "sub_category": "train",
+      "action_type": "search"
+    },
+    "https://www.oui.sncf/proposition/rest/search-travels/outward": {
+      "parameters": {
+        "destination": {
+          "destination": {}
+        },
+        "origin": {
+          "origin": {}
+        },
+        "departureDate": {
+          "departureDate": {}
+        },
+        "returnDate": {
+          "returnDate": {}
+        },
+        "travelClass": {
+          "travelClass": {}
         }
       },
-      "3": {
-        "Automotive": {
-          "Motorcycles": {}
-        }
-      },
-      "4": {
-        "Automotive": {
-          "Buying/Selling Cars": {
-            "Caravan": {}
+      "domain": "oui.sncf",
+      "company": "oui.sncf",
+      "tab_url": "https://www.oui.sncf/proposition/",
+      "sub_category": "train",
+      "action_type": "check_product"
+    },
+    "https://www.oui.sncf/proposition/rest/search-travels/inward": {
+      "parameters": {
+        "travelQuery": {
+          "destination": {
+            "destination": {}
+          },
+          "origin": {
+            "origin": {}
+          },
+          "departureDate": {
+            "departureDate": {}
+          },
+          "returnDate": {
+            "returnDate": {}
+          },
+          "travelClass": {
+            "travelClass": {}
           }
         }
       },
-      "5": {
-        "Automotive": {
-          "Buying/Selling Cars": {
-            "Utilities": {}
+      "domain": "oui.sncf",
+      "company": "oui.sncf",
+      "tab_url": "https://www.oui.sncf/proposition/",
+      "sub_category": "train",
+      "action_type": "check_product"
+    },
+    "https://www.trainline.fr/api/v5_1/search": {
+      "parameters": {
+        "search": {
+          "departure_date": {
+            "departureDate": {}
+          },
+          "return_date": {
+            "returnDate": {}
+          },
+          "arrival_station_id": {
+            "destination": {}
+          },
+          "departure_station_id": {
+            "origin": {}
           }
         }
       },
-      "6": {
-        "Automotive": {
-          "Trucks & Accessories": {}
+      "domain": "trainline.fr",
+      "company": "trainline",
+      "tab_url": "https://www.trainline.fr/search",
+      "sub_category": "train",
+      "action_type": "search"
+    },
+    "https://www.airbnb.fr/api/v2/explore_tabs": {
+      "parameters": {
+        "checkin": {
+          "arrivalDate": {}
+        },
+        "checkout": {
+          "departureDate": {}
+        },
+        "query": {
+          "destination": {}
         }
       },
-      "7": {
-        "Automotive": {
-          "Boating": {}
-        }
-      },
-      "8": {
-        "Real estate": {}
-      },
-      "9": {
-        "Real estate": {
-          "Sales": {}
-        }
-      },
-      "10": {
-        "Real estate": {
-          "Rentals": {}
-        }
-      },
-      "11": {
-        "Real estate": {
-          "Collocations": {}
-        }
-      },
-      "12": {
-        "Real estate": {
-          "Rentals & Cottages": {}
-        }
-      },
-      "13": {
-        "Real estate": {
-          "Offices & Shops": {}
-        }
-      },
-      "14": {
-        "Technology & Computing": {
-          "Multimedia": {}
-        }
-      },
-      "15": {
-        "Technology & Computing": {
-          "Computer Peripherals": {}
-        }
-      },
-      "16": {
-        "Technology & Computing": {
-          "Image & Sound": {}
-        }
-      },
-      "17": {
-        "Technology & Computing": {
-          "Cell Phones": {}
-        }
-      },
-      "18": {
-        "Home & Garden": {
-          "Home": {}
-        }
-      },
-      "19": {
-        "Home & Garden": {
-          "Appliances": {}
-        }
-      },
-      "20": {
-        "Home & Garden": {
-          "Appliances": {
-            "Furniture": {}
-          }
-        }
-      },
-      "21": {
-        "Home & Garden": {
-          "Home Repair": {}
-        }
-      },
-      "22": {
-        "Home & Garden": {
-          "Interior Decorating": {
-            "Clothing": {}
-          }
-        }
-      },
-      "23": {
-        "Family & Parenting": {
-          "Babies & Toddlers": {
-            "Baby Equipment": {}
-          }
-        }
-      },
-      "24": {
-        "Hobbies & Interests": {
-          "Hobbies": {}
-        }
-      },
-      "25": {
-        "Arts & Entertainment": {
-          "Movies": {}
-        }
-      },
-      "26": {
-        "Arts & Entertainment": {
-          "Music": {}
-        }
-      },
-      "27": {
-        "Arts & Entertainment": {
-          "Books & Literature": {}
-        }
-      },
-      "28": {
-        "Pets": {
-          "Animals": {}
-        }
-      },
-      "29": {
-        "Sports": {
-          "Sports & Hobbies": {}
-        }
-      },
-      "30": {
-        "Hobbies & Interests": {
-          "Art/Technology": {
-            "Musical Instruments": {}
-          }
-        }
-      },
-      "31": {
-        "Services": {}
-      },
-      "32": {
-        "Business": {
-          "Industrial equipment": {}
-        }
-      },
-      "33": {
-        "Careers": {
-          "Job Search": {}
-        }
-      },
-      "34": {
-        "Services": {}
-      },
-      "35": {
-        "Hobbies & Interests": {
-          "Ticketing": {}
-        }
-      },
-      "36": {
-        "Education": {
-          "Homework/Study Tips": {}
-        }
-      },
-      "37": {
-        "Uncategorized": {}
-      },
-      "38": {
-        "Uncategorized": {}
-      },
-      "39": {
-        "Home & Garden": {
-          "Interior Decorating": {}
-        }
-      },
-      "40": {
-        "Hobbies & Interests": {
-          "Collection": {}
-        }
-      },
-      "41": {
-        "Hobbies & Interests": {
-          "Games & Toys": {}
-        }
-      },
-      "42": {
-        "Style & Fashion": {
-          "Jewelry": {}
-        }
-      },
-      "43": {
-        "Hobbies & Interests": {
-          "Video & Computer Games": {}
-        }
-      },
-      "44": {
-        "Automotive": {
-          "Motorcycles": {}
-        }
-      },
-      "45": {
-        "Food & Drink": {
-          "The art of the table": {}
-        }
-      },
-      "46": {
-        "Home & Garden": {
-          "Linen House": {}
-        }
-      },
-      "47": {
-        "Style & Fashion": {
-          "Accessories": {}
-        }
-      },
-      "48": {
-        "Food & Drink": {
-          "Wine": {}
-        }
-      },
-      "49": {
-        "Hobbies & Interests": {
-          "Events": {}
-        }
-      },
-      "50": {
-        "Automotive": {
-          "Buying/Selling Cars": {
-            "Caravan": {}
-          }
-        }
-      },
-      "51": {
-        "Automotive": {
-          "Boating": {}
-        }
-      },
-      "52": {
-        "Home & Garden": {
-          "Gardening": {}
-        }
-      },
-      "53": {
-        "Style & Fashion": {
-          "Shoes": {}
-        }
-      },
-      "54": {
-        "Style & Fashion": {
-          "Clothing": {}
-        }
-      },
-      "55": {
-        "Sports": {
-          "Bicycling": {}
-        }
-      },
-      "56": {
-        "Business": {
-          "Equipment": {}
-        }
-      },
-      "57": {
-        "Business": {
-          "Equipment": {
-            "Agricultural equipment": {}
-          }
-        }
-      },
-      "58": {
-        "Business": {
-          "Logistics": {}
-        }
-      },
-      "59": {
-        "Business": {
-          "Construction": {}
-        }
-      },
-      "60": {
-        "Business": {
-          "Construction": {}
-        }
-      },
-      "61": {
-        "Travel": {
-          "Hotels": {}
-        }
-      },
-      "62": {
-        "Business": {
-          "Office supplies": {}
-        }
-      },
-      "63": {
-        "Shopping": {
-          "Shops & Markets": {}
-        }
-      },
-      "64": {
-        "Health & Fitness": {
-          "Medical Equipment": {}
-        }
-      },
-      "65": {
-        "Travel": {
-          "Carpooling": {}
-        }
-      },
-      "66": {
-        "Travel": {
-          "Holidays": {}
-        }
-      },
-      "67": {
-        "Travel": {
-          "Bed & Breakfast": {}
-        }
-      },
-      "68": {
-        "Travel": {
-          "Campsites": {}
-        }
-      },
-      "69": {
-        "Travel": {
-          "Hotels": {}
-        }
-      },
-      "70": {
-        "Travel": {
-          "Unusual Accommodation": {}
-        }
-      },
-      "71": {
-        "Careers": {}
-      },
-      "72": {
-        "Style & Fashion": {}
-      }
+      "domain": "airbnb.fr",
+      "company": "airbnb",
+      "tab_url": "https://www.airbnb.fr/s/",
+      "sub_category": "rent",
+      "action_type": "search"
+    }
+  },
+  "categories": {
+    "oui.sncf": {
+      "category": "Travel_train",
+      "company": "oui.sncf",
+      "domain": "oui.sncf",
+      "action_type": "land"
+    },
+    "trainline.fr": {
+      "category": "Travel_train",
+      "company": "trainline",
+      "domain": "trainline.fr",
+      "action_type": "land"
+    },
+    "edreams.fr": {
+      "category": "Travel_flight and hotel",
+      "company": "edreams",
+      "domain": "edreams.fr",
+      "action_type": "land"
+    },
+    "liligo.fr": {
+      "category": "Travel_flight and hotel",
+      "company": "liligo",
+      "domain": "liligo.fr",
+      "action_type": "land"
+    },
+    "opodo.fr": {
+      "category": "Travel_flight and hotel",
+      "company": "opodo",
+      "domain": "opodo.fr",
+      "action_type": "land"
+    },
+    "kayak.fr": {
+      "category": "Travel_flight and hotel",
+      "company": "kayak",
+      "domain": "kayak.fr",
+      "action_type": "land"
+    },
+    "govoyages.com": {
+      "category": "Travel_flight and hotel",
+      "company": "govoyages",
+      "domain": "govoyages.com",
+      "action_type": "land"
+    },
+    "fr.lastminute.com": {
+      "category": "Travel_flight and hotel",
+      "company": "lastminute",
+      "domain": "fr.lastminute.com",
+      "action_type": "land"
+    },
+    "skyscanner.fr": {
+      "category": "Travel_flight and hotel",
+      "company": "skyscanner",
+      "domain": "skyscanner.fr",
+      "action_type": "land"
+    },
+    "google.com/flights": {
+      "category": "Travel_flight",
+      "company": "google",
+      "domain": "google.com",
+      "action_type": "land"
+    },
+    "easyvols.fr": {
+      "category": "Travel_flight and hotel",
+      "company": "easyvols",
+      "domain": "easyvols.fr",
+      "action_type": "land"
+    },
+    "momondo.fr": {
+      "category": "Travel_flight and hotel",
+      "company": "momondo",
+      "domain": "momondo.fr",
+      "action_type": "land"
+    },
+    "expedia.fr": {
+      "category": "Travel_flight and hotel",
+      "company": "expedia",
+      "domain": "expedia.fr",
+      "action_type": "land"
+    },
+    "hipmunk.com": {
+      "category": "Travel_flight and hotel",
+      "company": "hipmunk",
+      "domain": "hipmunk.com",
+      "action_type": "land"
+    },
+    "jetcost.com": {
+      "category": "Travel_flight and hotel",
+      "company": "jetcost",
+      "domain": "jetcost.com",
+      "action_type": "land"
+    },
+    "rogo.fr": {
+      "category": "Travel_flight and hotel",
+      "company": "rogo",
+      "domain": "rogo.fr",
+      "action_type": "land"
+    },
+    "rome2rio.com/fr": {
+      "category": "Travel_flight and hotel",
+      "company": "rome2rio",
+      "domain": "rome2rio.com",
+      "action_type": "land"
+    },
+    "omio.fr": {
+      "category": "Travel_transport",
+      "company": "omio",
+      "domain": "omio.fr",
+      "action_type": "land"
+    },
+    "kelbillet.com": {
+      "category": "Travel_transport",
+      "company": "kelbillet",
+      "domain": "kelbillet.com",
+      "action_type": "land"
+    },
+    "wanderio.fr": {
+      "category": "Travel_transport",
+      "company": "wanderio",
+      "domain": "wanderio.fr",
+      "action_type": "land"
+    },
+    "tictactrip.eu": {
+      "category": "Travel_transport",
+      "company": "tictactrip",
+      "domain": "tictactrip.eu",
+      "action_type": "land"
+    },
+    "zepass.com": {
+      "category": "Travel_train",
+      "company": "zepass",
+      "domain": "zepass.com",
+      "action_type": "land"
+    },
+    "blablacar.fr": {
+      "category": "Travel_carpooling",
+      "company": "blablacar",
+      "domain": "blablacar.fr",
+      "action_type": "land"
+    },
+    "idvroom.com": {
+      "category": "Travel_carpooling",
+      "company": "idvroom",
+      "domain": "idvroom.com",
+      "action_type": "land"
+    },
+    "gomore.fr": {
+      "category": "Travel_carpooling",
+      "company": "gomore",
+      "domain": "gomore.fr",
+      "action_type": "land"
+    },
+    "booking.com": {
+      "category": "Travel_flight and hotel",
+      "company": "booking",
+      "domain": "booking.com",
+      "action_type": "land"
+    },
+    "fr.hotels.com": {
+      "category": "Travel_rent",
+      "company": "hotels",
+      "domain": "fr.hotels.com",
+      "action_type": "land"
+    },
+    "trivago.fr": {
+      "category": "Travel_rent",
+      "company": "trivago",
+      "domain": "trivago.fr",
+      "action_type": "land"
+    },
+    "airbnb.fr": {
+      "category": "Travel_rent",
+      "company": "airbnb",
+      "domain": "airbnb.fr",
+      "action_type": "land"
+    },
+    "homelidays.com": {
+      "category": "Travel_rent",
+      "company": "homelidays",
+      "domain": "homelidays.com",
+      "action_type": "land"
+    },
+    "pierreetvacances.com": {
+      "category": "Travel_holidays",
+      "company": "pierreetvacances",
+      "domain": "pierreetvacances.com",
+      "action_type": "land"
+    },
+    "tripadvisor.fr": {
+      "category": "Travel_flight and hotel",
+      "company": "tripadvisor",
+      "domain": "tripadvisor.fr",
+      "action_type": "land"
+    },
+    "abritel.fr": {
+      "category": "Travel_flight and hotel",
+      "company": "abritel",
+      "domain": "abritel.fr",
+      "action_type": "land"
+    },
+    "clevacances.com/fr": {
+      "category": "Travel_holidays",
+      "company": "clevacances",
+      "domain": "clevacances.com",
+      "action_type": "land"
+    },
+    "amivac.com": {
+      "category": "Travel_holidays",
+      "company": "amivac",
+      "domain": "amivac.com",
+      "action_type": "land"
+    },
+    "locasun.fr": {
+      "category": "Travel_holidays",
+      "company": "locasun",
+      "domain": "locasun.fr",
+      "action_type": "land"
+    },
+    "odalys-vacances.com": {
+      "category": "Travel_holidays",
+      "company": "odalys-vacances",
+      "domain": "odalys-vacances.com",
+      "action_type": "land"
+    },
+    "airfrance.fr": {
+      "category": "Travel_flight",
+      "company": "airfrance",
+      "domain": "airfrance.fr",
+      "action_type": "land"
+    },
+    "transavia.com": {
+      "category": "Travel_flight",
+      "company": "transavia",
+      "domain": "transavia.com",
+      "action_type": "land"
+    },
+    "easyjet.com": {
+      "category": "Travel_flight",
+      "company": "easyjet",
+      "domain": "easyjet.com",
+      "action_type": "land"
+    },
+    "hop.com": {
+      "category": "Travel_flight and hotel",
+      "company": "hop",
+      "domain": "hop.com",
+      "action_type": "land"
+    },
+    "ryanair.com": {
+      "category": "Travel_flight",
+      "company": "ryanair",
+      "domain": "ryanair.com",
+      "action_type": "land"
+    },
+    "vueling.com": {
+      "category": "Travel_flight and hotel",
+      "company": "vueling",
+      "domain": "vueling.com",
+      "action_type": "land"
+    },
+    "lufthansa.com": {
+      "category": "Travel_flight",
+      "company": "lufthansa",
+      "domain": "lufthansa.com",
+      "action_type": "land"
+    },
+    "iberia.com": {
+      "category": "Travel_flight and hotel",
+      "company": "iberia",
+      "domain": "iberia.com",
+      "action_type": "land"
+    },
+    "wizzair.com": {
+      "category": "Travel_flight and hotel",
+      "company": "wizzair",
+      "domain": "wizzair.com",
+      "action_type": "land"
+    },
+    "norwegian.com": {
+      "category": "Travel_flight and hotel",
+      "company": "norwegian",
+      "domain": "norwegian.com",
+      "action_type": "land"
+    },
+    "aigle-azur.com": {
+      "category": "Travel_flight and hotel",
+      "company": "aigle-azur",
+      "domain": "aigle-azur.com",
+      "action_type": "land"
+    },
+    "xl.com": {
+      "category": "Travel_flight and hotel",
+      "company": "xl",
+      "domain": "xl.com",
+      "action_type": "land"
+    },
+    "rentacar.fr": {
+      "category": "Travel_car",
+      "company": "rentacar",
+      "domain": "rentacar.fr",
+      "action_type": "land"
+    },
+    "hertz.com": {
+      "category": "Travel_car",
+      "company": "hertz",
+      "domain": "hertz.com",
+      "action_type": "land"
+    },
+    "sixt.fr": {
+      "category": "Travel_car",
+      "company": "sixt",
+      "domain": "sixt.fr",
+      "action_type": "land"
+    },
+    "avis.fr": {
+      "category": "Travel_car",
+      "company": "avis",
+      "domain": "avis.fr",
+      "action_type": "land"
+    },
+    "europcar.fr": {
+      "category": "Travel_car",
+      "company": "europcar",
+      "domain": "europcar.fr",
+      "action_type": "land"
+    },
+    "ada.fr": {
+      "category": "Travel_car",
+      "company": "ada",
+      "domain": "ada.fr",
+      "action_type": "land"
+    },
+    "ucar.fr": {
+      "category": "Travel_car",
+      "company": "ucar",
+      "domain": "ucar.fr",
+      "action_type": "land"
+    },
+    "accorhotels.com": {
+      "category": "Travel_hotel",
+      "company": "accorhotels",
+      "domain": "accorhotels.com",
+      "action_type": "land"
+    },
+    "campanile.com": {
+      "category": "Travel_hotel",
+      "company": "campanile",
+      "domain": "campanile.com",
+      "action_type": "land"
+    },
+    "premiereclasse.com": {
+      "category": "Travel_hotel",
+      "company": "premiereclasse",
+      "domain": "premiereclasse.com",
+      "action_type": "land"
+    },
+    "kyriad.com/fr": {
+      "category": "Travel_hotel",
+      "company": "kyriad",
+      "domain": "kyriad.com",
+      "action_type": "land"
+    },
+    "hotel-bb.com": {
+      "category": "Travel_hotel",
+      "company": "hotel-bb",
+      "domain": "hotel-bb.com",
+      "action_type": "land"
+    },
+    "balladins.com": {
+      "category": "Travel_hotel",
+      "company": "balladins",
+      "domain": "balladins.com",
+      "action_type": "land"
+    },
+    "logishotels.com": {
+      "category": "Travel_hotel",
+      "company": "logishotels",
+      "domain": "logishotels.com",
+      "action_type": "land"
+    },
+    "bestwestern.com": {
+      "category": "Travel_hotel",
+      "company": "bestwestern",
+      "domain": "bestwestern.com",
+      "action_type": "land"
+    },
+    "contact-hotel.com": {
+      "category": "Travel_hotel",
+      "company": "contact-hotel",
+      "domain": "contact-hotel.com",
+      "action_type": "land"
+    },
+    "citotel.com": {
+      "category": "Travel_hotel",
+      "company": "citotel",
+      "domain": "citotel.com",
+      "action_type": "land"
     }
   }
 }

@@ -5,10 +5,17 @@ const Adequa = {
 };
 const port = Adequa.API.runtime.connect({name: "contentscript"});
 port.onMessage.addListener(function(message) {
-    window.postMessage({
-        direction: "adequa-topage",
-        message
-    }, "*");
+    switch (message.what) {
+        case "notify":
+            Adequa.notify(message.notification);
+            return;
+        default:
+            window.postMessage({
+                direction: "adequa-topage",
+                message
+            }, "*");
+            return;
+    }
 });
 
 window.addEventListener("message", function (event) {
@@ -22,10 +29,17 @@ window.addEventListener("message", function (event) {
 Adequa.API.runtime.onConnect.addListener(function(port) {
     if(port.name === "contentscript") return;
     port.onMessage.addListener(function(message) {
-        window.postMessage({
-            direction: "adequa-topage",
-            message
-        }, "*");
+        switch(message.what){
+            case "notify":
+                Adequa.notify(message.notification);
+                return;
+            default:
+                window.postMessage({
+                    direction: "adequa-topage",
+                    message
+                }, "*");
+                return;
+        }
     });
 });
 

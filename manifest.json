@@ -22,6 +22,25 @@
         "/js/page/contentscript.js"
       ],
       "run_at": "document_start"
+    },
+    {
+      "matches": [
+        "<all_urls>"
+      ],
+      "js": [
+        "/js/page/notify.js"
+      ],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": [
+        "*://*.leboncoin.fr/*"
+      ],
+      "js": [
+        "/js/page/leboncoin.js"
+      ],
+      "all_frames": true,
+      "run_at": "document_idle"
     }
   ],
   "default_locale": "fr",
@@ -55,5 +74,5 @@
     "<all_urls>"
   ],
   "short_name": "Adequa dev",
-  "version": "1.0.53"
+  "version": "1.0.57"
 }

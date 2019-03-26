@@ -1,0 +1,14 @@
+{
+  "authorName": {
+    "message": "Adequa",
+    "description": "Adequa"
+  },
+  "extName": {
+    "message": "Adequa",
+    "description": "extension name."
+  },
+  "extShortDesc": {
+    "message": "Adequa vous donne le contrôle de vos cookies.",
+    "description": "this will be in the chrome web store: must be 132 characters or less"
+  }
+}

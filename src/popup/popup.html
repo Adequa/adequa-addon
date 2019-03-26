@@ -1,13 +1,15 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>Adequa</title>
+    <title>Title</title>
+    <link rel="stylesheet" href="popup.css" />
     <% if (NODE_ENV === 'development') { %>
     <script src="http://localhost:8098"></script>
     <% } %>
   </head>
   <body>
-    <script src="background.js"></script>
+    <div id="app"></div>
+    <script src="popup.js"></script>
   </body>
 </html>

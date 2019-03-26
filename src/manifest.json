@@ -1,0 +1,29 @@
+{
+  "name": "Adequa",
+  "author": "Adequa",
+  "description": "__MSG_extShortDesc__",
+  "default_locale": "fr",
+  "version": null,
+  "manifest_version": 2,
+  "icons": {
+    "16": "img/icon_dev_16.png",
+    "32": "img/icon_dev_32.png",
+    "64": "img/icon_dev_64.png",
+    "128": "img/icon_dev_128.png"
+  },
+  "browser_action": {
+    "default_title": "Adequa",
+    "default_popup": "popup/popup.html"
+  },
+  "permissions": ["storage", "tabs", "cookies", "unlimitedStorage", "webNavigation", "webRequest", "webRequestBlocking", "<all_urls>"],
+  "background": {
+    "page": "background.html"
+  },
+  "content_scripts": [
+    {
+      "matches": ["http://*/*", "https://*/*"],
+      "js": ["/contentscript/contentscript.js"],
+      "run_at": "document_idle"
+    }
+  ]
+}

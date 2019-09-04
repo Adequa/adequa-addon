@@ -1,11 +1,12 @@
-Adequa.cron.poll = {};
+import Sync from 'process/sync';
 
-Adequa.cron.poll.setup = function () {
-    Adequa.actions.sync.fetchAdequaResources();
-    Adequa.actions.sync.fetchExternalResources();
+export default {
+  setup() {
+    Logger.debug('Resources poller is setup');
+    Sync();
 
-    setInterval(function(){
-        Adequa.actions.sync.fetchAdequaResources();
-        Adequa.actions.sync.fetchExternalResources();
-    }, 1000 * 60 * 30)
+    setInterval(() => {
+      Sync();
+    }, 1000 * 60 * 30);
+  },
 };

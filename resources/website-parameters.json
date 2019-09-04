@@ -1,0 +1,368 @@
+{
+  "leboncoin.fr": {
+    "category": {
+      "1": {
+        "Automotive": {
+          "Vehicles": {}
+        }
+      },
+      "2": {
+        "Automotive": {
+          "Buying/Selling Cars": {}
+        }
+      },
+      "3": {
+        "Automotive": {
+          "Motorcycles": {}
+        }
+      },
+      "4": {
+        "Automotive": {
+          "Buying/Selling Cars": {
+            "Caravan": {}
+          }
+        }
+      },
+      "5": {
+        "Automotive": {
+          "Buying/Selling Cars": {
+            "Utilities": {}
+          }
+        }
+      },
+      "6": {
+        "Automotive": {
+          "Trucks and Accessories": {}
+        }
+      },
+      "7": {
+        "Automotive": {
+          "Boating": {}
+        }
+      },
+      "8": {
+        "Real estate": {}
+      },
+      "9": {
+        "Real estate": {
+          "Sales": {}
+        }
+      },
+      "10": {
+        "Real estate": {
+          "Rentals": {}
+        }
+      },
+      "11": {
+        "Real estate": {
+          "Collocations": {}
+        }
+      },
+      "12": {
+        "Real estate": {
+          "Rentals and Cottages": {}
+        }
+      },
+      "13": {
+        "Real estate": {
+          "Offices and Shops": {}
+        }
+      },
+      "14": {
+        "Technology and Computing": {
+          "Multimedia": {}
+        }
+      },
+      "15": {
+        "Technology and Computing": {
+          "Computer Peripherals": {}
+        }
+      },
+      "16": {
+        "Technology and Computing": {
+          "Image and Sound": {}
+        }
+      },
+      "17": {
+        "Technology and Computing": {
+          "Cell Phones": {}
+        }
+      },
+      "18": {
+        "Home and Garden": {
+          "Home": {}
+        }
+      },
+      "19": {
+        "Home and Garden": {
+          "Appliances": {}
+        }
+      },
+      "20": {
+        "Home and Garden": {
+          "Appliances": {
+            "Furniture": {}
+          }
+        }
+      },
+      "21": {
+        "Home and Garden": {
+          "Home Repair": {}
+        }
+      },
+      "22": {
+        "Home and Garden": {
+          "Interior Decorating": {
+            "Clothing": {}
+          }
+        }
+      },
+      "23": {
+        "Family and Parenting": {
+          "Babies and Toddlers": {
+            "Baby Equipment": {}
+          }
+        }
+      },
+      "24": {
+        "Hobbies and Interests": {
+          "Hobbies": {}
+        }
+      },
+      "25": {
+        "Arts and Entertainment": {
+          "Movies": {}
+        }
+      },
+      "26": {
+        "Arts and Entertainment": {
+          "Music": {}
+        }
+      },
+      "27": {
+        "Arts and Entertainment": {
+          "Books and Literature": {}
+        }
+      },
+      "28": {
+        "Pets": {
+          "Animals": {}
+        }
+      },
+      "29": {
+        "Sports": {
+          "Sports and Hobbies": {}
+        }
+      },
+      "30": {
+        "Hobbies and Interests": {
+          "Art/Technology": {
+            "Musical Instruments": {}
+          }
+        }
+      },
+      "31": {
+        "Services": {}
+      },
+      "32": {
+        "Business": {
+          "Industrial equipment": {}
+        }
+      },
+      "33": {
+        "Careers": {
+          "Job Search": {}
+        }
+      },
+      "34": {
+        "Services": {}
+      },
+      "35": {
+        "Hobbies and Interests": {
+          "Ticketing": {}
+        }
+      },
+      "36": {
+        "Education": {
+          "Homework/Study Tips": {}
+        }
+      },
+      "37": {
+        "Uncategorized": {}
+      },
+      "38": {
+        "Uncategorized": {}
+      },
+      "39": {
+        "Home and Garden": {
+          "Interior Decorating": {}
+        }
+      },
+      "40": {
+        "Hobbies and Interests": {
+          "Collection": {}
+        }
+      },
+      "41": {
+        "Hobbies and Interests": {
+          "Games and Toys": {}
+        }
+      },
+      "42": {
+        "Style and Fashion": {
+          "Jewelry": {}
+        }
+      },
+      "43": {
+        "Hobbies and Interests": {
+          "Video and Computer Games": {}
+        }
+      },
+      "44": {
+        "Automotive": {
+          "Motorcycles": {}
+        }
+      },
+      "45": {
+        "Food and Drink": {
+          "The art of the table": {}
+        }
+      },
+      "46": {
+        "Home and Garden": {
+          "Linen House": {}
+        }
+      },
+      "47": {
+        "Style and Fashion": {
+          "Accessories": {}
+        }
+      },
+      "48": {
+        "Food and Drink": {
+          "Wine": {}
+        }
+      },
+      "49": {
+        "Hobbies and Interests": {
+          "Events": {}
+        }
+      },
+      "50": {
+        "Automotive": {
+          "Buying/Selling Cars": {
+            "Caravan": {}
+          }
+        }
+      },
+      "51": {
+        "Automotive": {
+          "Boating": {}
+        }
+      },
+      "52": {
+        "Home and Garden": {
+          "Gardening": {}
+        }
+      },
+      "53": {
+        "Style and Fashion": {
+          "Shoes": {}
+        }
+      },
+      "54": {
+        "Style and Fashion": {
+          "Clothing": {}
+        }
+      },
+      "55": {
+        "Sports": {
+          "Bicycling": {}
+        }
+      },
+      "56": {
+        "Business": {
+          "Equipment": {}
+        }
+      },
+      "57": {
+        "Business": {
+          "Equipment": {
+            "Agricultural equipment": {}
+          }
+        }
+      },
+      "58": {
+        "Business": {
+          "Logistics": {}
+        }
+      },
+      "59": {
+        "Business": {
+          "Construction": {}
+        }
+      },
+      "60": {
+        "Business": {
+          "Construction": {}
+        }
+      },
+      "61": {
+        "Travel": {
+          "Hotels": {}
+        }
+      },
+      "62": {
+        "Business": {
+          "Office supplies": {}
+        }
+      },
+      "63": {
+        "Shopping": {
+          "Shops and Markets": {}
+        }
+      },
+      "64": {
+        "Health and Fitness": {
+          "Medical Equipment": {}
+        }
+      },
+      "65": {
+        "Travel": {
+          "Carpooling": {}
+        }
+      },
+      "66": {
+        "Travel": {
+          "Holidays": {}
+        }
+      },
+      "67": {
+        "Travel": {
+          "Bed and Breakfast": {}
+        }
+      },
+      "68": {
+        "Travel": {
+          "Campsites": {}
+        }
+      },
+      "69": {
+        "Travel": {
+          "Hotels": {}
+        }
+      },
+      "70": {
+        "Travel": {
+          "Unusual Accommodation": {}
+        }
+      },
+      "71": {
+        "Careers": {}
+      },
+      "72": {
+        "Style and Fashion": {}
+      }
+    }
+  }
+}

@@ -1,4 +1,6 @@
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
@@ -8,8 +10,8 @@ body {
   background-color: white;
   color: black;
   font: 14px sans-serif;
-  width: 500px;
-  height: 500px;
+  width: 600px;
+  height: 600px;
 }
 
 hr {
@@ -17,6 +19,31 @@ hr {
   border: none;
   height: 1px;
   width: 100%;
-  min-height: 1px!important;
-  max-height: 1px!important;
+  min-height: 1px !important;
+  max-height: 1px !important;
+}
+
+main {
+  width: 540px;
+  overflow: auto;
+}
+
+::-webkit-scrollbar {
+  width: 12px;
+}
+
+::-webkit-scrollbar-track {
+  display: none;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #ddd;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgb(170, 170, 170);
+}
+
+::-webkit-scrollbar-thumb:active {
+  background: #666;Z
 }

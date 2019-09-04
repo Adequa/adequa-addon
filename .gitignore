@@ -1,4 +1,7 @@
 
 \.idea/
-
+build/
+!build/.gitignore
 node_modules/
+
+dist/

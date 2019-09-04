@@ -1,97 +1,100 @@
-/* global Adequa */
-"use strict";
+import Utils from 'process/utils/utils';
+import Analytics from 'process/utils/analytics';
+import Cookies from 'process/cookies';
+import Interests from 'process/interests';
+import Tabs from 'process/tabs';
+import Requests from 'process/requests';
+import Poll from './poll';
+import Storage from '../storage';
+import Resources from '../resource';
 
-Adequa.actions.init.start = function () {
-    fetchStorage(function () {
-        if (Adequa.storage.firstInstall !== false) {
-            firstInstall();
+const firstInstall = function firstInstall() {
+  Storage.installDate = Date.now();
+
+  setTimeout(() => {
+    Utils.updateUninstallUrl();
+    Analytics.sendAnonymousEvent(Storage.convertedFrom || 'nourl', 'basic', 'addon_install', undefined, 1);
+  }, 5000);
+
+  Cookies.getProspectCookie(async prospect => {
+    if (!prospect) {
+      return;
+    }
+
+    const updateTab = function updateTab(tab) {
+      browser.tabs.update(tab.id, { active: true });
+    };
+
+    const reloadTab = function reloadTab(tabId) {
+      browser.tabs.reload(tabId);
+    };
+
+    const checkTabs = function checkTabs(tabs) {
+      for (const tab of tabs) {
+        if (tab.url.indexOf(prospect.domain) !== -1) {
+          updateTab(tab);
+          reloadTab(tab.id);
+
+          Storage.convertedFrom = Utils.hostname(tab.url);
         }
+      }
+    };
 
-        if (!Adequa.storage.consent)
-            Adequa.storage.consent = {settings: []};
+    const tabs = await browser.tabs.query({});
+    checkTabs(tabs);
+  });
 
-        if (!Adequa.storage.addonToken) {
-            Adequa.request.get(Adequa.uri + `api/token/create`, {}).then((data) => {
-                Adequa.setStorage({addonToken: JSON.parse(data.response)});
-            }).catch(console.warn);
-        }
-
-        Adequa.cron.poll.setup();
-
-        Adequa.API.tabs.query({}, function (tabs) {
-            Adequa.storage.tabs = {};
-            tabs.forEach((tab) => {
-                const hostname = Adequa.domain(tab.url);
-                Adequa.storage.tabs[tab.id] = {
-                    hostname: hostname,
-                    domains: [hostname],
-                    cookies: []
-                };
-            });
-            Adequa.setStorage({});
-        });
-
-        registerListeners();
-    });
+  Storage.firstinstall = false;
 };
 
-const firstInstall = function () {
-    Adequa.setStorage({
-        installDate: Date.now(),
-    });
+const registerCheckRequests = function registerCheckRequests() {
+  if (!Resources.websiteRequests) return setTimeout(registerCheckRequests, 1000);
+  const websites = [];
+  for (const website in Resources.websiteRequests) {
+    websites.push(`${website}*`);
+  }
 
-    setTimeout(() => {
-        Adequa.updateUninstallUrl();
-        Adequa.actions.analytics.sendAnonymousEvent(Adequa.storage.convertedFrom || "nourl", 'basic', 'addon_install', undefined, 1);
-    }, 5000);
-
-    Adequa.actions.cookie.getProspectCookie(function (prospect) {
-        if (!prospect) {
-            return;
-            // Adequa.setStorage({postInstallOpened: true})
-            // return Adequa.API.tabs.open({url: Adequa.API.runtime.getURL('/adequa/post-installation.html')});
-        }
-
-        const checkTabs = function (tabs) {
-            for (let tab of tabs) {
-                if (tab.url.indexOf(prospect.domain) !== -1) {
-                    updateTab(tab);
-                    reloadTab(tab.id);
-
-                    Adequa.setStorage({convertedFrom: Adequa.hostname(tab.url)});
-                }
-            }
-        };
-
-        const updateTab = function (tab) {
-            Adequa.API.tabs.update(tab.id, {active: true});
-        };
-
-        const reloadTab = function (tabId) {
-            Adequa.API.tabs.reload(tabId);
-        };
-        Adequa.API.tabs.query({}, checkTabs)
-    });
-    Adequa.setStorage({firstInstall: false});
+  browser.webRequest.onBeforeRequest.addListener(Interests.checkRequest, { urls: websites }, ['requestBody']);
+  return true;
 };
 
-const fetchStorage = function (callback) {
-    Adequa.API.storage.get('storage', function (data) {
-        Adequa.storage = data.storage || {tabs: {}, versions: {}};
-        callback();
-    });
+const registerListeners = function() {
+  browser.webNavigation.onCommitted.addListener(Requests.onCommitted);
+
+  browser.tabs.onUpdated.addListener(Tabs.onUpdated);
+
+  const extraInfoSpec = ['blocking'];
+  if (browser.webRequest.OnBeforeSendHeadersOptions.hasOwnProperty('EXTRA_HEADERS')) extraInfoSpec.push('extraHeaders');
+
+  browser.webRequest.onBeforeSendHeaders.addListener(Requests.onBeforeSendHeaders, { urls: ['<all_urls>'] }, ['requestHeaders', ...extraInfoSpec]);
+  browser.webRequest.onHeadersReceived.addListener(Requests.onHeadersReceived, { urls: ['<all_urls>'] }, ['responseHeaders', ...extraInfoSpec]);
+  browser.webRequest.onBeforeRequest.addListener(Requests.onBeforeRequest, { urls: ['<all_urls>'] });
+  registerCheckRequests();
 };
 
-const registerListeners = function () {
-    Adequa.API.webNavigation.onCommitted.addListener(Adequa.actions.tabs.requests.onCommitted);
+export default async function() {
+  await Storage.loadPersisted();
+  await Resources.loadPersisted();
 
-    Adequa.API.tabs.onUpdated.addListener(Adequa.actions.tabs.onUpdated);
+  if (Storage.firstInstall !== false) {
+    firstInstall();
+  }
 
-    const extraInfoSpec = ['blocking'];
-    if (Adequa.API.webRequest.OnBeforeSendHeadersOptions.hasOwnProperty('EXTRA_HEADERS')) extraInfoSpec.push('extraHeaders');
+  if (!Storage.consent) Storage.consent = { default: [1] };
 
-    Adequa.API.webRequest.onBeforeSendHeaders.addListener(Adequa.actions.tabs.requests.onBeforeSendHeaders, {urls: ["<all_urls>"]}, ['requestHeaders', ...extraInfoSpec]);
-    Adequa.API.webRequest.onHeadersReceived.addListener(Adequa.actions.tabs.requests.onHeadersReceived, {urls: ["<all_urls>"]}, ['responseHeaders', ...extraInfoSpec]);
-};
+  Poll.setup();
+  browser.browserAction.setBadgeBackgroundColor({ color: '#64a19d' });
 
-Adequa.event.emit({what: "adequaStart"});
+  const tabs = await browser.tabs.query({});
+  Storage.tabs = {};
+  tabs.forEach(tab => {
+    const hostname = Utils.domain(tab.url);
+    Storage.tabs[tab.id] = {
+      hostname,
+      domains: [hostname],
+      cookies: [],
+    };
+  });
+
+  registerListeners();
+}

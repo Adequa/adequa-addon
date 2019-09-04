@@ -1,0 +1,57 @@
+[
+  {
+    "name": "adequaPurposes",
+    "url": "https://adequa.me/api/adequa-purposes",
+    "fallbackUrl": "/resources/adequa-purposes.json",
+    "version": 0
+  },
+  {
+    "name": "bannerFilters",
+    "url": "https://adequa.me/api/banner-filters",
+    "fallbackUrl": "/resources/banner-filters.json",
+    "version": 0
+  },
+  {
+    "name": "cookiesDefault",
+    "url": "https://adequa.me/api/cookies-default",
+    "fallbackUrl": "/resources/cookies-default.json",
+    "version": 0
+  },
+
+  {
+    "name": "cookiesVersion",
+    "url": "https://adequa.me/api/cookies-version",
+    "fallbackUrl": "/resources/cookies-version.json",
+    "version": 0
+  },
+  {
+    "name": "customCss",
+    "url": "https://adequa.me/api/custom-css",
+    "fallbackUrl": "/resources/custom-css.json",
+    "version": 0
+  },
+  {
+    "name": "offersSources",
+    "url": "https://adequa.me/api/offers-sources",
+    "fallbackUrl": "/resources/offers-sources.json",
+    "version": 0
+  },
+  {
+    "name": "websiteCategory",
+    "url": "https://adequa.me/api/website-category",
+    "fallbackUrl": "/resources/website-category.json",
+    "version": 0
+  },
+  {
+    "name": "websiteParameters",
+    "url": "https://adequa.me/api/website-parameters",
+    "fallbackUrl": "/resources/website-parameters.json",
+    "version": 0
+  },
+  {
+    "name": "websiteRequests",
+    "url": "https://adequa.me/api/website-requests",
+    "fallbackUrl": "/resources/website-requests.json",
+    "version": 0
+  }
+]

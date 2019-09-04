@@ -1,0 +1,15 @@
+{
+  "plugins": [
+    "@babel/plugin-proposal-optional-chaining",
+    "@babel/plugin-proposal-class-properties"
+  ],
+  "presets": [
+    ["@babel/preset-env", {
+      "useBuiltIns": "usage",
+      "targets": {
+        // https://jamie.build/last-2-versions
+        "browsers": ["last 10 Chrome versions", "last 5 Firefox versions", "not dead"]
+      }
+    }]
+  ]
+}

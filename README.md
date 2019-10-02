@@ -12,7 +12,7 @@ adequa-v1
 
 `cd /dist`
 
-`web-ext run`
+`web-ext build`
 
 
 ---
